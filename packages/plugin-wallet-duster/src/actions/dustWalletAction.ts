@@ -189,6 +189,86 @@ export const dustWalletAction: Action = {
                 content: { text: "No." },
             },
         ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Preview dusting all tokens under $[USD_THRESHOLD_1]",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Here are the tokens under $[USD_THRESHOLD_1] in your wallet: 0x123... (1000 tokens worth $4.99)",
+                    action: "PREVIEW_DUST_TOKENS",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Great! can you dust them all?",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "You are trying to dust tokens under $[USD_THRESHOLD_1] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                    action: "DUST_TOKENS",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: `Dusted 1 tokens under $[USD_THRESHOLD_1] into ETH.`,
+                    action: "DUST_TOKENS",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Yes, proceed",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Thanks, now can you show all dust tokens under $[USD_THRESHOLD_2]",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Here are the tokens under $[USD_THRESHOLD_2] in your wallet: 0x123... (1000 tokens worth $4.99)",
+                    action: "PREVIEW_DUST_TOKENS",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "dust them all pls",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "You are trying to dust tokens under $[USD_THRESHOLD_2] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                    action: "DUST_TOKENS",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Yes, proceed",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: `Dusted 3 tokens under $[USD_THRESHOLD_2] into ETH.`,
+                    action: "DUST_TOKENS",
+                },
+            },
+        ],
     ],
     handler: async (
         runtime: IAgentRuntime,
