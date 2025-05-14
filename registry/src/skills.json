@@ -860,7 +860,6 @@
             "SHOW_TOKENS_BELOW_USD",
             "SHOW_TOKENS_BELOW_VALUE",
             "SHOW_TOKENS_BELOW_THRESHOLD",
-            "DUST_PREVIEW",
             "PREVIEW_DUST_TOKENS",
             "DUST_TOKENS",
             "DUST_WALLET",

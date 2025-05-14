@@ -28,12 +28,11 @@ export const previewDustAction: Action = {
         "SHOW_TOKENS_BELOW_USD",
         "SHOW_TOKENS_BELOW_VALUE",
         "SHOW_TOKENS_BELOW_THRESHOLD",
-        "DUST_PREVIEW",
         "HOW_MUCH_DUST_IN_WALLET",
         "HOW_MANY_DUST_TOKENS_IN_WALLET",
     ],
     description:
-        "Select this action when user request to preview/show how much or how many dust or low-value tokens would be dusted based on USD threshold given by user. By default, the threshold is $5. Use this action if user only ask to preview or display the dust tokens, NOT when user ask to dust the tokens.",
+        'Select this action when user request to preview/show how much or how many dust or low-value tokens would be dusted based on USD threshold given by user. By default, the threshold is $5. Use this action if user only ask to preview or display the dust tokens, NOT when user ask to dust the tokens. If user specifically ask to "dust tokens" or "dust my wallet", select the `DUST_WALLET_TO_ETH` action instead.',
     validate: async () => true,
     suppressInitialMessage: true,
     examples: [
@@ -116,7 +115,7 @@ export const previewDustAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Can you show me all the dust tokens below $10 in my wallet?",
+                    text: "Can you show me all the dust tokens below $[USD_THRESHOLD] in my wallet?",
                 },
             },
             {
