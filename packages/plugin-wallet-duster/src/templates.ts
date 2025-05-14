@@ -102,8 +102,40 @@ Dust my tokens
     "isConfirmed": null
 }
 \`\`\`
-# Example 5 (Combination with preview action and extracting from historical messages)
+# Example 5 (Combination with preview action)
 **Message 5**
+\`\`\`
+[
+    {
+        "user": "{{user1}}",
+        "content": {
+            "text": "Preview dusting my wallet"
+        }
+    },
+    {
+        "user": "{{user2}}",
+        "content": {
+            "text": "Here are the tokens under $5 in your wallet: 0x123... (1000 tokens worth $4.99)",
+            "action": "PREVIEW_DUST_TOKENS"
+        }
+    },
+    {
+        "user": "{{user1}}",
+        "content": {
+            "text": "Great! can you dust them all?"
+        }
+    },
+]
+\`\`\`
+**Response 5**
+\`\`\`json
+{
+    "threshold": null,
+    "isConfirmed": null
+}
+\`\`\`
+# Example 6 (Combination with preview action and extracting from historical messages)
+**Message 6**
 \`\`\`
 [
     {
@@ -140,15 +172,15 @@ Dust my tokens
     }
 ]
 \`\`\`
-**Response 5**
+**Response 6**
 \`\`\`json
 {
     "threshold": 15,
     "isConfirmed": true
 }
 \`\`\`
-# Example 6 (Combination with preview action and extracting from historical messages + new request that invalidates the previous request)
-**Message 6**
+# Example 7 (Combination with preview action and extracting from historical messages + new request that invalidates the previous request)
+**Message 7**
 \`\`\`
 [
     {
@@ -211,7 +243,7 @@ Dust my tokens
     },
 ]
 \`\`\`
-**Response 6**
+**Response 7**
 \`\`\`json
 {
     "threshold": 1,
