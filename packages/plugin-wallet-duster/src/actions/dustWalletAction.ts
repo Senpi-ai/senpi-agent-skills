@@ -53,7 +53,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "You are trying to dust tokens under $[USD_THRESHOLD] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
             {
@@ -64,7 +64,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "Dusted 3 dust tokens into ETH.",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
         ],
@@ -77,7 +77,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "You are trying to dust tokens under $[USD_THRESHOLD] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
             {
@@ -88,7 +88,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "Dusted 1 token under $[USD_THRESHOLD] into ETH.",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
         ],
@@ -103,7 +103,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "You are trying to dust tokens under $[USD_THRESHOLD] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
             {
@@ -114,7 +114,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "Dusted 4 tokens under $[USD_THRESHOLD] into ETH.",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
         ],
@@ -129,7 +129,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "You are trying to dust tokens under $[USD_THRESHOLD] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
             {
@@ -140,7 +140,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "Swapped 2 dust tokens into ETH.",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
         ],
@@ -155,7 +155,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "You are trying to dust tokens under $[USD_THRESHOLD] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
             {
@@ -166,7 +166,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `Dusted 4 tokens under $[USD_THRESHOLD] into ETH.`,
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
         ],
@@ -181,7 +181,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "You are trying to dust tokens under $[USD_THRESHOLD] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_WALLET_TO_ETH",
+                    action: "DUST_TOKENS",
                 },
             },
             {
