@@ -861,6 +861,7 @@
             "SHOW_TOKENS_BELOW_VALUE",
             "SHOW_TOKENS_BELOW_THRESHOLD",
             "PREVIEW_DUST_TOKENS",
+            "PREVIEW_DUSTING_MY_WALLET",
             "DUST_TOKENS",
             "DUST_WALLET",
             "DUST_TOKENS_UNDER",

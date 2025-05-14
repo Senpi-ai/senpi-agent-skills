@@ -269,6 +269,47 @@ export const dustWalletAction: Action = {
                 },
             },
         ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Preview dusting my wallet",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
+                    action: "PREVIEW_DUST_TOKENS",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Great! can you dust them all?",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "You are trying to dust tokens under $5 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                    action: "DUST_TOKENS",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Yes, proceed",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Dusted 1 token under $5 into ETH.",
+                    action: "DUST_TOKENS",
+                },
+            },
+        ],
     ],
     handler: async (
         runtime: IAgentRuntime,

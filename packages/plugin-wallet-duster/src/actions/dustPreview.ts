@@ -22,6 +22,7 @@ export const previewDustAction: Action = {
     name: "PREVIEW_DUST_TOKENS",
     similes: [
         "PREVIEW_DUST",
+        "PREVIEW_DUSTING_MY_WALLET",
         "SHOW_DUST_TOKENS",
         "WHAT_TOKENS_WILL_BE_DUSTED",
         "LIST_LOW_VALUE_TOKENS",
@@ -191,6 +192,21 @@ export const previewDustAction: Action = {
                 user: "{{user1}}",
                 content: {
                     text: "How much dust is in my wallet?",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: `Preview: You have 4 dust token(s) totaling ~$12.45:\n- 0xabc... (100000 tokens worth ~$2.14)\n- 0xdef... (90000 tokens worth ~$3.20)\n- 0x123... (5000 tokens worth ~$2.08)\n- 0x456... (30000 tokens worth ~$5.03)`,
+                    action: "PREVIEW_DUST_TOKENS",
+                },
+            },
+        ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Preview dusting my wallet.",
                 },
             },
             {

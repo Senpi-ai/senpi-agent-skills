@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 
 export const dustRequestTemplate = `
 Based on user's recent messages, provide the following details to dust tokens in your wallet:
-- **threshold** (Number): The USD threshold for a token to be considered dust tokens.
+- **threshold** (Number): The USD threshold for a token to be considered dust tokens. Set it to null if the user did not set a threshold.
 - **isConfirmed** (Boolean): Whether the user has confirmed the dusting.
 
 For each of these values, please reset the value to null if the user has given a new request, which means the previous request is no longer valid.
@@ -115,7 +115,7 @@ Dust my tokens
     {
         "user": "{{user2}}",
         "content": {
-            "text": "Here are the tokens under $5 in your wallet: 0x123... (1000 tokens worth $4.99)",
+            "text": "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
             "action": "PREVIEW_DUST_TOKENS"
         }
     },
@@ -123,6 +123,13 @@ Dust my tokens
         "user": "{{user1}}",
         "content": {
             "text": "Great! can you dust them all?"
+        }
+    },
+    {
+        "user": "{{user2}}",
+        "content": {
+            "text": "You are trying to dust tokens under $5 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+            "action": "DUST_TOKENS"
         }
     },
 ]
