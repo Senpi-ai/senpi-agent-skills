@@ -200,7 +200,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "Here are the tokens under $[USD_THRESHOLD_1] in your wallet: 0x123... (1000 tokens worth $4.99)",
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
             {
@@ -239,7 +239,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "Here are the tokens under $[USD_THRESHOLD_2] in your wallet: 0x123... (1000 tokens worth $4.99)",
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
             {
@@ -280,7 +280,7 @@ export const dustWalletAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
             {

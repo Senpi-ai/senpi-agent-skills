@@ -116,7 +116,7 @@ Dust my tokens
         "user": "{{user2}}",
         "content": {
             "text": "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
-            "action": "PREVIEW_DUST_TOKENS"
+            "action": "PREVIEW_DUSTING_MY_WALLET"
         }
     },
     {
@@ -155,7 +155,7 @@ Dust my tokens
         "user": "{{user2}}",
         "content": {
             "text": "Here are the tokens under $5 in your wallet: 0x123... (1000 tokens worth $4.99)",
-            "action": "PREVIEW_DUST_TOKENS"
+            "action": "PREVIEW_DUSTING_MY_WALLET"
         }
     },
     {
@@ -200,7 +200,7 @@ Dust my tokens
         "user": "{{user2}}",
         "content": {
             "text": "Here are the tokens under $5 in your wallet: 0x123... (1000 tokens worth $4.99)",
-            "action": "PREVIEW_DUST_TOKENS"
+            "action": "PREVIEW_DUSTING_MY_WALLET"
         }
     },
     {
@@ -232,7 +232,7 @@ Dust my tokens
         "user": "{{user2}}",
         "content": {
             "text": "Here are the tokens under $1 in your wallet: 0x123... (1000 tokens worth $4.99)",
-            "action": "PREVIEW_DUST_TOKENS"
+            "action": "PREVIEW_DUSTING_MY_WALLET"
         }
     },
     {

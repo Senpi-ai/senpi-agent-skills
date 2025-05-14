@@ -16,7 +16,7 @@ export const explainAiDustingAction: Action = {
         "WHAT_IS_WALLET_DUSTING",
     ],
     description:
-        "Explains and tell the user how the Wallet Dusting skill works to check for dust or low-value tokens in the agent wallet and dust them to ETH on Base.",
+        "Explains and tell the user how the Wallet Dusting skill works to check for dust or low-value tokens in the agent wallet and dust them to ETH on Base. Select this action when user request to explain or want to know more about the Wallet Dusting skill. For previewing the dust tokens, use the `PREVIEW_DUSTING_MY_WALLET` action instead. For dusting the tokens, use the `DUST_TOKENS` action instead.",
     validate: async () => true,
     suppressInitialMessage: true,
     examples: [

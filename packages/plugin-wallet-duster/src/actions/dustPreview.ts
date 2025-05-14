@@ -19,21 +19,23 @@ import { dustRequestTemplate } from "../templates";
 import { ETH_ADDRESS } from "../constants/constants";
 
 export const previewDustAction: Action = {
-    name: "PREVIEW_DUST_TOKENS",
+    name: "PREVIEW_DUSTING_MY_WALLET",
     similes: [
         "PREVIEW_DUST",
-        "PREVIEW_DUSTING_MY_WALLET",
         "SHOW_DUST_TOKENS",
         "WHAT_TOKENS_WILL_BE_DUSTED",
+        "PREVIEW_DUST_TOKENS",
         "LIST_LOW_VALUE_TOKENS",
         "SHOW_TOKENS_BELOW_USD",
         "SHOW_TOKENS_BELOW_VALUE",
         "SHOW_TOKENS_BELOW_THRESHOLD",
         "HOW_MUCH_DUST_IN_WALLET",
         "HOW_MANY_DUST_TOKENS_IN_WALLET",
+        "WHAT_IS_THE_VALUE_OF_DUST_IN_WALLET",
+        "WHAT_VALUE_OF_DUST_IN_WALLET",
     ],
     description:
-        'Select this action when user request to preview/show how much or how many dust or low-value tokens would be dusted based on USD threshold given by user. By default, the threshold is $5. Use this action if user only ask to preview or display the dust tokens, NOT when user ask to dust the tokens. If user specifically ask to "dust tokens" or "dust my wallet", select the `DUST_WALLET_TO_ETH` action instead.',
+        'Select this action when user request to preview/show how much, how many, or the value of dust or low-value ERC20 tokens in the agent wallet would be dusted based on USD threshold given by user. By default, the threshold is set to $5 if not specified and will give preview of dust tokens below $5 in the agent wallet. Pay attention to these keywords and use this action if user only ask to "PREVIEW", "SHOW", or "DISPLAY" the dust tokens, NOT when user ask to DUST the tokens. If user specifically ask to "dust tokens" or "dust my wallet", select the `DUST_TOKENS` action instead.',
     validate: async () => true,
     suppressInitialMessage: true,
     examples: [
@@ -48,7 +50,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `You have 3 dust token(s) totaling ~$7.85:\n- USDC: ~$2.50\n- PEPE: ~$1.15\n- DINO: ~$4.20`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -63,7 +65,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `You have 3 dust token(s) totaling ~$7.85:\n- USDC: ~$2.50\n- PEPE: ~$1.15\n- DINO: ~$4.20`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -78,7 +80,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `You have 3 dust token(s) totaling ~$7.85:\n- USDC: ~$2.50\n- PEPE: ~$1.15\n- DINO: ~$4.20`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -93,7 +95,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `You have 3 dust token(s) totaling ~$7.85:\n- USDC: ~$2.50\n- PEPE: ~$1.15\n- DINO: ~$4.20`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -108,7 +110,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `You have 3 dust token(s) totaling ~$7.85:\n- USDC: ~$2.50\n- PEPE: ~$1.15\n- DINO: ~$4.20`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -123,7 +125,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `You have 3 dust token(s) totaling ~$7.85:\n- USDC: ~$2.50\n- PEPE: ~$1.15\n- DINO: ~$4.20`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -138,7 +140,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `Preview: You have 4 dust token(s) totaling ~$12.45:\n- 0xabc... (100000 tokens worth ~$2.14)\n- 0xdef... (90000 tokens worth ~$3.20)\n- 0x123... (5000 tokens worth ~$2.08)\n- 0x456... (30000 tokens worth ~$5.03)`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -153,7 +155,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `Preview: You have 2 dust token(s) totaling ~$6.78:\n- 0x789... (12000 tokens worth ~$3.30)\n- 0xabc... (18000 tokens worth ~$3.48)`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -168,7 +170,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `You have 2 dust token(s) totaling ~$6.78:\n- 0x789... (12000 tokens worth ~$3.30)\n- 0xabc... (18000 tokens worth ~$3.48)`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -183,7 +185,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `You have 2 dust token(s) totaling ~$6.78:\n- 0x789... (12000 tokens worth ~$3.30)\n- 0xabc... (18000 tokens worth ~$3.48)`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -198,7 +200,7 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `Preview: You have 4 dust token(s) totaling ~$12.45:\n- 0xabc... (100000 tokens worth ~$2.14)\n- 0xdef... (90000 tokens worth ~$3.20)\n- 0x123... (5000 tokens worth ~$2.08)\n- 0x456... (30000 tokens worth ~$5.03)`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
@@ -213,7 +215,22 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `Preview: You have 4 dust token(s) totaling ~$12.45:\n- 0xabc... (100000 tokens worth ~$2.14)\n- 0xdef... (90000 tokens worth ~$3.20)\n- 0x123... (5000 tokens worth ~$2.08)\n- 0x456... (30000 tokens worth ~$5.03)`,
-                    action: "PREVIEW_DUST_TOKENS",
+                    action: "PREVIEW_DUSTING_MY_WALLET",
+                },
+            },
+        ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "What's the value of dust in my agent wallet?",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: `Preview: You have 4 dust token(s) totaling ~$12.45:\n- 0xabc... (100000 tokens worth ~$2.14)\n- 0xdef... (90000 tokens worth ~$3.20)\n- 0x123... (5000 tokens worth ~$2.08)\n- 0x456... (30000 tokens worth ~$5.03)`,
+                    action: "PREVIEW_DUSTING_MY_WALLET",
                 },
             },
         ],
