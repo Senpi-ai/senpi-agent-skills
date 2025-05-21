@@ -378,16 +378,16 @@
         ],
         "starterQuestions": [
             {
-                "label": "Buy me $25 worth of $moxie if the price dips by 5%",
-                "value": "Buy me $25 worth of $[MOXIE|0x8c9037d1ef5c6d1f6816278c7aaf5491d24cd527] if the price dips by 5%"
+                "label": "Buy me $25 worth of $VVV if the price dips by 5%",
+                "value": "Buy me $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 5%"
             },
             {
-                "label": "Buy $25 worth of $moxie if the price increases by 10%",
-                "value": "Buy $25 worth of $[MOXIE|0x8c9037d1ef5c6d1f6816278c7aaf5491d24cd527] if the price increases by 10%"
+                "label": "Buy $25 worth of $VVV if the price dips by 10%",
+                "value": "Buy $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
             },
             {
-                "label": "Sell 10% of my $BNKR if the price increases by 10%",
-                "value": "Sell 10% of my $[BNKR|0x22af33fe49fd1fa80c7149773dde5890d3c76f3b] if the price increases by 10%"
+                "label": "Sell 10% of my $BNKR if the price dips by 10%",
+                "value": "Sell 10% of my $[BNKR|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
             }
         ],
         "mediaUrls": [
@@ -576,7 +576,7 @@
     {
         "pluginId": "3d5e16f1-40e0-5df0-89c0-b2216bfa8850",
         "name": "@moxie-protocol/plugin-moxie-groups",
-        "displayName": "Senpi Groups",
+        "displayName": "Groups",
         "version": "0.1.8+build.1",
         "author": "Senpi",
         "description": "Easily add any Base users to a group, which can then be used for copy trading and other features.",
