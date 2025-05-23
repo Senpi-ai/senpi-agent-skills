@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 export const dustRequestTemplate = `
 Based on user's recent messages with the agent, provide the following details to dust tokens in your wallet:
 - **threshold** (Number): The USD threshold for a token to be considered dust tokens.
-- **isConfirmed** (Boolean): Whether the user has confirmed the dusting based on the user's recent messages.
+- **isConfirmed** (Boolean): Whether the user has given any consent/confirmation to the dusting based on the user's recent messages.
 
 Provide the values in the following JSON format:
 \`\`\`json
@@ -16,13 +16,21 @@ Provide the values in the following JSON format:
 "?" indicates that the value is optional.
 
 ## General Rules
-- For USD value threshold, use the exact USD value mentioned by the user in the recent messages. Otherwise, set it to null.
-- If the user has asked to \`PREVIEW_DUSTING_MY_WALLET\` action first prior to dusting, then evaluate the value to be assigned to **isConfirmed**.
-    - If the user has confirmed the dusting, set **isConfirmed** to true.
-    - If the user has not confirmed the dusting, set **isConfirmed** to null.
-    - If the user has rejected the dusting, set **isConfirmed** to false.
-- If the user has asked to \`DUST_TOKENS\` action without previewing first, then set **isConfirmed** to true by default.
-- For each of these values, please reset the value to null if the user has given a new request, which means the previous request is no longer valid.
+## Value Extraction Rules
+
+- **threshold**:
+  - Extract the dollar value if user says things like "dust tokens under $X".
+  - If not specified, set to null.
+
+- **isConfirmed**:
+  - If the most recent action is "PREVIEW_DUSTING_MY_WALLET":
+    - If user confirms afterward ("Yes", "Proceed", "Go ahead") → true
+    - If user rejects ("No", "Cancel") → false
+    - If no follow-up confirmation/rejection yet → null
+  - If the most recent action is "DUST_TOKENS" without preview → true
+  - If a new dusting request is issued (e.g., new threshold, or repeat command), reset both values to null.
+
+Note: Always ensure that confirmation follows a preview. If a user previews but hasn’t yet responded, **isConfirmed** must stay null – even if the request looks positive.
 
 Here are some examples of user's conversation with the agent and the expected response:
 
