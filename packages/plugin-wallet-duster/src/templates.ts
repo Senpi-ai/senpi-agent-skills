@@ -2,11 +2,9 @@ import { formatTokenMention } from "@moxie-protocol/moxie-agent-lib";
 import { ethers } from "ethers";
 
 export const dustRequestTemplate = `
-Based on user's recent messages, provide the following details to dust tokens in your wallet:
-- **threshold** (Number): The USD threshold for a token to be considered dust tokens. Set it to null if the user did not set a threshold.
-- **isConfirmed** (Boolean): Whether the user has confirmed the dusting, if not confirmation is given, set it to null. If user asked to \`PREVIEW_DUSTING_MY_WALLET\` action first prior to dusting, then check this value. Otherwise, if no prior preview is requested, any direct dusting request should set it to true.
-
-For each of these values, please reset the value to null if the user has given a new request, which means the previous request is no longer valid.
+Based on user's recent messages with the agent, provide the following details to dust tokens in your wallet:
+- **threshold** (Number): The USD threshold for a token to be considered dust tokens.
+- **isConfirmed** (Boolean): Whether the user has confirmed the dusting based on the user's recent messages.
 
 Provide the values in the following JSON format:
 \`\`\`json
@@ -16,6 +14,15 @@ Provide the values in the following JSON format:
 }
 \`\`\`
 "?" indicates that the value is optional.
+
+## General Rules
+- For USD value threshold, use the exact USD value mentioned by the user in the recent messages. Otherwise, set it to null.
+- If the user has asked to \`PREVIEW_DUSTING_MY_WALLET\` action first prior to dusting, then check this value and initially set it to null.
+- If the user has asked to \`DUST_TOKENS\` action without previewing first, then set **isConfirmed** to true by default.
+- For each of these values, please reset the value to null if the user has given a new request, which means the previous request is no longer valid.
+
+Here are some examples of user's conversation with the agent and the expected response:
+
 # Example 1
 **Message 1**
 \`\`\`
