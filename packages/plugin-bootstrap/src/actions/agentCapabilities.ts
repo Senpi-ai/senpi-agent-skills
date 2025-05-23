@@ -25,7 +25,7 @@ export const agentCapabilitiesAction: Action = {
         "WHAT_IS_WALLET_DUSTING",
     ],
     description:
-        "ONLY use this action when the user is inquiring about the agent’s overall capabilities — i.e., “What can the agent do?” — or when asking about the capabilities of a specific skill. Note: At present, this action supports only the Wallet Dusting skill.",
+        'ONLY use this action when the user is inquiring about the agent’s overall capabilities — i.e., "What can the agent do?" — or when asking about the capabilities of a specific skill, e.g. "How does Wallet Dusting work?". Note: At present, this action currently supports only the Wallet Dusting skill and answering how does wallet dusting work.',
     validate: async (runtime: IAgentRuntime, message: Memory) => {
         return true;
     },

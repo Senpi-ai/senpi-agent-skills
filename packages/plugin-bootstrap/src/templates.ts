@@ -5,7 +5,7 @@ export const agentCapabilitiesTemplate = `
 
 INSTRUCTIONS:
 
-Focus on the latest messages in the conversation history. And see if the user is asking about the capabilities of the agent.
+Focus on the latest messages in the conversation history. Determine whether the user is:
 
 - Asking about the general capabilities of the agent ("What can you do?")
 - Asking about a specific skill’s capabilities (e.g. Wallet Dusting)
