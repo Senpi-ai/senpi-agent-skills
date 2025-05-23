@@ -27,6 +27,7 @@ const BLACKLISTED_TOKEN_ADDRESSES = [
   "0x04c0599ae5a44757c0af6f9ec3b93da8976c150a",
   "0x5875eee11cf8398102fdad704c9e96607675467a",
   "0x3128a0f7f0ea68e7b7c9b00afa7e41045828e858",
+  "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca"
 ];
 
 const RESULT_BASE_PNL_TABLE =
@@ -110,7 +111,7 @@ export const prepareGroupPnlQuery = (traceId: string, pnlResponse: any) => {
       WHERE rn = 1
     )
     SELECT 
-      a.moxie_user_id AS user_id,
+      a.moxie_user_id AS moxie_user_id,
       b.username,
       b.username_type,
       a.total_buy_usd,

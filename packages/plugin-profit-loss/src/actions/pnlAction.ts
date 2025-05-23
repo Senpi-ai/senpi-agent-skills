@@ -123,6 +123,13 @@ export const PnLAction = {
                             memberIds: groupMemberIds
                         });
                         elizaLogger.debug(traceId, `[PnLAction] Group members: ${JSON.stringify(groupMemberIds)}`);
+                        if (groupMemberIds.length === 0) {
+                            elizaLogger.error(traceId, `[PnLAction] No members found in group: ${groupId}`);
+                            await callback?.({
+                                text: `No members found in the specified group. Please check the group ID.`
+                            });
+                            return true;
+                        }
                     } catch (error) {
                         elizaLogger.error(traceId, `[PnLAction] Error fetching group details: ${error.message}`);
                         await callback?.({
@@ -209,6 +216,16 @@ export const PnLAction = {
             // Remove the wallet_address field from each entry in pnlData
             pnlData.forEach((data) => {
                 delete data.wallet_address;
+            });
+            pnlData.forEach((data) => {
+                const usernameMatch = data.username.match(/@\[(.*?)\|/);
+                if (usernameMatch) {
+                    const username = usernameMatch[1];
+                    if (username.length > 20) {
+                        const shortenedUsername = `${username.slice(0, 6)}...${username.slice(-10)}`;
+                        data.username = `@[${shortenedUsername}|${data.moxie_user_id || username}]`;
+                    }
+                }
             });
             let pnlDataTemplate = pnlTemplate.replace("{{latestMessage}}", latestMessage)
                 .replace("{{conversation}}", JSON.stringify(message.content.text))
