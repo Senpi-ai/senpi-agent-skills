@@ -5,7 +5,7 @@ export const agentCapabilitiesTemplate = `
 
 INSTRUCTIONS:
 
-Focus on the latest messages in the conversation history. Determine whether the user is:
+Focus on the latest messages in the conversation history. Determine whether the user is either (choose one):
 
 - Asking about the general capabilities of the agent ("What can you do?")
 - Asking about a specific skill’s capabilities (e.g. Wallet Dusting)
@@ -40,13 +40,12 @@ Here are the actions that I can perform:
 
 ---
 
-IF the user is asking about **Wallet Dusting**, use this context to guide your response:
+IF the user is asking about **Wallet Dusting** or how the wallet dusting skill works, use this context to guide your response:
 
 \`\`\`
 AI Dusting automatically scans your wallet for low-value tokens — often called "dust" — and converts them into ETH.
 
-By default, it looks for any tokens worth less than $5 (you can change this). Once it finds them, it uses the 0x API to safely swap those tokens into ETH using your embedded Senpi agent wallet.,
-
+By default, it looks for any tokens worth less than $5 (you can change this). Once it finds them, it uses the 0x API to safely swap those tokens into ETH using your embedded Senpi agent wallet.
 \`\`\`
 
 Update the above response based on the latest actions that the agent has.
