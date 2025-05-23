@@ -107,7 +107,7 @@ Example expected response:
 This Skill is registered with the Senpi Skills Marketplace and is fully compliant with ElizaOS:
 
 - ✅ Token-gated via `alexcomeau` token
-- ✅ Supports actions: `DUST_WALLET_TO_ETH`, `PREVIEW_DUSTING_MY_WALLET`
+- ✅ Supports actions: `DUST_WALLET_TO_ETH`, `EXPLAIN_AI_DUSTING`
 - ✅ Supports `dryRun` preview mode
 - ✅ Fully integrated with Senpi Agent Wallet API
 

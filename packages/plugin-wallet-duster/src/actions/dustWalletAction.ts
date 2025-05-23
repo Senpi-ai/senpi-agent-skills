@@ -22,7 +22,7 @@ import { ETH_ADDRESS } from "../constants/constants";
 import { ethers } from "ethers";
 
 export const dustWalletAction: Action = {
-    name: "DUST_TOKENS",
+    name: "DUST_WALLET_TO_ETH",
     similes: [
         "CLEAN_WALLET",
         "DUST_MY_TOKENS",
@@ -31,29 +31,37 @@ export const dustWalletAction: Action = {
         "CLEAR_LOW_VALUE_TOKENS",
         "CLEAR_THE_DUST_OUT",
         "SELL_ALL_TOKENS_UNDER",
-        "DUST_WALLET_TO_ETH",
+        "DUST_TOKENS",
         "DUST_WALLET",
         "DUST_TOKENS_UNDER",
         "DUST_TOKENS_BELOW",
-        "DUST_TOKENS_UNDER_THRESHOLD",
     ],
     validate: async () => true,
     description:
-        "Dust any low-value ERC20 tokens in user's agent wallet with value under a given USD $ value threshold, which user can specify in any non-negative value format, and dusts them to ETH on Base. Select this action when user request to dust their wallet, dust tokens the requested USD threshold amount and NOT just simply display the dust tokens. Look out for phrases such as 'dust tokens under $[USD_THRESHOLD]' or 'dust my wallet' and select this action if you hear them.",
+        "Dust any dust or low-value tokens in your agent wallet under a given USD value threshold and dusts them to ETH on Base. Select this action when user request to dust their wallet and not just simply display the dust tokens, which will require confirmation and gas fee payments.",
     suppressInitialMessage: true,
     examples: [
         [
             {
                 user: "{{user1}}",
+                content: { text: "Dust my wallet for anything under $5." },
+            },
+            {
+                user: "{{user2}}",
                 content: {
-                    text: "Dust my wallet for anything under $[USD_THRESHOLD].",
+                    text: "You are trying to dust tokens under $5 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                    action: "DUST_WALLET_TO_ETH",
                 },
+            },
+            {
+                user: "{{user1}}",
+                content: { text: "Yes, proceed" },
             },
             {
                 user: "{{user2}}",
                 content: {
                     text: "Dusted 3 dust tokens into ETH.",
-                    action: "DUST_TOKENS",
+                    action: "DUST_WALLET_TO_ETH",
                 },
             },
         ],
@@ -65,8 +73,18 @@ export const dustWalletAction: Action = {
             {
                 user: "{{user2}}",
                 content: {
-                    text: "Dusted 1 token under $[USD_THRESHOLD] into ETH.",
-                    action: "DUST_TOKENS",
+                    text: "You are trying to dust tokens under $5 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: { text: "Yes, proceed" },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Dusted 1 token under $5 into ETH.",
+                    action: "DUST_WALLET_TO_ETH",
                 },
             },
         ],
@@ -74,14 +92,24 @@ export const dustWalletAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Dust my agent wallet for tokens under $[USD_THRESHOLD] into ETH.",
+                    text: "Dust my agent wallet for tokens under $10 into ETH.",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "Dusted 4 tokens under $[USD_THRESHOLD] into ETH.",
-                    action: "DUST_TOKENS",
+                    text: "You are trying to dust tokens under $10 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: { text: "Yes, proceed" },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Dusted 4 tokens under $10 into ETH.",
+                    action: "DUST_WALLET_TO_ETH",
                 },
             },
         ],
@@ -95,8 +123,18 @@ export const dustWalletAction: Action = {
             {
                 user: "{{user2}}",
                 content: {
+                    text: "You are trying to dust tokens under $5 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: { text: "Yes, proceed" },
+            },
+            {
+                user: "{{user2}}",
+                content: {
                     text: "Swapped 2 dust tokens into ETH.",
-                    action: "DUST_TOKENS",
+                    action: "DUST_WALLET_TO_ETH",
                 },
             },
         ],
@@ -104,14 +142,24 @@ export const dustWalletAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Dust tokens under $[USD_THRESHOLD]",
+                    text: "Dust tokens under $10",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: `Dusted 4 tokens under $[USD_THRESHOLD] into ETH.`,
-                    action: "DUST_TOKENS",
+                    text: "You are trying to dust tokens under $10 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: { text: "Yes, proceed" },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Dusted 4 tokens under $10 into ETH.",
+                    action: "DUST_WALLET_TO_ETH",
                 },
             },
         ],
@@ -119,140 +167,18 @@ export const dustWalletAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Dust tokens under $[USD_THRESHOLD]",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "You are trying to dust tokens under $[USD_THRESHOLD] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_TOKENS",
-                },
-            },
-            {
-                user: "{{user1}}",
-                content: { text: "No." },
-            },
-        ],
-        [
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Preview dusting all tokens under $[USD_THRESHOLD_1]",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "Here are the tokens under $[USD_THRESHOLD_1] in your wallet: 0x123... (1000 tokens worth $4.99)",
-                    action: "PREVIEW_DUSTING_MY_WALLET",
-                },
-            },
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Great! can you dust them all?",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "You are trying to dust tokens under $[USD_THRESHOLD_1] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_TOKENS",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: `Dusted 1 tokens under $[USD_THRESHOLD_1] into ETH.`,
-                    action: "DUST_TOKENS",
-                },
-            },
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Yes, proceed",
-                },
-            },
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Thanks, now can you show all dust tokens under $[USD_THRESHOLD_2]",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "Here are the tokens under $[USD_THRESHOLD_2] in your wallet: 0x123... (1000 tokens worth $4.99)",
-                    action: "PREVIEW_DUSTING_MY_WALLET",
-                },
-            },
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "dust them all pls",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "You are trying to dust tokens under $[USD_THRESHOLD_2] from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_TOKENS",
-                },
-            },
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Yes, proceed",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: `Dusted 3 tokens under $[USD_THRESHOLD_2] into ETH.`,
-                    action: "DUST_TOKENS",
-                },
-            },
-        ],
-        [
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Preview dusting my wallet",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
-                    action: "PREVIEW_DUSTING_MY_WALLET",
-                },
-            },
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Great! can you dust them all?",
+                    text: "Dust tokens under $5",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
                     text: "You are trying to dust tokens under $5 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
-                    action: "DUST_TOKENS",
                 },
             },
             {
                 user: "{{user1}}",
-                content: {
-                    text: "Yes, proceed",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "Dusted 1 token under $5 into ETH.",
-                    action: "DUST_TOKENS",
-                },
+                content: { text: "No.", action: "DUST_WALLET_TO_ETH" },
             },
         ],
     ],
