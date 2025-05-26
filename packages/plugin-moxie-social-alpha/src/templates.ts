@@ -30,7 +30,6 @@ Previous conversations:
 
 `;
 
-
 const footerPrompt = `
 
 Try to answer the user's question based on the context provided:
@@ -42,9 +41,10 @@ Generate the response in markdown format.
 // Tweet Summary prompt template ------------------------------------------------------------
 
 export const getTweetSummaryPrompt = (displayFreeQueriesHeader: boolean) => {
-    return headerPrompt +
-    (displayFreeQueriesHeader ? commonPrompt : '') +
-    `
+    return (
+        headerPrompt +
+        (displayFreeQueriesHeader ? commonPrompt : "") +
+        `
 - Current Time: {{currentDate}}
 
 If the question is about summarizing recent Twitter (X) activity, follow these instructions:
@@ -80,16 +80,20 @@ If the question is about summarizing recent Twitter (X) activity, follow these i
 - If no relevant posts are found, **provide a user-friendly response** instead of an error message.
 - Focus on the tweets from the last 24 hours, unless a **timeframe** is specified.
 - If the user requests summary details for users in the ineligibleMoxieUsers list, do not include those users in the response.
-`
-+ footerPrompt;
+` +
+        footerPrompt
+    );
 };
 
 // Farcaster Summary prompt template ------------------------------------------------------------
 
-export const getFarcasterSummaryPrompt = (displayFreeQueriesHeader: boolean) => {
-    return headerPrompt +
-    (displayFreeQueriesHeader ? commonPrompt : '') +
-    `
+export const getFarcasterSummaryPrompt = (
+    displayFreeQueriesHeader: boolean
+) => {
+    return (
+        headerPrompt +
+        (displayFreeQueriesHeader ? commonPrompt : "") +
+        `
 - Current Time: {{currentDate}}
 
 If the question is about summarizing recent posts (also known as casts) on **Farcaster Web3 social media**, follow these instructions:
@@ -127,16 +131,18 @@ If the question is about summarizing recent posts (also known as casts) on **Far
     - If no relevant posts are found, **provide a user-friendly response** instead of an error message.
     - Focus on the tweets from the last 24 hours, unless a **timeframe** is specified.
     - If the user requests summary details for users in the ineligibleMoxieUsers list, do not include those users in the response
-`
-+ footerPrompt;
+` +
+        footerPrompt
+    );
 };
 
 // Social Summary prompt template ------------------------------------------------------------
 
 export const getSocialSummaryPrompt = (displayFreeQueriesHeader: boolean) => {
-    return headerPrompt +
-    (displayFreeQueriesHeader ? commonPrompt : '') +
-    `
+    return (
+        headerPrompt +
+        (displayFreeQueriesHeader ? commonPrompt : "") +
+        `
 - Current Time: {{currentDate}}
 
 If the question is about summarizing recent social media activity by users the user follows, follow these instructions:
@@ -187,17 +193,20 @@ If the question is about summarizing recent social media activity by users the u
 - **Ensure Farcaster usernames (@handles)[https://warpcast.com/username] are always hyperlinked.**
 - Highlight posts that have many replies, indicating active debates and discussions.
 
-`
-+ footerPrompt;
-}
+` +
+        footerPrompt
+    );
+};
 
 // Swap Summary prompt template ------------------------------------------------------------
 
-
-export const getCreatorCoinSummaryPrompt = (displayFreeQueriesHeader: boolean) => {
-    return headerPrompt +
-    (displayFreeQueriesHeader ? commonPrompt : '') +
-    `
+export const getCreatorCoinSummaryPrompt = (
+    displayFreeQueriesHeader: boolean
+) => {
+    return (
+        headerPrompt +
+        (displayFreeQueriesHeader ? commonPrompt : "") +
+        `
 - Current Time: {{currentDate}}
 
 If the question is about summarizing recent creator coin/token purchase activity by users the user follows, follow these instructions:
@@ -241,14 +250,18 @@ If the question is about summarizing recent creator coin/token purchase activity
 - If the user asks for Trending Tokens or token swaps from specific users, always start with: Here are the trending tokens or swaps from these users (cite them by name).
 - At the end of each response, ask the user if you can help the buy any of the tokens
 
-`
-+ footerPrompt;
-}
+` +
+        footerPrompt
+    );
+};
 
-export const getNonCreatorCoinSummaryPrompt = (displayFreeQueriesHeader: boolean) => {
-    return headerPrompt +
-    (displayFreeQueriesHeader ? commonPrompt : '') +
-    `
+export const getNonCreatorCoinSummaryPrompt = (
+    displayFreeQueriesHeader: boolean
+) => {
+    return (
+        headerPrompt +
+        (displayFreeQueriesHeader ? commonPrompt : "") +
+        `
 - Current Time: {{currentDate}}
 
 If the question is about summarizing recent token purchases (ERC20) activity by users the user follows, follow these instructions:
@@ -268,7 +281,7 @@ If the question is about summarizing recent token purchases (ERC20) activity by 
 
 **Data Presentation**
 - For each token in the summary, always include:
-    - **Token name first & symbol (case-sensitive, prefixed with $)**
+    - **Token name first & symbol (case-sensitive, formatted with their associated token address in the following format: $[tokenSymbol|tokenAddress], e.g. $[WETH|0x4200000000000000000000000000000000000006])**
     - **Full token_address in the format: token_address**
     - **Unique holders count**
     - **Fully diluted market cap**
@@ -292,9 +305,11 @@ If the question is about summarizing recent token purchases (ERC20) activity by 
 **Final Notes**
 - If the user asks for Trending Tokens overall, at the top of each response, always start with: This is analysis is based on hundred of thousands of Base users' wallets indexed by Senpi. Tokens are ranked based on Net Buy Volume based on the timeframe in the question (if there is no timeframe, default is 24 hours)
 - If the user asks for Trending Tokens or token swaps from specific users, always start with: Here are the trending tokens or swaps from these users (cite them by name).
-- At the end of each response, ask the user if you can help the buy any of the tokens, or check any other timeframe.`
-+ footerPrompt;
-}
+- If a token is mentioned, mention the tokens by symbol and their associated token address using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
+- At the end of each response, ask the user if you can help the buy any of the tokens, or check any other timeframe.` +
+        footerPrompt
+    );
+};
 
 // Current User Context prompt template ------------------------------------------------------------
 
@@ -530,7 +545,6 @@ Output:
 `;
 
 // Swap Summary Input Context Extraction prompt template ------------------------------------------------------------
-
 
 export const socialSummaryInputContextExtraction = `Please analyze the message below to extract essential details about the social summary request: {{message}}
 

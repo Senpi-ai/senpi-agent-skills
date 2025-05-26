@@ -1,6 +1,7 @@
 import { elizaLogger } from "@moxie-protocol/core";
 import {
     getTokenDetails,
+    formatTokenMention,
     MoxieHex,
     MoxieWalletClient,
     MoxieWalletSendTransactionInputType,
@@ -73,7 +74,7 @@ export async function swap(
     const buyTokenSymbol = "ETH";
     const buyTokenAddress = ETH_ADDRESS;
     await callback?.({
-        text: `\n# Dusting $${sellTokenSymbol} to $${buyTokenSymbol}\n`,
+        text: `\n# Dusting ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} to ${formatTokenMention(buyTokenSymbol, buyTokenAddress)}\n`,
     });
     elizaLogger.debug(
         traceId,
@@ -98,7 +99,7 @@ export async function swap(
 
         if (tokenBalance === BigInt(0)) {
             await callback?.({
-                text: `\nNo ${sellTokenSymbol} found in your wallet.`,
+                text: `\nNo ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} found in your wallet.`,
             });
             return tokenBalance;
         }
@@ -190,7 +191,7 @@ export async function swap(
                 error.message.includes("BUY_TOKEN_NOT_AUTHORIZED_FOR_TRADE"))
         ) {
             await callback?.({
-                text: `\nThe buy token: ${buyTokenSymbol} is not supported yet. Please try with a different token.`,
+                text: `\nThe buy token: ${formatTokenMention(buyTokenSymbol, buyTokenAddress)} is not supported yet. Please try with a different token.`,
             });
         } else {
             if (!error.message?.includes("Insufficient balance")) {
@@ -294,7 +295,13 @@ export async function swap(
     }
 
     await callback?.(
-        swapInProgressTemplate(sellTokenSymbol, buyTokenSymbol, tx.hash)
+        swapInProgressTemplate(
+            sellTokenSymbol,
+            sellTokenAddress,
+            buyTokenSymbol,
+            buyTokenAddress,
+            tx.hash
+        )
     );
 
     // wait for tx to be mined
@@ -343,7 +350,9 @@ export async function swap(
         await callback?.(
             swapCompletedTemplate(
                 sellTokenSymbol,
+                sellTokenAddress,
                 buyTokenSymbol,
+                buyTokenAddress,
                 buyAmountInWEI,
                 buyTokenDecimals
             )

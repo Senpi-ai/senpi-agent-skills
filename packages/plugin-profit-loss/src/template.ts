@@ -52,14 +52,11 @@ Your objective is to identify the type of the request and extract important info
 1. User/Wallet/User&Token or Group queries
    - TYPE: "wallet" 
    - VALUE: "0x....."
-
    - TYPE: "ens"
    - VALUE: "chetan.eth" 
-
    - TYPE: "moxieUserId"
    - VALUE: "M[number_string]"
      Can also contain token address to specifically show PnL for the user & that token.
-
    - TYPE: "group"
    - VALUE: "[group_id]"
      Extract only the UUID for group queries.
@@ -111,3 +108,4 @@ General rules:
 - Agent can also be called senpi.
 - Focus on the latest message to extract information.
 `;
+

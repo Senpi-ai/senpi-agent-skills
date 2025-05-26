@@ -1,3 +1,4 @@
+import { formatTokenMention } from "@moxie-protocol/moxie-agent-lib";
 
 export const INVALID_TRANSACTION_STRUCTURE = (reason: string) => {
     return {
@@ -5,10 +6,10 @@ export const INVALID_TRANSACTION_STRUCTURE = (reason: string) => {
         content: {
             error: "INVALID_CONTENT",
             details: reason,
-            action: "TOKEN_TRANSFER"
-        }
-    }
-}
+            action: "TOKEN_TRANSFER",
+        },
+    };
+};
 
 export const APPLICATION_ERROR = (error: string) => {
     return {
@@ -16,56 +17,67 @@ export const APPLICATION_ERROR = (error: string) => {
         content: {
             error: "APPLICATION_ERROR",
             details: error,
-            action: "TOKEN_TRANSFER"
-        }
-    }
-}
+            action: "TOKEN_TRANSFER",
+        },
+    };
+};
 
 export const CREATOR_NOT_FOUND = (creatorId: string) => {
     return {
         text: `\nUnfortunately, the user you are querying has not launched a creator coin yet. Creator coins are required to analyze user data using the Senpi AI Agent. Please try again`,
-    }
-}
+    };
+};
 
-export const INSUFFICIENT_BALANCE = (tokenSymbol: string, currentBalance: string, requiredBalance: string) => {
+export const INSUFFICIENT_BALANCE = (
+    tokenSymbol: string,
+    tokenAddress: string,
+    currentBalance: string,
+    requiredBalance: string
+) => {
     return {
-        text: `\nInsufficient balance in your agent wallet to complete this transaction. \nCurrent balance: ${currentBalance} ${tokenSymbol}\nRequired balance: ${requiredBalance} ${tokenSymbol}. Please add more funds to your agent wallet and try again.`,
-    }
-}
+        text: `\nInsufficient balance in your agent wallet to complete this transaction. \nCurrent balance: ${currentBalance} ${formatTokenMention(tokenSymbol, tokenAddress)}\nRequired balance: ${requiredBalance} ${formatTokenMention(tokenSymbol, tokenAddress)}. Please add more funds to your agent wallet and try again.`,
+    };
+};
 
-export const TRANSACTION_SUCCESSFUL = (txnHash: string, transferAmount: string, token: string, recipient: string) => {
+export const TRANSACTION_SUCCESSFUL = (
+    txnHash: string,
+    transferAmount: string,
+    tokenSymbol: string,
+    tokenAddress: string,
+    recipient: string
+) => {
     return {
-        text: `\nTransaction Complete! Successfully sent ${transferAmount} ${token} to ${recipient}.\nView on [BaseScan](https://basescan.org/tx/${txnHash})`,
+        text: `\nTransaction Complete! Successfully sent ${transferAmount} ${formatTokenMention(tokenSymbol, tokenAddress)} to ${recipient}.\nView on [BaseScan](https://basescan.org/tx/${txnHash})`,
         content: {
-            action: "TOKEN_TRANSFERS"
-        }
-    }
-}
+            action: "TOKEN_TRANSFERS",
+        },
+    };
+};
 
 export const TRANSACTION_FAILED = (txnHash: string, error: string) => {
     return {
         text: `\nTransaction verification failed. Please try again.`,
         content: {
-            action: "TOKEN_TRANSFERS"
-        }
-    }
-}
+            action: "TOKEN_TRANSFERS",
+        },
+    };
+};
 export const TRANSACTION_VERIFICATION_TIMEOUT = (txnHash: string) => {
     return {
         text: `\nTransaction verification timed out. Please check [BaseScan](https://basescan.org/tx/${txnHash}) to verify the status before retrying.`,
         content: {
-            action: "TOKEN_TRANSFERS"
-        }
-    }
-}
+            action: "TOKEN_TRANSFERS",
+        },
+    };
+};
 
 export const TRANSACTION_SUBMISSION_FAILED = (reason?: string) => {
     return {
-        text: reason 
+        text: reason
             ? `\nTransaction submission failed. Reason: ${reason}. Please try again.`
             : `\nTransaction submission failed. Please try again.`,
         content: {
-            action: "TOKEN_TRANSFERS"
-        }
-    }
-}
+            action: "TOKEN_TRANSFERS",
+        },
+    };
+};
