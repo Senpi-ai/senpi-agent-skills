@@ -466,6 +466,8 @@
             "Copy Trade a group",
             "Buy when they buy + Sell when they sell",
             "Buy when they buy + Sell when price achieved",
+            "Buy when they buy, but only if marketcap is within specific range",
+            "Buy when they buy, buy only if token was created within specific range",
             "Sophisticated combinations",
             "You can view all your open Auto-Trade rules in the Autonomous Trades section of the dashboard",
             "The Orders page now also includes a tab for executed Auto-Trades",
@@ -473,20 +475,32 @@
         ],
         "starterQuestions": [
             {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 30 minutes of each other, buy me $100 of it",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 30 minutes of each other, buy me $100 of it"
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, buy me $100 of it",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, buy me $100 of it"
             },
             {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit"
+                "label": "If any 2 people in #copytrade buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit"
             },
             {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it when any 2 of them sell 50%",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it when any 2 of them sell 50%"
+                "label": "If any 2 people in #copytrade buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%"
             },
             {
-                "label": "If any 2 people in #copytrade buy >$500 of a token in 10 minutes of each other, and it’s <$1M marketcap, buy me $100 of it, and then sell when they sell, or for 30% profit",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token in 10 minutes of each other, and it’s <$1M marketcap, buy me $100 of it, and then sell when they sell, or for 30% profit"
+                "label": "If any 2 people in #copytrade buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%"
+            },
+            {
+                "label": "If any 3 people in #copytrade buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%",
+                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%"
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%"
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell"
             }
         ],
         "mediaUrls": [
