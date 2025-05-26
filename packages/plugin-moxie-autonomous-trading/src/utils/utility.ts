@@ -211,7 +211,7 @@ const errorMessages: Record<string, string> = {
     AERR045: "Number of users for sell condition is provided bigger than the actual users in the rule. Please provide lower number.",
     AERR046: "Number of users for sell condition is provided bigger than actual users in the group. Please provide lower number.",
     AERR050: "At least one user must be selected to copy trades from.",
-    AERR051: "Please check if valid Senpi user is tagged. Each Senpi user id starts with the letter 'M'",
+    AERR051: "Please check if valid Senpi user is tagged e.g. @[betashop.eth|M4].",
     AERR052: "Minimum token age and maximum token age must be non-negative numbers",
     AERR053: "Minimum market cap and maximum market cap must be non-negative numbers",
     AERR054: "Minimum token age must be less than maximum token age",
