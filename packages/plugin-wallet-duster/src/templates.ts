@@ -1,30 +1,40 @@
 import { ethers } from "ethers";
 
 export const dustRequestTemplate = `
-Based on user's recent messages with the agent, provide the following details to dust tokens in your wallet:
-- **threshold** (Number): The USD threshold for a token to be considered dust tokens.
-- **isConfirmed** (Boolean): Whether the user has given any consent/confirmation to the dusting based on the user's recent messages.
-Provide the values in the following JSON format:
+Based on the user's recent messages with the agent, extract the following details related to dusting tokens in the wallet:
+
+- **threshold** (Number): The USD value below which tokens are considered dust.
+- **isConfirmed** (Boolean): Whether the user has explicitly confirmed the dusting action.
+
+Provide the result in the following JSON format:
+
 \`\`\`json
 {
-    "threshold": number?,
-    "isConfirmed": boolean?
+  "threshold": number?,
+  "isConfirmed": boolean?
 }
 \`\`\`
-"?" indicates that the value is optional.
-## General Rules
-## Value Extraction Rules
-- **threshold**:
-  - Extract the dollar value if user says things like "dust tokens under $X".
-  - If not specified, set to null.
-- **isConfirmed**:
-  - If the most recent action is "PREVIEW_DUST_TOKENS":
-    - If user confirms afterward ("Yes", "Proceed", "Go ahead") → true
-    - If user rejects ("No", "Cancel") → false
-    - If no follow-up confirmation/rejection yet → null
-  - If the most recent action is "DUST_WALLET_TO_ETH" without any previous preview request → true
-  - If a new dusting request is issued (e.g., new threshold, or repeat command), reset both values to null.
-Note: Always ensure that confirmation follows a preview. If a user previews but hasn’t yet responded, **isConfirmed** must stay null – even if the request looks positive.
+"?" indicates that the value is optional if it cannot be determined confidently.
+
+# Extraction Logic
+## threshold
+- If the user says things like "dust tokens under $X" or "remove all tokens below $X", extract X as the threshold.
+- If no threshold is mentioned, assign \`null\`.
+## isConfirmed
+1. Direct Dusting Requests (no preview involved)
+- If the user says “Dust tokens under $X” or “Dust my tokens” without a prior PREVIEW_DUST_TOKENS action, set \`isConfirmed: true\`
+2. Preview Flow
+- If the last action is \`PREVIEW_DUST_TOKENS\`, only set \`isConfirmed: true\` if the user explicitly confirms afterward, such as:
+    - "Yes", "Proceed", "Confirm", "Go ahead", "Dust them all"
+- If the user says "No", "Cancel", or similar, set \`isConfirmed: false\`
+- If no clear confirmation or rejection yet, set \`isConfirmed: null\`
+3. Dusting Without Preview
+- If the system has performed DUST_WALLET_TO_ETH without any preview beforehand, set \`isConfirmed: true\`
+4. New Requests Overriding Previous Flow
+- If the user starts a new dusting request (e.g., different threshold or a new “preview” command) after already confirming a previous one, then reset both threshold and isConfirmed to null
+
+**Important Note**: \`isConfirmed\` should never be true immediately after a preview unless the user explicitly confirms. Intent to proceed must follow after the preview.
+
 Here are some examples of user's conversation with the agent and the expected response:
 # Example 1
 **Message 1**
@@ -141,8 +151,8 @@ Here are some examples of user's conversation with the agent and the expected re
     "isConfirmed": null
 }
 \`\`\`
-# Example 4 (Combination with preview action and extracting from historical messages)
-**Message 4**
+# Example 5 (Combination with preview action and extracting from historical messages)
+**Message 5**
 \`\`\`
 [
     {
@@ -179,15 +189,15 @@ Here are some examples of user's conversation with the agent and the expected re
     }
 ]
 \`\`\`
-**Response 4**
+**Response 5**
 \`\`\`json
 {
     "threshold": 15,
     "isConfirmed": true
 }
 \`\`\`
-# Example 5 (Combination with preview action and extracting from historical messages + new request that invalidates the previous request)
-**Message 5**
+# Example 6 (Combination with preview action and extracting from historical messages + new request that invalidates the previous request)
+**Message 6**
 \`\`\`
 [
     {
@@ -250,7 +260,7 @@ Here are some examples of user's conversation with the agent and the expected re
     },
 ]
 \`\`\`
-**Response 5**
+**Response 6**
 \`\`\`json
 {
     "threshold": 1,
