@@ -18,11 +18,11 @@ Provide the values in the following JSON format:
   - Extract the dollar value if user says things like "dust tokens under $X".
   - If not specified, set to null.
 - **isConfirmed**:
-  - If the most recent action is "PREVIEW_DUST_WALLET_TO_ETH":
+  - If the most recent action is "PREVIEW_DUST_TOKENS":
     - If user confirms afterward ("Yes", "Proceed", "Go ahead") → true
     - If user rejects ("No", "Cancel") → false
     - If no follow-up confirmation/rejection yet → null
-  - If the most recent action is "DUST_WALLET_TO_ETH" without preview → true
+  - If the most recent action is "DUST_WALLET_TO_ETH" without any previous preview request → true
   - If a new dusting request is issued (e.g., new threshold, or repeat command), reset both values to null.
 Note: Always ensure that confirmation follows a preview. If a user previews but hasn’t yet responded, **isConfirmed** must stay null – even if the request looks positive.
 Here are some examples of user's conversation with the agent and the expected response:
@@ -78,7 +78,7 @@ Here are some examples of user's conversation with the agent and the expected re
         "user": "{{user2}}",
         "content": {
             "text": "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
-            "action": "PREVIEW_DUST_WALLET_TO_ETH"
+            "action": "PREVIEW_DUST_TOKENS"
         }
     },
     {
@@ -123,7 +123,7 @@ Here are some examples of user's conversation with the agent and the expected re
         "user": "{{user2}}",
         "content": {
             "text": "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
-            "action": "PREVIEW_DUST_WALLET_TO_ETH"
+            "action": "PREVIEW_DUST_TOKENS"
         }
     },
     {
@@ -155,7 +155,7 @@ Here are some examples of user's conversation with the agent and the expected re
         "user": "{{user2}}",
         "content": {
             "text": "Here are the tokens under $15 in your wallet: 0x123... (1000 tokens worth $4.99)",
-            "action": "PREVIEW_DUST_WALLET_TO_ETH"
+            "action": "PREVIEW_DUST_TOKENS"
         }
     },
     {
@@ -200,7 +200,7 @@ Here are some examples of user's conversation with the agent and the expected re
         "user": "{{user2}}",
         "content": {
             "text": "Here are the tokens under $15 in your wallet: 0x123... (1000 tokens worth $4.99)",
-            "action": "PREVIEW_DUST_WALLET_TO_ETH"
+            "action": "PREVIEW_DUST_TOKENS"
         }
     },
     {
@@ -232,7 +232,7 @@ Here are some examples of user's conversation with the agent and the expected re
         "user": "{{user2}}",
         "content": {
             "text": "Here are the tokens under $1 in your wallet: 0x123... (1000 tokens worth $4.99)",
-            "action": "PREVIEW_DUST_WALLET_TO_ETH"
+            "action": "PREVIEW_DUST_TOKENS"
         }
     },
     {
