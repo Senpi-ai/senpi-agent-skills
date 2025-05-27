@@ -31,7 +31,7 @@ export default {
     ],
     suppressInitialMessage: true,
     description:
-        "Creates/Writes and posts optimized social media content (cast/tweet) on Farcaster/X based on the previous conversation. Always select this Action if the last user message is 'Cast it!'",
+        "Writes and posts social media content (e.g., Farcaster cast or tweet) based on the **previous message or response**. Use this action **when the user asks to share, summarize, or turn something into a cast/post**. Always select this Action if the last user message is 'Cast it!'",
     validate: async (runtime: IAgentRuntime, message: Memory) => {
         elizaLogger.log("[PostContent] Validating request");
         return true;
