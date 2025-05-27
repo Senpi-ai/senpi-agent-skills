@@ -33,12 +33,12 @@ export const dustWalletAction: Action = {
         "SELL_ALL_TOKENS_UNDER",
         "DUST_TOKENS",
         "DUST_WALLET",
-        "DUST_TOKENS_UNDER",
-        "DUST_TOKENS_BELOW",
+        "DUST_TOKENS_UNDER_USD",
+        "DUST_TOKENS_BELOW_USD",
     ],
     validate: async () => true,
     description:
-        "Dust any low-value ERC20 tokens in the user's agent wallet under a given USD value threshold and dusts them to ETH on Base. Select this action when user request to dust their wallet and NOT just simply display/preview the dust tokens, e.g. 'Dust tokens under $5'.",
+        "Dust any low-value ERC20 tokens in the user's agent wallet under a given USD $ value threshold and dusts them to ETH on Base. Select this action when user request to dust their wallet and NOT just simply display/preview the dust tokens, e.g. 'Dust tokens under $5'.",
     suppressInitialMessage: true,
     examples: [
         [
@@ -101,13 +101,13 @@ export const dustWalletAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Dust tokens under $10",
+                    text: "Dust tokens under $<USD_THRESHOLD>",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "Dusted 4 tokens under $10 into ETH.",
+                    text: "Dusted 4 tokens under $<USD_THRESHOLD> into ETH.",
                     action: "DUST_WALLET_TO_ETH",
                 },
             },
