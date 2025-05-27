@@ -341,6 +341,25 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
             });
     }
 
+    async getLimitOrderDetailsMultiple(orderIds: string[]): Promise<{ wallet_address: string, order_id: string, status: string}[]> {
+        return this.pgAdapter
+            .query(`SELECT wallet_address, order_id, status FROM limit_orders WHERE order_id = ANY($1)`, [orderIds])
+            .then((result) => {
+                return result.rows;
+            });
+    }
+
+    async updateLimitOrders(orderIds: string[], status: string): Promise<number> {
+        return this.pgAdapter
+            .query(`UPDATE limit_orders SET status = $1, updated_at = now() WHERE order_id = ANY($2)`, [status, orderIds])
+            .then((result) => {
+                return result.rowCount || 0 ;
+            }).catch((error) => {
+                console.error("Error while updating limit order:", error);
+                throw error;
+            });
+    }
+
     async getCampaignTokenDetails(): Promise<CampaignTokenDetails[]> {
         return this.pgAdapter
             .query(

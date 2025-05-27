@@ -378,16 +378,16 @@
         ],
         "starterQuestions": [
             {
-                "label": "Buy me $25 worth of $moxie if the price dips by 5%",
-                "value": "Buy me $25 worth of $[MOXIE|0x8c9037d1ef5c6d1f6816278c7aaf5491d24cd527] if the price dips by 5%"
+                "label": "Buy me $25 worth of $VVV if the price dips by 5%",
+                "value": "Buy me $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 5%"
             },
             {
-                "label": "Buy $25 worth of $moxie if the price increases by 10%",
-                "value": "Buy $25 worth of $[MOXIE|0x8c9037d1ef5c6d1f6816278c7aaf5491d24cd527] if the price increases by 10%"
+                "label": "Buy $25 worth of $VVV if the price dips by 10%",
+                "value": "Buy $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
             },
             {
-                "label": "Sell 10% of my $BNKR if the price increases by 10%",
-                "value": "Sell 10% of my $[BNKR|0x22af33fe49fd1fa80c7149773dde5890d3c76f3b] if the price increases by 10%"
+                "label": "Sell 10% of my $BNKR if the price dips by 10%",
+                "value": "Sell 10% of my $[BNKR|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
             }
         ],
         "mediaUrls": [
@@ -466,6 +466,8 @@
             "Copy Trade a group",
             "Buy when they buy + Sell when they sell",
             "Buy when they buy + Sell when price achieved",
+            "Buy when they buy, but only if marketcap is within specific range",
+            "Buy when they buy, buy only if token was created within specific range",
             "Sophisticated combinations",
             "You can view all your open Auto-Trade rules in the Autonomous Trades section of the dashboard",
             "The Orders page now also includes a tab for executed Auto-Trades",
@@ -473,20 +475,32 @@
         ],
         "starterQuestions": [
             {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 30 minutes of each other, buy me $100 of it",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 30 minutes of each other, buy me $100 of it"
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, buy me $100 of it",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, buy me $100 of it"
             },
             {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit"
+                "label": "If any 2 people in #copytrade buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit"
             },
             {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it when any 2 of them sell 50%",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it when any 2 of them sell 50%"
+                "label": "If any 2 people in #copytrade buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%"
             },
             {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 30 minutes of each other, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%"
+                "label": "If any 2 people in #copytrade buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%"
+            },
+            {
+                "label": "If any 3 people in #copytrade buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%",
+                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%"
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%"
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell"
             }
         ],
         "mediaUrls": [
@@ -576,7 +590,7 @@
     {
         "pluginId": "3d5e16f1-40e0-5df0-89c0-b2216bfa8850",
         "name": "@moxie-protocol/plugin-moxie-groups",
-        "displayName": "Senpi Groups",
+        "displayName": "Groups",
         "version": "0.1.8+build.1",
         "author": "Senpi",
         "description": "Easily add any Base users to a group, which can then be used for copy trading and other features.",
@@ -660,7 +674,9 @@
         "capabilities": [
             "Total PnL of any user or wallet",
             "PnL of top traders of any token",
-            "PnL of any user or wallet on a specific token"
+            "PnL of any user or wallet on a specific token",
+            "Filter PnL by time range: 1 day, 7 days, 30 days, or lifetime",
+            "PnL of your groups"
         ],
         "starterQuestions": [
             {
@@ -668,25 +684,33 @@
                 "value": "What is my PNL?"
             },
             {
-                "label": "What is PNL of my Senpi agent?",
-                "value": "What is PNL of my Senpi agent?"
+                "label": "What is 7-day PNL of my Senpi agent?",
+                "value": "What is 7-day PNL of my Senpi agent?"
             },
             {
                 "label": "Top PNL of $CLANKER",
                 "value": "Top PNL of $[CLANKER|0x1bc0c42215582d5A085795f4baDbaC3ff36d1Bcb]?"
             },
             {
-                "label": "What is PNL of @jessepollak?",
-                "value": "What is PNL of @[jessepollak|M1245]?"
+                "label": "What is PNL of @jessepollak last 30 days",
+                "value": "What is PNL of @[jessepollak|M1245] last 30 days?"
             },
             {
                 "label": "What is my PNL on $VVV?",
                 "value": "What is my PNL on $[VVV|0xacfE6019Ed1A7Dc6f7B508C02d1b04ec88cC21bf]?"
             },
             {
-                "label": "What is @kyle PNL on $CLANKER",
-                "value": "What is @[kyle|M25428] PNL on $[CLANKER|0x1bc0c42215582d5A085795f4baDbaC3ff36d1Bcb]?"
-            }
+                "label": "Top 1-day PNL of $WHIM traders",
+                "value": "Top 1-day PNL of $[WHIM|0x39a1cce09d7354ac2db86c6b02924360a10e4793] traders"
+            },
+            {
+                "label": "What is PnL for #Copytrade?",
+                "value": "What is PnL for #[copytrade|7b37936c-d06c-4b54-8179-3190ecc1f0b3]?"
+            },
+            {
+                "label": "Show 7 day PNL for #copytrade group",
+                "value": "Show 7 day PNL for #[copytrade|7b37936c-d06c-4b54-8179-3190ecc1f0b3] group"
+            }      
         ],
         "mediaUrls": [
             "https://raw.githubusercontent.com/Senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-moxie-pnl-tracker/images/logo.svg"

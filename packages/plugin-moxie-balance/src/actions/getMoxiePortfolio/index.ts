@@ -257,8 +257,20 @@ export default {
             elizaLogger.info("[Portfolio-TokenGate] isSelfPortolioRequested", isSelfPortolioRequested, "requestedMoxieUserIds", requestedMoxieUserIds);
 
             if (!isSelfPortolioRequested && requestedMoxieUserIds?.length === 1) {
-                moxieUserInfo = await moxieUserService.getUserByMoxieId(requestedMoxieUserIds[0])
+                try {
+                    const userInfo = await moxieUserService.getUserByMoxieId(requestedMoxieUserIds[0])
+                    elizaLogger.info("[Portfolio] userInfo for requestedMoxieUser", userInfo);
+                    moxieUserInfo = userInfo
+                } catch (error) {
+                    elizaLogger.error("[Portfolio] Error fetching user info for requestedMoxieUser", error, error?.stack);
+                    await callback({
+                        text: "There was an error processing your request. Please try again later.",
+                        action: "PORTFOLIO_ERROR",
+                    });
+                    return false;
+                }
             }
+
             
             // Get wallet addresses for single user
             const walletAddresses = await getWalletAddresses(moxieUserInfo);

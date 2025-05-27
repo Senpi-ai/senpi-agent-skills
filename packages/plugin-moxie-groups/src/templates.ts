@@ -1,11 +1,10 @@
 export const manageGroupsTemplate = `
-You are an AI assistant specialized in managing group memberships within a messaging or collaboration platform. Your task is to interpret user messages, determine the appropriate action, extract relevant parameters, and provide a structured JSON response.
-
-First, review the recent conversation history for context:
-
-<recent_messages>
+Here's the conversation history for context:
+<conversation_history>
 {{recentMessages}}
-</recent_messages>
+</conversation_history>
+
+You are an AI assistant specialized in managing group memberships within a messaging or collaboration platform. Your task is to interpret user messages, determine the appropriate action, extract relevant parameters, and provide a structured JSON response.
 
 Instructions:
 
@@ -20,8 +19,7 @@ Instructions:
    - GROUP_SETUP_INSTRUCTIONS
 
 2. Parameter Extraction:
-   - User mentions: Extract "senpiUserId" from @[username|senpiUserId] or @[username|walletAddress]
-     Note: walletAddress should be a valid Ethereum address
+   - User mentions: Extract "senpiUserId" from @[username|senpiUserId]. Here, senpiUserId can be an ID starting with 'M' or an Ethereum address starting with '0x'.
    - Group references: Extract both "groupName" and "groupId" from #[groupName|groupId]
 
 3. Action Requirements:
@@ -35,61 +33,47 @@ Instructions:
    - GROUP_SETUP_INSTRUCTIONS: No required parameters
 
 4. Analysis Process:
-   Before providing your final response, wrap your analysis in <thought_process> tags. In your analysis:
+   Before providing your final response, wrap your analysis in <analysis_process> tags. Include the following steps:
 
-   a. List all action types and their required parameters:
-      ACTION_TYPE: [required_param1, required_param2, ...]
-
-   b. Extract and list all parameters from the user message:
-      Parameter: value
-      Include parameters from user mentions (including wallet addresses) and group references.
-
-   c. Evaluate each action type:
-      - Check if all required parameters are present
-      - Note any missing parameters
-      - Determine if the action is possible based on available parameters
-
-   d. Review the conversation history:
-      - Look for any missing context or parameters
-      - Note any relevant information found
-
-   e. Count and verify extracted user IDs:
-      - List the number of extracted user IDs (including those from wallet addresses)
-      - If the count is less than expected, review the input for any missed mentions
-      - Note any discrepancies
-
-   f. Determine the final action or error:
-      - Choose the appropriate action if all required parameters are present
-      - If multiple actions are possible, prepare for an error response
-      - If required parameters are missing, prepare for an error response
-
-   g. Summarize your final decision:
-      - State the chosen action or error
-      - Explain the reasoning behind your decision
-      - List any missing parameters if applicable
+   a. List all action types and their required parameters.
+   b. Extract and list all parameters from the user message, including user mentions and group references.
+   c. Explicitly list all user mentions and group references found in the message.
+   d. Verify Ethereum addresses for wallet-based user mentions.
+   e. Evaluate each action type, checking for required parameters and noting any missing ones.
+   f. Consider multiple possible actions and their likelihood based on the available information.
+   g. Review the conversation history for any missing context or parameters.
+   h. Extract and verify user IDs:
+      - Extract the value after the '|' character for each user mention.
+      - Handle multiple formats: @[username|senpiUserId], @[0x...wallet|fullWalletAddress], @[username.eth|fullWalletAddress]
+      - List all extracted user IDs.
+      - If the count is less than expected, review the input for any missed mentions.
+      - Note any discrepancies.
+   i. Determine the final action or prepare for an error response.
+   j. If the intent is to add members but only a group name is provided, choose CREATE_GROUP_AND_ADD_GROUP_MEMBER as the action.
+   k. Summarize your final decision, explaining the reasoning and listing any missing parameters.
 
 5. Response Format:
    After your analysis, provide the final JSON response with the following structure:
 
-\`\`\`json
-{
-   "success": boolean,
-   "actionType": string (optional),
-   "params": {
-      // GroupParams object (optional)
-   },
-   "error": {
-      // ManageGroupsError object (null if no error)
+   \`\`\`json
+   {
+     "success": boolean,
+     "actionType": string (optional),
+     "params": {
+       // GroupParams object (optional)
+     },
+     "error": {
+       // ManageGroupsError object (null if no error)
+     }
    }
-}
-\`\`\`
+   \`\`\`
 
 6. Error Handling:
    If the action cannot be determined, invalid combinations are provided, or required parameters are missing, return an error response with a list of missing fields and a prompt message.
 
 Remember to validate Ethereum addresses when extracting user IDs from wallet addresses. Ensure that all required parameters are present before proceeding with an action. If multiple actions are possible or if required parameters are missing, prepare an error response.
 
-Now, please process the user's conversation history and provide your response, starting with your analysis in <thought_process> tags, followed by the JSON response.
+Now, please process the user's conversation history and provide your response, starting with your analysis in <analysis_process> tags, followed by the JSON response with \`\`\`json and \`\`\` at the end.
 `;
 
 export const groupDetailsTemplate = `
