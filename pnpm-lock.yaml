@@ -765,7 +765,7 @@ importers:
         version: link:../moxie-agent-lib
       '@privy-io/server-auth':
         specifier: ^1.16.6
-        version: 1.22.0(bufferutil@4.0.9)(encoding@0.1.13)(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(typescript@5.6.3)(utf-8-validate@5.0.10)(viem@2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.4))
+        version: 1.22.0(bufferutil@4.0.9)(encoding@0.1.13)(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(typescript@5.6.3)(utf-8-validate@5.0.10)(viem@2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.22.4))
       axios:
         specifier: ^1.7.9
         version: 1.9.0
@@ -816,7 +816,7 @@ importers:
         version: link:../moxie-agent-lib
       '@privy-io/server-auth':
         specifier: ^1.16.6
-        version: 1.22.0(bufferutil@4.0.9)(encoding@0.1.13)(ethers@6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(typescript@5.6.3)(utf-8-validate@5.0.10)(viem@2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.22.4))
+        version: 1.22.0(bufferutil@4.0.9)(encoding@0.1.13)(ethers@6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(typescript@5.6.3)(utf-8-validate@5.0.10)(viem@2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.4))
       ethers:
         specifier: ^6.13.5
         version: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -936,6 +936,9 @@ importers:
       '@moxie-protocol/moxie-agent-lib':
         specifier: workspace:*
         version: link:../moxie-agent-lib
+      '@moxie-protocol/plugin-moxie-groups':
+        specifier: workspace:*
+        version: link:../plugin-moxie-groups
       ethers:
         specifier: ^6.0.0
         version: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -14771,7 +14774,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@privy-io/server-auth@1.22.0(bufferutil@4.0.9)(encoding@0.1.13)(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(typescript@5.6.3)(utf-8-validate@5.0.10)(viem@2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.4))':
+  '@privy-io/server-auth@1.22.0(bufferutil@4.0.9)(encoding@0.1.13)(ethers@5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(typescript@5.6.3)(utf-8-validate@5.0.10)(viem@2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.22.4))':
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
@@ -14787,29 +14790,6 @@ snapshots:
       type-fest: 3.13.1
     optionalDependencies:
       ethers: 5.8.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      viem: 2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.24.4)
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - typescript
-      - utf-8-validate
-
-  '@privy-io/server-auth@1.22.0(bufferutil@4.0.9)(encoding@0.1.13)(ethers@6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(typescript@5.6.3)(utf-8-validate@5.0.10)(viem@2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.22.4))':
-    dependencies:
-      '@noble/curves': 1.9.1
-      '@noble/hashes': 1.8.0
-      '@privy-io/public-api': 2.25.0(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)
-      '@solana/web3.js': 1.95.8(bufferutil@4.0.9)(encoding@0.1.13)(utf-8-validate@5.0.10)
-      canonicalize: 2.1.0
-      dotenv: 16.4.5
-      jose: 4.15.9
-      node-fetch-native: 1.6.6
-      redaxios: 0.5.1
-      svix: 1.65.0(encoding@0.1.13)
-      ts-case-convert: 2.1.0
-      type-fest: 3.13.1
-    optionalDependencies:
-      ethers: 6.14.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       viem: 2.21.58(bufferutil@4.0.9)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.22.4)
     transitivePeerDependencies:
       - bufferutil
