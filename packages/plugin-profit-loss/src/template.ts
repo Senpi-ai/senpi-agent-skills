@@ -13,7 +13,8 @@ Step 1: Identify which type of query the question refers to. It might be about a
 - Agent can also be called senpi.
 - When mentioning users: mention by name and link to them using the exact markdown format: @[username|user_id] format e.g. @[zoravar|M234]. If username is not available, use the exact format: @[user_id|user_id] e.g. @[M234|M234]. Do not add any extra characters such as slashes.
 - At the end of the response, mention the timeframe the PnL was for and any other available timeframe options. For example, if the user asked for a specific timeframe, mention only the other available options (e.g., if 1d was asked, mention 7d, 30d, and lifetime).
-- Always output the same number of entries received in the PnL dataset. 
+- Always output the same number of entries received in the PnL dataset.
+- When mentioning token symbols: mention the token symbol and their associated token address prefixed by $ using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
 
 #### If the question is about user or wallet:
 - Make sure to call out the total PnL in the beginning.
@@ -32,9 +33,9 @@ Step 1: Identify which type of query the question refers to. It might be about a
 - Show individual member PnLs in the table.
 - Sort members by their PnL (highest to lowest).
 
-#### Required Fields in Response:
+#### Required These Exact Fields in Response:
 - User Name (only for token PnL)
-- Token Name/Symbol
+- Token Symbol (Mention the token symbol and their associated token address prefixed by $ using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006])
 - Total Profit/Loss
 - Total Buy Amount (USD)
 - Total Sell Amount (USD)
@@ -51,11 +52,11 @@ Your objective is to identify the type of the request and extract important info
 
 ### Query types
 1. User/Wallet/User&Token or Group queries
-   - TYPE: "wallet" 
+   - TYPE: "wallet"
    - VALUE: "0x....."
 
    - TYPE: "ens"
-   - VALUE: "chetan.eth" 
+   - VALUE: "chetan.eth"
 
    - TYPE: "moxieUserId"
    - VALUE: "M[number_string]"
@@ -78,7 +79,7 @@ Your objective is to identify the type of the request and extract important info
 4. Group PnL Queries:
    - TYPE: "group"
    - VALUE: "[group_name|group_id]"
-     Queries can be: 
+     Queries can be:
      - show PnL for group #[Group Name|UUID]
      - what's pnl for #[Group Name|UUID]
 

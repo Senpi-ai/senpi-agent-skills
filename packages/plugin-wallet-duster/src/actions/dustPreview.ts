@@ -9,7 +9,11 @@ import {
     ModelClass,
     State,
 } from "@moxie-protocol/core";
-import { MoxieUser, Portfolio } from "@moxie-protocol/moxie-agent-lib";
+import {
+    MoxieUser,
+    Portfolio,
+    formatTokenMention,
+} from "@moxie-protocol/moxie-agent-lib";
 import { DustRequestSchema } from "../types";
 import { dustRequestTemplate } from "../templates";
 import { ETH_ADDRESS } from "../constants/constants";
@@ -336,7 +340,7 @@ export const previewDustAction: Action = {
 
             const lines = dustTokens.map(
                 (t) =>
-                    `| $${t.token.baseToken.symbol} | [${t.token.baseToken.address}](https://basescan.org/token/${t.token.baseToken.address}) | ${t.token.balanceUSD < 0.01 ? "< $0.01" : `$${t.token.balanceUSD.toFixed(2)}`} |`
+                    `| ${formatTokenMention(t.token.baseToken.symbol, t.token.baseToken.address)} | [${t.token.baseToken.address}](https://basescan.org/token/${t.token.baseToken.address}) | ${t.token.balanceUSD < 0.01 ? "< $0.01" : `$${t.token.balanceUSD.toFixed(2)}`} |`
             );
             const response = `You have ${dustTokens.length} dust token(s) totaling ${totalUsdValue < 0.01 ? "< $0.01" : `~ $${totalUsdValue.toFixed(2)}`}:\n| Token Symbol | Token Address | Value |\n|-------|-------|-------|\n${lines.join("\n")}${threshold > 0.01 ? `\n\nOnly tokens above $0.01 have been displayed. To display tokens below $0.01, set the threshold to $0.01 or below.` : ""}`;
 

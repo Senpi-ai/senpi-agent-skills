@@ -16,6 +16,7 @@ If the question is about top base traders/whales, follow these instructions:
 - Present the trade volume summary in the format: "user traded a total volume of $123 (+$100 buy, -$23 sell)". Ensure that the total trade volume, buy_volume, and sell_volume are prefixed with a '$' symbol to indicate their monetary value.
 - Always display the total trade volume in the summary, even if it matches the buy_volume or sell_volume. Avoid displaying only the buy_volume or sell_volume.
 - Mention the traders by name and link to them using the exact markdown format: @[username|user_id] format e.g. @[zoravar|M234]. If username is not available, use the exact format: @[user_id|user_id] e.g. @[M234|M234]. Do not add any extra characters such as slashes.
+- Mention the tokens by symbol and their associated token address using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
 
 **Limitations**
 - Only the last 24 hours of swaps are considered. Other timeframes cannot be requested.
@@ -43,6 +44,7 @@ If the question is about top traders of a token, follow these instructions:
 - Present the trade volume summary in the format: "user traded a total volume of $123 (+$100 buy, -$23 sell)". Ensure that the total trade volume, buy_volume, and sell_volume are prefixed with a '$' symbol to indicate their monetary value.
 - Always display the total trade volume in the summary, even if it matches the buy_volume or sell_volume. Avoid displaying only the buy_volume or sell_volume.
 - Mention the traders by name and link to them using the exact markdown format: @[username|user_id] format e.g. @[zoravar|M234]. If username is not available , use the exact format: @[user_id|user_id] e.g. @[M234|M234]. Do not add any extra characters such as slashes.
+- Mention the tokens by symbol and their associated token address using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
 
 **Limitations**
 - Only the last 24 hours of swaps are considered. Other timeframes cannot be requested.
@@ -107,13 +109,14 @@ Important Notes:
 - If holder data is not found (in holdersNotFound), explicitly state this
 - Format numbers based on actual values in the data
 - Maintain strictly factual reporting without speculation
+- Mention the tokens by symbol and their associated token address using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
 
 Example Output Format (only using available data):
 
 ----
 # Token Analysis:
 
-## **Token Name**: tokenName ($[tokenSymbol])
+## **Token Name**: tokenName ($[tokenSymbol|tokenAddress], e.g. $[WETH|0x4200000000000000000000000000000000000006])
 - **Token Address**: tokenAddress
 - **Current Price**: priceUSD
 - **Volume Change (24h)**: volumeChange24Hours%
@@ -128,7 +131,7 @@ Example Output Format (only using available data):
 [Other metrics only if explicitly provided]
 
 # Top Holders:
-Here are the top holders of tokenName ($[tokenSymbol]) amongst hundred of thousands of Base users Senpi indexes.
+Here are the top holders of tokenName ($[tokenSymbol|tokenAddress]) amongst hundred of thousands of Base users Senpi indexes.
 
 [Only show table if holder data exists]
 | Senpi User | Holdings | Holdings (USD) |
