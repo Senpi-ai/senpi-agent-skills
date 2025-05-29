@@ -141,9 +141,9 @@ export const PnLAction = {
             }
             
             if (tokenAddresses.length === 0 && walletAddresses.length === 0 && moxieUserIds.length === 0 && groupMembers.length === 0) {
-                elizaLogger.error(traceId, `[PnLAction] No valid criteria provided. Please provide at least one token address, wallet address, Moxie user ID, or group.`);
+                elizaLogger.error(traceId, `[PnLAction] No valid criteria provided. Please provide at least one token address, wallet address, Senpi user ID, or group.`);
                 await callback?.({
-                    text: `Please provide at least one token address, wallet address, Moxie user ID, or group.`
+                    text: `Please provide at least one token address, wallet address, Senpi user ID, or group.`
                 });
                 return true;
             }
