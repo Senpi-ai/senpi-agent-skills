@@ -18,12 +18,16 @@ import { autonomousTradingTemplate } from "../templates";
 
 export interface TokenAge {
     min?: number;
+    minAgeInSec?: number;
     max?: number;
+    maxAgeInSec?: number;
 }
 
 export interface MarketCap {
     min?: number;
+    minMarketCapInUSD?: number;
     max?: number;
+    maxMarketCapInUSD?: number;
 }
 
 export interface AutonomousTradingRuleParams {
@@ -153,12 +157,12 @@ export const autonomousTradingAction: Action = {
                 },
                 tokenMetrics: (params.tokenAge || params.marketCap) ? {
                     tokenAge: params.tokenAge ? {
-                        min: params.tokenAge?.min,
-                        max: params.tokenAge?.max
+                        min: params.tokenAge?.min ?? params.tokenAge?.minAgeInSec ?? null,
+                        max: params.tokenAge?.max ?? params.tokenAge?.maxAgeInSec ?? null
                     } : undefined,
                     marketCap: params.marketCap ? {
-                        min: params.marketCap?.min,
-                        max: params.marketCap?.max
+                        min: params.marketCap?.min ?? params.marketCap?.minMarketCapInUSD ?? null,
+                        max: params.marketCap?.max ?? params.marketCap?.maxMarketCapInUSD ?? null
                     } : undefined
                 } : undefined
             };
