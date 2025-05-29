@@ -177,7 +177,7 @@ export default {
                 .replace("{{tweets}}", JSON.stringify(tweets))
                 .replace("{{farcasterCasts}}", JSON.stringify(farcasterCasts))
                 .replace("{{currentDate}}", new Date().toISOString())
-                .replace("{{tokenSymbol}}", tokenSymbol)
+                .replace("{{tokenSymbol}}", tokenSymbol.toUpperCase())
                 .replace("{{tokenAddress}}", tokenAddress[0]);
 
             const currentContext = composeContext({
