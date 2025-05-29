@@ -1,5 +1,5 @@
 export const tokenSocialSentimentTemplateV2 = `
-Analyze sentiment on a specified cryptocurrency token from provided datasets:
+Analyze sentiment on a specified cryptocurrency $[{{tokenSymbol}}|{{tokenAddress}}] token from provided datasets:
 ## Twitter (X) Posts: {{tweets}}
 ## Farcaster Posts/Casts: {{farcasterCasts}}
 - Current Time: {{currentDate}}
