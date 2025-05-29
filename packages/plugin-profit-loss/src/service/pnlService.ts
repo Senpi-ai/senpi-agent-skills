@@ -27,10 +27,104 @@ const BLACKLISTED_TOKEN_ADDRESSES = [
   "0x04c0599ae5a44757c0af6f9ec3b93da8976c150a",
   "0x5875eee11cf8398102fdad704c9e96607675467a",
   "0x3128a0f7f0ea68e7b7c9b00afa7e41045828e858",
+  "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca"
 ];
 
 const RESULT_BASE_PNL_TABLE =
   process.env.RESULT_BASE_PNL_TABLE || "dune.senpi.result_pnl_analysis";
+
+/**
+ * Prepares a SQL query specifically for group PnL data
+ * 
+ * @param pnlResponse - Object containing query parameters
+ * @param pnlResponse.groupMembers - Array of group member objects containing groupId and memberIds
+ * @param pnlResponse.analysisType - Type of analysis to perform ('PROFIT'|'LOSS')
+ * @param pnlResponse.maxResults - Maximum number of results to return
+ * @param pnlResponse.timeFrame - Time frame for the PnL data
+ * @returns SQL query string for fetching group PnL data
+ */
+export const prepareGroupPnlQuery = (traceId: string, pnlResponse: any) => {
+  const { groupMembers, analysisType, maxResults, timeFrame } = pnlResponse;
+
+  let pnlGroupTable = RESULT_BASE_PNL_TABLE;
+  if (timeFrame === "1d") {
+    pnlGroupTable += "_1d";
+  } else if (timeFrame === "7d") {
+    pnlGroupTable += "_7d";
+  } else if (timeFrame === "30d") {
+    pnlGroupTable += "_30d";
+  } else {
+    pnlGroupTable += "_lifetime";
+  }
+
+  pnlGroupTable = pnlGroupTable + "_" + process.env.PNL_ENV;
+  elizaLogger.debug(`[prepareGroupPnlQuery] traceId: ${traceId}, Pnl table: ${pnlGroupTable}`);
+
+  const allMemberIds = groupMembers.flatMap(group => group.memberIds);
+  const memberIdsString = allMemberIds.map(id => `'${id}'`).join(",");
+
+  const blacklistedTokensString = BLACKLISTED_TOKEN_ADDRESSES.map(
+    (address) => `${address}`
+  ).join(",");
+
+  const query = `
+     WITH ranked_usernames AS (
+      SELECT
+          moxie_user_id,
+          username,
+          username_type,
+          ROW_NUMBER() OVER (
+              PARTITION BY moxie_user_id 
+              ORDER BY 
+                  CASE username_type
+                      WHEN 'farcaster_name' THEN 1
+                      WHEN 'ens_name' THEN 2
+                      WHEN 'basename' THEN 3
+                      WHEN 'moxie_user_id' THEN 4
+                      WHEN 'wallet_address' THEN 5
+                      ELSE 6
+                  END
+          ) AS rn
+      FROM ${pnlGroupTable}
+      WHERE moxie_user_id IS NOT NULL
+    ),
+    aggregated_pnl AS (
+      SELECT
+          moxie_user_id,
+          SUM(total_buy_value_usd) AS total_buy_usd,
+          SUM(total_sell_value_usd) AS total_sell_usd,
+          SUM(profit_loss) AS pnl_usd
+      FROM ${pnlGroupTable}
+      WHERE 
+          moxie_user_id IS NOT NULL
+          AND token_address NOT IN (${blacklistedTokensString})
+          AND buy_transaction_count > 0
+          AND moxie_user_id IN (${memberIdsString})
+      GROUP BY moxie_user_id
+    ),
+    best_usernames AS (
+      SELECT
+          moxie_user_id,
+          username,
+          username_type
+      FROM ranked_usernames
+      WHERE rn = 1
+    )
+    SELECT 
+      a.moxie_user_id AS moxie_user_id,
+      b.username,
+      b.username_type,
+      a.total_buy_usd,
+      a.total_sell_usd,
+      a.pnl_usd
+    FROM aggregated_pnl a
+    LEFT JOIN best_usernames b
+      ON a.moxie_user_id = b.moxie_user_id
+    ORDER BY a.pnl_usd DESC
+  `;
+  elizaLogger.debug(`[prepareGroupPnlQuery] traceId: ${traceId}, query: ${query}`);
+  return query;
+};
 
 export const preparePnlQuery = (pnlResponse: any) => {
   const {

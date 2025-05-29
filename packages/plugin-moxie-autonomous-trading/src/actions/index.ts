@@ -16,6 +16,19 @@ import { BaseParams, createTradingRule, getAutonomousTradingRuleDetails, getErro
     UserTradeParams, agentWalletNotFound, delegateAccessNotFound, moxieWalletClientNotFound, checkUserCommunicationPreferences, Condition } from "../utils/utility";
 import { autonomousTradingTemplate } from "../templates";
 
+export interface TokenAge {
+    min?: number;
+    minAgeInSec?: number;
+    max?: number;
+    maxAgeInSec?: number;
+}
+
+export interface MarketCap {
+    min?: number;
+    minMarketCapInUSD?: number;
+    max?: number;
+    maxMarketCapInUSD?: number;
+}
 
 export interface AutonomousTradingRuleParams {
     moxieIds?: string[];
@@ -30,6 +43,8 @@ export interface AutonomousTradingRuleParams {
     sellTriggerCondition?: 'ANY' | 'ALL';
     sellTriggerCount?: number;
     sellPercentage?: number;
+    tokenAge?: TokenAge;
+    marketCap?: MarketCap;
 }
 
 export interface AutonomousTradingError {
@@ -139,7 +154,17 @@ export const autonomousTradingAction: Action = {
                 sellToken:  {
                     symbol: 'ETH',
                     address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-                }
+                },
+                tokenMetrics: (params.tokenAge || params.marketCap) ? {
+                    tokenAge: params.tokenAge ? {
+                        min: params.tokenAge?.min ?? params.tokenAge?.minAgeInSec ?? null,
+                        max: params.tokenAge?.max ?? params.tokenAge?.maxAgeInSec ?? null
+                    } : undefined,
+                    marketCap: params.marketCap ? {
+                        min: params.marketCap?.min ?? params.marketCap?.minMarketCapInUSD ?? null,
+                        max: params.marketCap?.max ?? params.marketCap?.maxMarketCapInUSD ?? null
+                    } : undefined
+                } : undefined
             };
 
             if (params.sellTriggerType === 'COPY_SELL' || params.sellTriggerType === 'BOTH') {

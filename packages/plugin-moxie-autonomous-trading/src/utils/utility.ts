@@ -30,12 +30,28 @@ export interface SellConfig {
     conditionValue?: number;
 }
 
+export interface TokenAge {
+    min?: number;
+    max?: number;
+}
+
+export interface MarketCap {
+    min?: number;
+    max?: number;
+}
+
+export interface TokenMetrics {
+    tokenAge?: TokenAge;
+    marketCap?: MarketCap;
+}
+
 export interface BaseParams {
     buyAmount: number;
     duration: number;
     buyAmountValueType: 'USD';
     sellToken: SellToken;
     sellConfig?: SellConfig;
+    tokenMetrics?: TokenMetrics;
 }
 
 export interface LimitOrderParams {
@@ -194,6 +210,12 @@ const errorMessages: Record<string, string> = {
     AERR044: "The sell condition value must be a non-negative number",
     AERR045: "Number of users for sell condition is provided bigger than the actual users in the rule. Please provide lower number.",
     AERR046: "Number of users for sell condition is provided bigger than actual users in the group. Please provide lower number.",
+    AERR050: "At least one user must be selected to copy trades from.",
+    AERR051: "Please check if valid Senpi user is tagged e.g. @[betashop.eth|M4].",
+    AERR052: "Minimum token age and maximum token age must be non-negative numbers",
+    AERR053: "Minimum market cap and maximum market cap must be non-negative numbers",
+    AERR054: "Minimum token age must be less than maximum token age",
+    AERR055: "Minimum market cap must be less than maximum market cap",
     AERR201: "Please try again with a valid group. Make sure to use '#' to select from your available groups. You can also ask me to create a new group by typing: create the group [groupname]",
     AERR202: "Please add members to the group before setting up auto-trading. For example: add @betashop.eth to #copytrade",
     AERR203: "Hi, I'd be happy to help you setup that auto-trade but there are less members in the group than the copy traded users count. You can ask me to add more members by typing: add [user] to [groupname]",
