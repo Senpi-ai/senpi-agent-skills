@@ -1,3 +1,4 @@
+import { formatTokenMention } from "@moxie-protocol/moxie-agent-lib";
 import { ethers } from "ethers";
 
 export const dustRequestTemplate = `
@@ -273,10 +274,12 @@ Here are the recent user messages for context:
 
 export const swapInProgressTemplate = (
     sellTokenSymbol: string,
+    sellTokenAddress: string,
     buyTokenSymbol: string,
+    buyTokenAddress: string,
     txHash: string
 ) => ({
-    text: `\nDusting $${sellTokenSymbol} to $${buyTokenSymbol} is in progress.\nView transaction status on [BaseScan](https://basescan.org/tx/${txHash})`,
+    text: `\nDusting ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} to ${formatTokenMention(buyTokenSymbol, buyTokenAddress)} is in progress.\nView transaction status on [BaseScan](https://basescan.org/tx/${txHash})`,
     content: {
         url: `https://basescan.org/tx/${txHash}`,
     },
@@ -284,9 +287,11 @@ export const swapInProgressTemplate = (
 
 export const swapCompletedTemplate = (
     sellTokenSymbol: string,
+    sellTokenAddress: string,
     buyTokenSymbol: string,
+    buyTokenAddress: string,
     buyAmountInWEI: bigint,
     buyTokenDecimals: number
 ) => ({
-    text: `\nDusting $${sellTokenSymbol} to $${buyTokenSymbol} completed successfully. ${buyAmountInWEI && buyAmountInWEI > 0n ? `\n${ethers.formatUnits(buyAmountInWEI.toString(), buyTokenDecimals)} ${buyTokenSymbol} received.` : ""}\n`,
+    text: `\nDusting ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} to ${formatTokenMention(buyTokenSymbol, buyTokenAddress)} completed successfully. ${buyAmountInWEI && buyAmountInWEI > 0n ? `\n${ethers.formatUnits(buyAmountInWEI.toString(), buyTokenDecimals)} ${buyTokenSymbol} received.` : ""}\n`,
 });

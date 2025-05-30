@@ -79,5 +79,33 @@ And don’t forget to join The Dojo! Our official Senpi Telegram group ([Join No
                 },
             },
         ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Learn Senpi.",
+                },
+            },
+            {
+                user: "{{agent}}",
+                content: {
+                    text: "Welcome to Senpi, your onchainGPT built for autonomous crypto trading. Senpi identifies market opportunities, executes trades based on your strategies, and operates reliably around the clock—so you never miss a market move. Ready to level up? Quickly master Senpi by watching this tutorial: https://www.youtube.com/watch?v=<VIDEO_ID>.",
+                    action: "LEARN_SENPI",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Write a cast from the previous response",
+                },
+            },
+            {
+                user: "{{agent}}",
+                content: {
+                    text: "I just learned about Senpi and its capabilities for autonomous crypto trading through this tutorial. Senpi identifies market opportunities, executes trades based on your strategies, and operates reliably around the clock. Check it out here: https://www.youtube.com/watch?v=<VIDEO_ID>. Enter the dojo at @senpi.eth.",
+                    action: "POST_CONTENT",
+                },
+            },
+        ],
     ] as ActionExample[][],
 };
