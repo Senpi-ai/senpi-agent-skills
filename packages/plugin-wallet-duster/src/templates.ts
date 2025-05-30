@@ -25,8 +25,8 @@ Provide the result in the following JSON format:
 1. Direct Dusting Requests (no preview involved)
 - If the user says “Dust tokens under $X” or “Dust my tokens” without a prior PREVIEW_DUST_TOKENS action, set \`isConfirmed: true\`
 2. Preview Flow
-- If the last action is \`PREVIEW_DUST_TOKENS\`, only set \`isConfirmed: true\` if the user explicitly confirms afterward, such as:
-    - "Yes", "Proceed", "Confirm", "Go ahead", "Dust them all"
+- If the last action is \`PREVIEW_DUST_TOKENS\`, only set \`isConfirmed: true\` if the user explicitly confirms after requesting the dusting after the preview, such as:
+    - "Yes", "Proceed", "Confirm", "Go ahead"
 - If the user says "No", "Cancel", or similar, set \`isConfirmed: false\`
 - If no clear confirmation or rejection yet, set \`isConfirmed: null\`
 3. Dusting Without Preview
