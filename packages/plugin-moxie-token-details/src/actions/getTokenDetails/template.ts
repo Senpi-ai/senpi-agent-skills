@@ -21,7 +21,7 @@ Token Details Data:
 All token details are in the tokenDetails variable. Each token detail is an object with the following properties:
 
 #### Token Overview
-- **Token Name**: tokenName (tokenSymbol)
+- **Token Name**: tokenName ($[tokenSymbol|tokenAddress])
 - **Token Address**: tokenAddress
 - **Current Price**: priceUSD
 - **Market Cap (fully diluted)**: fullyDilutedMarketCapUSD
@@ -70,5 +70,5 @@ Follow the user question and provide the details in a concise manner.
 - If no token details are provided, try finding the token details from the memory.
 - You are only able to provide the token details for last 24 hours at max
 - If no token details are provided and you are finding from the memory, do not explicity mention that you are finding from the memory or the token details are empty.
+- Mention any token symbol and their associated token address prefixed by $ using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
 `;
-
