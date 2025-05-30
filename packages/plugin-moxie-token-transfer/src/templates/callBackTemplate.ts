@@ -22,6 +22,17 @@ export const APPLICATION_ERROR = (error: string) => {
     };
 };
 
+export const APPLICATION_ERROR_WITH_ERR_MESSAGE = (error: string) => {
+    return {
+        text: error,
+        content: {
+            error: "APPLICATION_ERROR",
+            details: error,
+            action: "TOKEN_TRANSFER",
+        },
+    };
+}
+
 export const CREATOR_NOT_FOUND = (creatorId: string) => {
     return {
         text: `\nUnfortunately, the user you are querying has not launched a creator coin yet. Creator coins are required to analyze user data using the Senpi AI Agent. Please try again`,

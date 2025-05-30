@@ -451,8 +451,11 @@ async function preValidateRequiredData(context: Context) {
             context.traceId,
             `[tokenTransfer] [preValidateRequiredData] Agent wallet not found`
         );
-        return callBackTemplate.APPLICATION_ERROR(
-            "Agent wallet not found in state"
+        // return callBackTemplate.APPLICATION_ERROR(
+        //     "Agent wallet not found in state"
+        // );
+        return callBackTemplate.APPLICATION_ERROR_WITH_ERR_MESSAGE(
+            "Agent wallet not setup. Please setup your agent wallet and fund it to start trading."
         );
     }
 
@@ -462,8 +465,8 @@ async function preValidateRequiredData(context: Context) {
             context.traceId,
             `[tokenTransfer] [preValidateRequiredData] Delegate access not found`
         );
-        return callBackTemplate.APPLICATION_ERROR(
-            "Delegate access not found for agent wallet"
+        return callBackTemplate.APPLICATION_ERROR_WITH_ERR_MESSAGE(
+            "Agent wallet not setup. Please setup your agent wallet and fund it to start trading."
         );
     }
 
@@ -471,10 +474,10 @@ async function preValidateRequiredData(context: Context) {
     if (!state.moxieWalletClient) {
         elizaLogger.error(
             context.traceId,
-            `[tokenTransfer] [preValidateRequiredData] Moxie wallet client not found`
+            `[tokenTransfer] [preValidateRequiredData] Senpi wallet client not found`
         );
         return callBackTemplate.APPLICATION_ERROR(
-            "Moxie wallet client not found in state"
+            "Senpi wallet client not found in state"
         );
     }
 
