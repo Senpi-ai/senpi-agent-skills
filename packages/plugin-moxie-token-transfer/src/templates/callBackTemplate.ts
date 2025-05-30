@@ -26,8 +26,6 @@ export const APPLICATION_ERROR_WITH_ERR_MESSAGE = (error: string) => {
     return {
         text: error,
         content: {
-            error: "APPLICATION_ERROR",
-            details: error,
             action: "TOKEN_TRANSFER",
         },
     };
