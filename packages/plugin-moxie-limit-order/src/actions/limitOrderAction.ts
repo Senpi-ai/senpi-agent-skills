@@ -105,6 +105,14 @@ export const limitOrderAction = {
                 traceId,
                 `[limitOrderAction] [preValidateRequiredData] [ERROR] error: ${error}`
             );
+
+            if (error.message.includes("AERRLO001")) {
+                const errorTemplate = callBackTemplate.APPLICATION_ERROR_WITH_ERR_MESSAGE(
+                    "Agent wallet not setup. Please setup your agent wallet and fund it to start trading."
+                );
+                await callback?.(errorTemplate);
+                return true;
+            }
             const errorTemplate = callBackTemplate.APPLICATION_ERROR(
                 error.message
             );
@@ -217,15 +225,15 @@ async function preValidateRequiredData(context: Context): Promise<boolean> {
 
     // Validate required state objects
     if (!state.moxieUserInfo) {
-        throw new Error("Moxie user info not found in state");
+        throw new Error("Senpi user info not found in state");
     }
 
     if (!state.agentWallet) {
-        throw new Error("Agent wallet not found in state");
+        throw new Error("AERRLO001: Agent wallet not found in state");
     }
 
     if (!(state.agentWallet as agentLib.MoxieClientWallet).delegated) {
-        throw new Error("Delegate access not found for agent wallet");
+        throw new Error("AERRLO001: Delegate access not found for agent wallet");
     }
 
     if (!state.moxieWalletClient) {
