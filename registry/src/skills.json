@@ -710,7 +710,7 @@
             {
                 "label": "Show 7 day PNL for #copytrade group",
                 "value": "Show 7 day PNL for #[copytrade|7b37936c-d06c-4b54-8179-3190ecc1f0b3] group"
-            }      
+            }
         ],
         "mediaUrls": [
             "https://raw.githubusercontent.com/Senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-moxie-pnl-tracker/images/logo.svg"
@@ -867,21 +867,20 @@
             "WHAT_DOES_THE_WALLET_DUSTING_SKILL_DO",
             "EXPLAIN_WALLET_DUSTING",
             "WHAT_IS_WALLET_DUSTING",
-            "PREVIEW_DUST",
             "SHOW_DUST_TOKENS",
             "WHAT_TOKENS_WILL_BE_DUSTED",
             "LIST_LOW_VALUE_TOKENS",
             "SHOW_TOKENS_BELOW_USD",
             "SHOW_TOKENS_BELOW_VALUE",
             "SHOW_TOKENS_BELOW_THRESHOLD",
-            "DUST_PREVIEW",
             "PREVIEW_DUST_TOKENS",
             "DUST_TOKENS",
             "DUST_WALLET",
-            "DUST_TOKENS_UNDER",
-            "DUST_TOKENS_BELOW",
+            "DUST_TOKENS_UNDER_USD",
+            "DUST_TOKENS_BELOW_USD",
             "HOW_MUCH_DUST_IN_WALLET",
-            "HOW_MANY_DUST_TOKENS_IN_WALLET"
+            "HOW_MANY_DUST_TOKENS_IN_WALLET",
+            "WHAT_VALUE_OF_DUST_IN_WALLET"
         ],
         "isPremium": false,
         "freeQueries": 0,
