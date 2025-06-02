@@ -62,6 +62,14 @@ export interface LimitOrderParams {
     limitOrderValidityInSeconds: number;
 }
 
+export interface StopLossParams {
+    sellConditions: {
+        sellPercentage: number;
+        priceChangePercentage: number;
+    };
+    stopLossValidityInSeconds: number;
+}
+
 export interface GroupTradeParams {
     groupId: string;
     condition: 'ANY' | 'ALL';
@@ -80,6 +88,7 @@ export interface CreateRuleInput {
     ruleParameters: {
         baseParams: BaseParams;
         limitOrderParams?: LimitOrderParams;
+        stopLossParams?: StopLossParams;
         groupTradeParams?: GroupTradeParams;
         userTradeParams?: UserTradeParams;
     };
@@ -252,7 +261,8 @@ export async function createTradingRule(
     ruleTrigger: 'GROUP' | 'USER',
     groupTradeParams?: GroupTradeParams,
     userTradeParams?: UserTradeParams,
-    limitOrderParams?: LimitOrderParams
+    limitOrderParams?: LimitOrderParams,
+    stopLossParams?: StopLossParams
 ): Promise<CreateRuleResponse> {
 
     // Ensure either groupTradeParams or userTradeParams is provided, but not both
@@ -279,6 +289,10 @@ export async function createTradingRule(
 
     if (limitOrderParams) {
         createRuleInput.ruleParameters.limitOrderParams = limitOrderParams;
+    }
+
+    if (stopLossParams) {
+        createRuleInput.ruleParameters.stopLossParams = stopLossParams;
     }
 
     if (groupTradeParams) {
