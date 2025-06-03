@@ -1,15 +1,10 @@
 export const autonomousTradingTemplate = `
 You are an AI assistant specialized in extracting parameters for cryptocurrency copy trading rules. Your task is to analyze user's latest message based on the context of the conversation history and determine the rule type and relevant parameters for setting up automated trading strategies.
 
-Here is the latest user input you need to analyze:
-<latest_user_input>
-{{recentMessage}}
-</latest_user_input>
-
 Here is the conversation history containing the user input you need to analyze:
 
 <conversation_history>
-{{conversationHistory}}
+{{recentMessages}}
 </conversation_history>
 
 Please follow these steps to process the user input and generate the appropriate output:
@@ -24,7 +19,7 @@ Please follow these steps to process the user input and generate the appropriate
 
    Use these guidelines to determine the rule type:
    - If the input mentions a group (contains "#["), it's a GROUP rule.
-   - If it mentions selling based on profit, it's a PROFIT rule.
+   - If it mentions selling based on profit, it's a PROFIT rule. Otherwise, it profit is not mentioned as the selling condition, e.g. sell when other users sell, it's not a PROFIT rule.
    - Combine these factors to determine the exact rule type.
    - Important: The presence of multiple individual users (e.g., "@[user1|id1] and @[user2|id2]") does NOT indicate a GROUP rule. Only use GROUP rules when "#[" is present.
 

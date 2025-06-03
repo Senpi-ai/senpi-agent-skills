@@ -146,28 +146,10 @@ export const autonomousTradingAction: Action = {
                 traceId,
                 `[AUTONOMOUS_TRADING] [${moxieUserId}] [AUTONOMOUS_TRADING] [checkUserCommunicationPreferences] communicationPreference: ${communicationPreference}`
             );
-
-            const recentMessageData = state.recentMessagesData.sort(
-                (a, b) => b.createdAt - a.createdAt
-            )[0];
-            const conversationHistoryData = state.recentMessagesData.filter(
-                (message) => message.id !== recentMessageData.id
-            );
             // Compose autonomous trading context
             // Compose swap context
             const swapContext = composeContext({
-                state: {
-                    ...state,
-                    recentMessage: recentMessageData.content.text,
-                    conversationHistory:
-                        "# Conversation Messages\n" +
-                        conversationHistoryData
-                            .map(
-                                ({ userId, content, createdAt }) =>
-                                    `(${new Date(createdAt).toLocaleString()})\n${userId}: ${content.text}`
-                            )
-                            .join("\n"),
-                },
+                state,
                 template: autonomousTradingTemplate,
             });
 
