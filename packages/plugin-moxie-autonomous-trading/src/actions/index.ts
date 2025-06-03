@@ -25,6 +25,7 @@ import {
     GroupTradeParams,
     LimitOrderParams,
     RuleType,
+    StopLossParams,
     UserTradeParams,
     agentWalletNotFound,
     delegateAccessNotFound,
@@ -63,6 +64,8 @@ export interface AutonomousTradingRuleParams {
     sellPercentage?: number;
     tokenAge?: TokenAge;
     marketCap?: MarketCap;
+    stopLossPercentage?: number;
+    stopLossDurationInSec?: number;
 }
 
 export interface AutonomousTradingError {
@@ -263,6 +266,8 @@ export const autonomousTradingAction: Action = {
             let groupTradeParams: GroupTradeParams;
             let userTradeParams: UserTradeParams;
             let limitOrderParams: LimitOrderParams;
+            let stopLossParams: StopLossParams;
+
             let ruleTriggers: "GROUP" | "USER";
 
             if (
@@ -322,6 +327,17 @@ export const autonomousTradingAction: Action = {
                 };
             }
 
+            if (params.stopLossPercentage) {
+                stopLossParams = {
+                    sellConditions: {
+                        sellPercentage: 100,
+                        priceChangePercentage: params.stopLossPercentage,
+                    },
+                    stopLossValidityInSeconds:
+                        params.stopLossDurationInSec || 7 * 24 * 60 * 60,
+                };
+            }
+
             try {
                 const response = await createTradingRule(
                     state.authorizationHeader as string,
@@ -331,7 +347,8 @@ export const autonomousTradingAction: Action = {
                     ruleTriggers,
                     groupTradeParams,
                     userTradeParams,
-                    limitOrderParams
+                    limitOrderParams,
+                    stopLossParams
                 );
 
                 await callback?.({

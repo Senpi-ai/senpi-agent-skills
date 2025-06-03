@@ -62,6 +62,14 @@ export interface LimitOrderParams {
     limitOrderValidityInSeconds: number;
 }
 
+export interface StopLossParams {
+    sellConditions: {
+        sellPercentage: number;
+        priceChangePercentage: number;
+    };
+    stopLossValidityInSeconds: number;
+}
+
 export interface GroupTradeParams {
     groupId: string;
     condition: 'ANY' | 'ALL';
@@ -80,6 +88,7 @@ export interface CreateRuleInput {
     ruleParameters: {
         baseParams: BaseParams;
         limitOrderParams?: LimitOrderParams;
+        stopLossParams?: StopLossParams;
         groupTradeParams?: GroupTradeParams;
         userTradeParams?: UserTradeParams;
     };
@@ -216,6 +225,10 @@ const errorMessages: Record<string, string> = {
     AERR053: "Minimum market cap and maximum market cap must be non-negative numbers",
     AERR054: "Minimum token age must be less than maximum token age",
     AERR055: "Minimum market cap must be less than maximum market cap",
+    AERR056: "Stop loss sell conditions not provided",
+    AERR057: "Stop loss sell conditions percentages must be numbers",
+    AERR058: "Stop loss percentage must be greater than 1%",
+    AERR059: "Stop loss sell percentage must be greater than 0%",
     AERR201: "Please try again with a valid group. Make sure to use '#' to select from your available groups. You can also ask me to create a new group by typing: create the group [groupname]",
     AERR202: "Please add members to the group before setting up auto-trading. For example: add @betashop.eth to #copytrade",
     AERR203: "Hi, I'd be happy to help you setup that auto-trade but there are less members in the group than the copy traded users count. You can ask me to add more members by typing: add [user] to [groupname]",
@@ -252,7 +265,8 @@ export async function createTradingRule(
     ruleTrigger: 'GROUP' | 'USER',
     groupTradeParams?: GroupTradeParams,
     userTradeParams?: UserTradeParams,
-    limitOrderParams?: LimitOrderParams
+    limitOrderParams?: LimitOrderParams,
+    stopLossParams?: StopLossParams
 ): Promise<CreateRuleResponse> {
 
     // Ensure either groupTradeParams or userTradeParams is provided, but not both
@@ -279,6 +293,10 @@ export async function createTradingRule(
 
     if (limitOrderParams) {
         createRuleInput.ruleParameters.limitOrderParams = limitOrderParams;
+    }
+
+    if (stopLossParams) {
+        createRuleInput.ruleParameters.stopLossParams = stopLossParams;
     }
 
     if (groupTradeParams) {
