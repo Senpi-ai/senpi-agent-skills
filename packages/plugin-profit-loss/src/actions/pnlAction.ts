@@ -1,6 +1,22 @@
-import { IAgentRuntime, Memory, State, HandlerCallback, elizaLogger, ModelClass, composeContext, generateObjectDeprecated, streamText, ModelProviderName } from "@moxie-protocol/core";
+import {
+    IAgentRuntime,
+    Memory,
+    State,
+    HandlerCallback,
+    elizaLogger,
+    ModelClass,
+    composeContext,
+    generateObjectDeprecated,
+    streamText,
+    ModelProviderName,
+} from "@moxie-protocol/core";
 import { extractWalletTemplate, pnlTemplate } from "../template";
-import { fetchPnlData, fetchTotalPnl, preparePnlQuery, prepareGroupPnlQuery } from "../service/pnlService";
+import {
+    fetchPnlData,
+    fetchTotalPnl,
+    preparePnlQuery,
+    prepareGroupPnlQuery,
+} from "../service/pnlService";
 import { MoxieUser, moxieUserService } from "@moxie-protocol/moxie-agent-lib";
 import { ethers } from "ethers";
 import * as agentLib from "@moxie-protocol/moxie-agent-lib";
@@ -8,10 +24,19 @@ import { getGroupDetails } from "@moxie-protocol/plugin-moxie-groups/src/utils";
 
 export const PnLAction = {
     name: "PROFIT_LOSS",
-    description: "This action can summarize Profit & Loss for a user (can be invoked by simply saying 'my pnl'), wallet address, token address, or senpi agent. It shows the money earned or lost by the specified entity.",
+    description:
+        "Calculates and summarizes Profit & Loss (PnL) for a specific wallet, token, or Senpi agent. Use this when the user asks about performance, gains/losses, or returns from trading activity.",
     suppressInitialMessage: true,
     examples: [],
-    similes: ["PNL", "PNL_DATA", "PROFIT_LOSS", "PROFIT_LOSS_DATA", "USER_PnL", "WALLET_PnL", "TOKEN_PnL"],
+    similes: [
+        "PNL",
+        "PNL_DATA",
+        "PROFIT_LOSS",
+        "PROFIT_LOSS_DATA",
+        "USER_PnL",
+        "WALLET_PnL",
+        "TOKEN_PnL",
+    ],
     validate: async function (
         runtime: IAgentRuntime,
         message: Memory,
@@ -32,10 +57,13 @@ export const PnLAction = {
         const agentWallet = state.agentWallet as agentLib.MoxieClientWallet;
         const agentWalletAddress = agentWallet.address.toLowerCase();
         try {
-            elizaLogger.debug(traceId, `[PnLAction] [${moxieUserId}] Starting PnL calculation`);
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] [${moxieUserId}] Starting PnL calculation`
+            );
 
             const latestMessage = message.content.text;
-            let start =  new Date();
+            let start = new Date();
             const context = composeContext({
                 state: {
                     ...state,
@@ -54,23 +82,39 @@ export const PnLAction = {
                     modelProvider: ModelProviderName.OPENAI,
                     temperature: 0.0,
                     apiKey: process.env.OPENAI_API_KEY!,
-                    modelClass: ModelClass.MEDIUM
-                }
+                    modelClass: ModelClass.MEDIUM,
+                },
             });
-            elizaLogger.debug(traceId, `[PnLAction] time taken to extract wallet addresses: ${new Date().getTime() - start.getTime()}ms`);
-            elizaLogger.debug(traceId, `[PnLAction] pnlResponse: ${JSON.stringify(pnlResponse)}`);
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] time taken to extract wallet addresses: ${new Date().getTime() - start.getTime()}ms`
+            );
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] pnlResponse: ${JSON.stringify(pnlResponse)}`
+            );
             if (!pnlResponse?.timeFrame) {
-               pnlResponse.timeFrame = "lifetime";
-               elizaLogger.debug(traceId, `[PnLAction] timeFrame is undefined, setting to lifetime`);
-            } else if (!["1d", "7d", "30d", "lifetime"].includes(pnlResponse.timeFrame)) {
-                elizaLogger.error(traceId, `[PnLAction] Unsupported or undefined timeframe provided: ${pnlResponse.timeFrame}`);
+                pnlResponse.timeFrame = "lifetime";
+                elizaLogger.debug(
+                    traceId,
+                    `[PnLAction] timeFrame is undefined, setting to lifetime`
+                );
+            } else if (
+                !["1d", "7d", "30d", "lifetime"].includes(pnlResponse.timeFrame)
+            ) {
+                elizaLogger.error(
+                    traceId,
+                    `[PnLAction] Unsupported or undefined timeframe provided: ${pnlResponse.timeFrame}`
+                );
                 await callback?.({
-                    text: `The provided timeframe '${pnlResponse.timeFrame}' is not supported or is undefined. Please use one of the following: 1d, 7d, 30d, lifetime, or leave it unspecified for lifetime pnl.`
+                    text: `The provided timeframe '${pnlResponse.timeFrame}' is not supported or is undefined. Please use one of the following: 1d, 7d, 30d, lifetime, or leave it unspecified for lifetime pnl.`,
                 });
                 return true;
             }
 
-            const criteria = Array.isArray(pnlResponse.criteria) ? pnlResponse.criteria : [];
+            const criteria = Array.isArray(pnlResponse.criteria)
+                ? pnlResponse.criteria
+                : [];
 
             const tokenAddresses: string[] = [];
             const walletAddresses: string[] = [];
@@ -83,7 +127,10 @@ export const PnLAction = {
                 } else if (criterion.TYPE === "wallet") {
                     walletAddresses.push(criterion.VALUE);
                 } else if (criterion.TYPE === "ens") {
-                    const resolvedAddress = await resolveENSAddress(context, criterion.VALUE);
+                    const resolvedAddress = await resolveENSAddress(
+                        context,
+                        criterion.VALUE
+                    );
                     if (resolvedAddress.isENS) {
                         walletAddresses.push(resolvedAddress.resolvedAddress);
                     } else {
@@ -95,10 +142,18 @@ export const PnLAction = {
                     try {
                         // Extract group ID from the format {group_id|group_name}
                         const groupId = criterion.VALUE;
-                        if (!groupId || !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(groupId)) {
-                            elizaLogger.error(traceId, `[PnLAction] Invalid UUID format: ${criterion.VALUE}`);
+                        if (
+                            !groupId ||
+                            !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+                                groupId
+                            )
+                        ) {
+                            elizaLogger.error(
+                                traceId,
+                                `[PnLAction] Invalid UUID format: ${criterion.VALUE}`
+                            );
                             await callback?.({
-                                text: `Invalid Group Id format. Please provide a valid Group Id. Example: #[Group Name|UUID]`
+                                text: `Invalid Group Id format. Please provide a valid Group Id. Example: #[Group Name|UUID]`,
                             });
                             return true;
                         }
@@ -108,42 +163,68 @@ export const PnLAction = {
                             state.authorizationHeader as string,
                             groupId
                         );
-                        if (!groupDetails.groups || groupDetails.groups.length === 0) {
-                            elizaLogger.error(traceId, `[PnLAction] Group not found: ${groupId}`);
+                        if (
+                            !groupDetails.groups ||
+                            groupDetails.groups.length === 0
+                        ) {
+                            elizaLogger.error(
+                                traceId,
+                                `[PnLAction] Group not found: ${groupId}`
+                            );
                             await callback?.({
-                                text: `Group not found. Please check the group ID.`
+                                text: `Group not found. Please check the group ID.`,
                             });
                             return true;
                         }
 
                         // Store group members separately
-                        const groupMemberIds = groupDetails.groups[0].members.map(member => member.moxieUserId);
+                        const groupMemberIds =
+                            groupDetails.groups[0].members.map(
+                                (member) => member.moxieUserId
+                            );
                         groupMembers.push({
                             groupId,
-                            memberIds: groupMemberIds
+                            memberIds: groupMemberIds,
                         });
-                        elizaLogger.debug(traceId, `[PnLAction] Group members: ${JSON.stringify(groupMemberIds)}`);
+                        elizaLogger.debug(
+                            traceId,
+                            `[PnLAction] Group members: ${JSON.stringify(groupMemberIds)}`
+                        );
                         if (groupMemberIds.length === 0) {
-                            elizaLogger.error(traceId, `[PnLAction] No members found in group: ${groupId}`);
+                            elizaLogger.error(
+                                traceId,
+                                `[PnLAction] No members found in group: ${groupId}`
+                            );
                             await callback?.({
-                                text: `No members found in the specified group. Please check the group ID.`
+                                text: `No members found in the specified group. Please check the group ID.`,
                             });
                             return true;
                         }
                     } catch (error) {
-                        elizaLogger.error(traceId, `[PnLAction] Error fetching group details: ${error.message}`);
+                        elizaLogger.error(
+                            traceId,
+                            `[PnLAction] Error fetching group details: ${error.message}`
+                        );
                         await callback?.({
-                            text: `Error fetching group details. Please try again later.`
+                            text: `Error fetching group details. Please try again later.`,
                         });
                         return true;
                     }
                 }
             }
-            
-            if (tokenAddresses.length === 0 && walletAddresses.length === 0 && moxieUserIds.length === 0 && groupMembers.length === 0) {
-                elizaLogger.error(traceId, `[PnLAction] No valid criteria provided. Please provide at least one token address, wallet address, Senpi user ID, or group.`);
+
+            if (
+                tokenAddresses.length === 0 &&
+                walletAddresses.length === 0 &&
+                moxieUserIds.length === 0 &&
+                groupMembers.length === 0
+            ) {
+                elizaLogger.error(
+                    traceId,
+                    `[PnLAction] No valid criteria provided. Please provide at least one token address, wallet address, Senpi user ID, or group.`
+                );
                 await callback?.({
-                    text: `Please provide at least one token address, wallet address, Senpi user ID, or group.`
+                    text: `Please provide at least one token address, wallet address, Senpi user ID, or group.`,
                 });
                 return true;
             }
@@ -153,10 +234,22 @@ export const PnLAction = {
             pnlResponse.moxieUserIds = moxieUserIds;
             pnlResponse.groupMembers = groupMembers;
 
-            elizaLogger.debug(traceId, `[PnLAction] categorized token addresses: ${JSON.stringify(tokenAddresses)}`);
-            elizaLogger.debug(traceId, `[PnLAction] categorized wallet addresses: ${JSON.stringify(walletAddresses)}`);
-            elizaLogger.debug(traceId, `[PnLAction] agent wallet address: ${agentWalletAddress}`);
-            elizaLogger.debug(traceId, `[PnLAction] group members: ${JSON.stringify(groupMembers)}`);
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] categorized token addresses: ${JSON.stringify(tokenAddresses)}`
+            );
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] categorized wallet addresses: ${JSON.stringify(walletAddresses)}`
+            );
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] agent wallet address: ${agentWalletAddress}`
+            );
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] group members: ${JSON.stringify(groupMembers)}`
+            );
 
             let pnlStart = new Date();
             const pnlQuery = preparePnlQuery(pnlResponse);
@@ -169,26 +262,53 @@ export const PnLAction = {
                 // Make a single query for all group members using the dedicated group query method
                 const groupPnlQuery = prepareGroupPnlQuery(traceId, {
                     ...pnlResponse,
-                    groupMembers: groupMembers
+                    groupMembers: groupMembers,
                 });
                 pnlData = await fetchPnlData(groupPnlQuery);
                 // Calculate total PnL for all group members
-                totalPnl = pnlData.reduce((sum, data) => sum + (data.pnl_usd || 0), 0);
+                totalPnl = pnlData.reduce(
+                    (sum, data) => sum + (data.pnl_usd || 0),
+                    0
+                );
             } else {
                 // Handle non-group PnL queries as before
                 [pnlData, totalPnl] = await Promise.all([
                     fetchPnlData(pnlQuery),
-                    (moxieUserIds.length > 0 || walletAddresses.length > 0) ? fetchTotalPnl(pnlResponse) : Promise.resolve(0)
+                    moxieUserIds.length > 0 || walletAddresses.length > 0
+                        ? fetchTotalPnl(pnlResponse)
+                        : Promise.resolve(0),
                 ]);
             }
 
-            elizaLogger.debug(traceId, `[PnLAction] pnlData: ${JSON.stringify(pnlData)}`);
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] pnlData: ${JSON.stringify(pnlData)}`
+            );
             elizaLogger.debug(traceId, `[PnLAction] totalPnl: ${totalPnl}`);
-            if (tokenAddresses.length > 0 || moxieUserIds.length > 0 || groupMembers.length > 0) {
+            if (
+                tokenAddresses.length > 0 ||
+                moxieUserIds.length > 0 ||
+                groupMembers.length > 0
+            ) {
                 try {
-                    const uniqueMoxieUserIds = [...new Set(pnlData.map(data => data.username).filter(username => username && username.startsWith('M')))];
-                    const userNames = await moxieUserService.getUserByMoxieIdMultiple(uniqueMoxieUserIds);
-                    elizaLogger.debug(traceId, `[PnLAction] Fetched user names: ${JSON.stringify(userNames)}`);
+                    const uniqueMoxieUserIds = [
+                        ...new Set(
+                            pnlData
+                                .map((data) => data.username)
+                                .filter(
+                                    (username) =>
+                                        username && username.startsWith("M")
+                                )
+                        ),
+                    ];
+                    const userNames =
+                        await moxieUserService.getUserByMoxieIdMultiple(
+                            uniqueMoxieUserIds
+                        );
+                    elizaLogger.debug(
+                        traceId,
+                        `[PnLAction] Fetched user names: ${JSON.stringify(userNames)}`
+                    );
 
                     // Replace moxieUserIds in pnlData with formatted userNames
                     pnlData.forEach((data) => {
@@ -196,21 +316,26 @@ export const PnLAction = {
 
                         const userName = userNames.get(data.username)?.userName;
                         const isMoxieId = /^M/.test(data.username);
-                        const isWalletAddress = /^0x[a-fA-F0-9]{40}$/.test(data.username);
+                        const isWalletAddress = /^0x[a-fA-F0-9]{40}$/.test(
+                            data.username
+                        );
 
                         if (isMoxieId) {
                             data.username = `@[${userName || data.username}|${data.username}]`;
                         } else if (isWalletAddress) {
                             const formattedId = `${data.username.slice(0, 6)}...${data.username.slice(-4)}`;
                             data.username = `@[${formattedId}|${data.username}]`;
-                        } else if (data.moxie_user_id?.startsWith('M')) {
+                        } else if (data.moxie_user_id?.startsWith("M")) {
                             data.username = `@[${data.username}|${data.moxie_user_id}]`;
                         } else {
                             data.username = `@[${data.username}|${data.wallet_address}]`;
                         }
                     });
                 } catch (error) {
-                    elizaLogger.error(traceId, `[PnLAction] Error fetching user names for Moxie IDs: ${error.message}`);
+                    elizaLogger.error(
+                        traceId,
+                        `[PnLAction] Error fetching user names for Moxie IDs: ${error.message}`
+                    );
                 }
             }
             // Remove the wallet_address field from each entry in pnlData
@@ -227,11 +352,23 @@ export const PnLAction = {
                     }
                 }
             });
-            let pnlDataTemplate = pnlTemplate.replace("{{latestMessage}}", latestMessage)
-                .replace("{{conversation}}", JSON.stringify(message.content.text))
+            let pnlDataTemplate = pnlTemplate
+                .replace("{{latestMessage}}", latestMessage)
+                .replace(
+                    "{{conversation}}",
+                    JSON.stringify(message.content.text)
+                )
                 .replace("{{criteria}}", JSON.stringify(pnlResponse.criteria))
                 .replace("{{pnlData}}", JSON.stringify(pnlData))
-                .replace("{{totalPnl}}", (moxieUserIds.length > 0 || walletAddresses.length > 0 || groupMembers.length > 0) && totalPnl !== null ? totalPnl.toString() : "0")
+                .replace(
+                    "{{totalPnl}}",
+                    (moxieUserIds.length > 0 ||
+                        walletAddresses.length > 0 ||
+                        groupMembers.length > 0) &&
+                        totalPnl !== null
+                        ? totalPnl.toString()
+                        : "0"
+                );
 
             const currentContext = composeContext({
                 state,
@@ -246,25 +383,30 @@ export const PnLAction = {
                     modelProvider: ModelProviderName.OPENAI,
                     temperature: 0.0,
                     apiKey: process.env.OPENAI_API_KEY!,
-                    modelClass: ModelClass.MEDIUM
-                }
+                    modelClass: ModelClass.MEDIUM,
+                },
             });
-            elizaLogger.debug(traceId, `[PnLAction] time taken to generate pnl data template: ${new Date().getTime() - pnlStart.getTime()}ms`);
+            elizaLogger.debug(
+                traceId,
+                `[PnLAction] time taken to generate pnl data template: ${new Date().getTime() - pnlStart.getTime()}ms`
+            );
             for await (const textPart of response) {
                 callback({ text: textPart, action: "PROFIT_LOSS" });
             }
 
             return true;
         } catch (error) {
-            elizaLogger.error(traceId, `[PnLAction] Error fetching PnL data: ${error}`);
+            elizaLogger.error(
+                traceId,
+                `[PnLAction] Error fetching PnL data: ${error}`
+            );
             await callback?.({
-                text: `Error fetching PnL data, please try again later`
+                text: `Error fetching PnL data, please try again later`,
             });
             return true;
         }
-    }
+    },
 };
-
 
 /**
  * Checks if an address is an ENS name and resolves it, with caching to avoid repeated RPC calls.
@@ -273,12 +415,18 @@ export const PnLAction = {
  * @returns The resolved address and ENS details if applicable
  */
 
-const ensCache = new Map<string, { isENS: boolean, resolvedAddress: string | null, timestamp: number }>();
+const ensCache = new Map<
+    string,
+    { isENS: boolean; resolvedAddress: string | null; timestamp: number }
+>();
 const CACHE_EXPIRY_TIME = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 
 async function resolveENSAddress(context: any, ensName: string) {
     let start = new Date();
-    elizaLogger.debug(context, `[PnLAction] [resolveENSAddress] Checking address: ${ensName}`);
+    elizaLogger.debug(
+        context,
+        `[PnLAction] [resolveENSAddress] Checking address: ${ensName}`
+    );
 
     const currentTime = Date.now();
 
@@ -286,9 +434,18 @@ async function resolveENSAddress(context: any, ensName: string) {
     if (ensCache.has(ensName)) {
         const cachedEntry = ensCache.get(ensName);
         if (currentTime - cachedEntry.timestamp < CACHE_EXPIRY_TIME) {
-            elizaLogger.debug(context, `[PnLAction] [resolveENSAddress] Cache hit for address: ${ensName}`);
-            elizaLogger.debug(context, `[PnLAction] [resolveENSAddress] Time taken to resolve ENS address: ${new Date().getTime() - start.getTime()}ms`);
-            return { isENS: cachedEntry.isENS, resolvedAddress: cachedEntry.resolvedAddress };
+            elizaLogger.debug(
+                context,
+                `[PnLAction] [resolveENSAddress] Cache hit for address: ${ensName}`
+            );
+            elizaLogger.debug(
+                context,
+                `[PnLAction] [resolveENSAddress] Time taken to resolve ENS address: ${new Date().getTime() - start.getTime()}ms`
+            );
+            return {
+                isENS: cachedEntry.isENS,
+                resolvedAddress: cachedEntry.resolvedAddress,
+            };
         } else {
             ensCache.delete(ensName);
         }
@@ -301,13 +458,15 @@ async function resolveENSAddress(context: any, ensName: string) {
 
     try {
         // Check if the address ends with .eth
-        const isENS = ensName.toLowerCase().endsWith('.eth');
+        const isENS = ensName.toLowerCase().endsWith(".eth");
 
         if (!isENS) {
             return response;
         }
 
-        const provider = new ethers.JsonRpcProvider(process.env.ETH_MAINNET_RPC_URL);
+        const provider = new ethers.JsonRpcProvider(
+            process.env.ETH_MAINNET_RPC_URL
+        );
 
         // Try to resolve ENS name with retries and backoff
         let retries = 5;
@@ -321,32 +480,45 @@ async function resolveENSAddress(context: any, ensName: string) {
                     response.isENS = true;
                     response.resolvedAddress = resolvedAddress;
                     // Cache the result with a timestamp
-                    ensCache.set(ensName, { ...response, timestamp: currentTime });
-                    elizaLogger.debug(context, `[PnLAction] [resolveENSAddress] Time taken to resolve ENS address: ${new Date().getTime() - start.getTime()}ms`);
+                    ensCache.set(ensName, {
+                        ...response,
+                        timestamp: currentTime,
+                    });
+                    elizaLogger.debug(
+                        context,
+                        `[PnLAction] [resolveENSAddress] Time taken to resolve ENS address: ${new Date().getTime() - start.getTime()}ms`
+                    );
                     return response;
                 }
 
                 // If no address resolved, try again after delay
-                await new Promise(resolve => setTimeout(resolve, delay));
+                await new Promise((resolve) => setTimeout(resolve, delay));
                 delay *= 2; // Double the delay for next retry
                 retries--;
-
             } catch (error) {
-                elizaLogger.error(context.traceId, `[PnLAction] [resolveENSAddress] Attempt ${6-retries}/ 5 failed to resolve ENS name: ${ensName}`);
+                elizaLogger.error(
+                    context.traceId,
+                    `[PnLAction] [resolveENSAddress] Attempt ${6 - retries}/ 5 failed to resolve ENS name: ${ensName}`
+                );
                 if (retries === 1) {
                     return response;
                 }
-                await new Promise(resolve => setTimeout(resolve, delay));
+                await new Promise((resolve) => setTimeout(resolve, delay));
                 delay *= 2;
                 retries--;
             }
         }
 
-        elizaLogger.error(context.traceId, `[PnLAction] [resolveENSAddress] Unable to resolve ENS name after retries: ${ensName}`);
+        elizaLogger.error(
+            context.traceId,
+            `[PnLAction] [resolveENSAddress] Unable to resolve ENS name after retries: ${ensName}`
+        );
         return response;
-
     } catch (error) {
-        elizaLogger.error(context.traceId, `[PnLAction] [resolveENSAddress] Error resolving ENS: ${error}`);
+        elizaLogger.error(
+            context.traceId,
+            `[PnLAction] [resolveENSAddress] Error resolving ENS: ${error}`
+        );
         return response;
     }
 }

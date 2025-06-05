@@ -40,7 +40,7 @@ export const tokenSwapSummary: Action = {
         "TOKEN_SWAP_SUMMARIES",
     ],
     description:
-        "Provides insights into recent trading and swapping activities on Base, covering ERC20 tokens. This action highlights trending tokens, popular swaps/trades, and individual user activity. It can fetch and summarize purchase & swapping data for multiple users upon request.",
+        "Analyzes recent ERC20 trading and swapping activity on Base. Best used when the user wants to explore or investigate token trends, popular swaps, or individual user trade behavior.",
     validate: async function (
         runtime: IAgentRuntime,
         message: Memory,
@@ -76,6 +76,7 @@ export const tokenSwapSummary: Action = {
                 user: "assistant",
                 content: {
                     text: "I'll check the recent onchain transactions from your favorite creators and summarize them for you.",
+                    action: "SWAP_TOKEN",
                 },
             },
         ],
@@ -91,6 +92,7 @@ export const tokenSwapSummary: Action = {
                 user: "assistant",
                 content: {
                     text: "I've looked through their recent transactions. Here's a summary:\n\nVitalik Buterin (@VitalikButerin) has been buying $ETH and $MATIC. His most recent purchase was 100 $ETH.\n\nBalaji (@balajis) has been buying $SOL and $FTM. He's also been swapping $BTC for $ETH.\n\nWould you like me to suggest a token to buy based on their recent activity?",
+                    action: "SWAP_TOKEN",
                 },
             },
         ],
@@ -106,6 +108,7 @@ export const tokenSwapSummary: Action = {
                 user: "assistant",
                 content: {
                     text: "I've looked through their recent transactions. Here's a summary:\n\nVitalik Buterin (@VitalikButerin) has been buying $ETH and $MATIC. His most recent purchase was 100 $ETH.\n\nBalaji (@balajis) has been buying $SOL and $FTM. He's also been swapping $BTC for $ETH.\n\nWould you like me to suggest a token to buy based on their recent activity?",
+                    action: "SWAP_TOKEN",
                 },
             },
         ],
@@ -121,6 +124,7 @@ export const tokenSwapSummary: Action = {
                 user: "assistant",
                 content: {
                     text: "I'll check dickybima's recent token swap transactions and provide a summary:\n\nLooking at dickybima's recent activity, they've been actively trading tokens. Here are their recent swaps:\n\n- Bought 0.5 $ETH (0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)\n- Swapped some $USDC (0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48) for $MATIC (0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0)\n\nWould you like me to help you swap any of these tokens? I can assist you with the purchase process.",
+                    action: "SWAP_TOKEN",
                 },
             },
         ],
