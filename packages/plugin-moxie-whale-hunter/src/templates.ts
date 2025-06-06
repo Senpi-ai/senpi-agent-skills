@@ -4,7 +4,7 @@ export const topBaseTradersSummary = `
 
 If the question is about top base traders/whales, follow these instructions:
 
-## Top Base Traders:
+## Top Base Traders In The Last 24 Hours:
 {{topTraders}}
 
 #### General Guidelines:
@@ -19,7 +19,6 @@ If the question is about top base traders/whales, follow these instructions:
 - Mention the tokens by symbol and their associated token address using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
 
 **Limitations**
-- Only the last 24 hours of swaps are considered. Other timeframes cannot be requested.
 - Swaps = Trades (terms are interchangeable).
 - No pagination is available (e.g., "show me the next set of traders" is unsupported).
 - If a request falls outside these limitations, explain the specific reason why the agent cannot provide the summary.
