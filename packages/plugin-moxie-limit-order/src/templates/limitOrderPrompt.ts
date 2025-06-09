@@ -41,7 +41,7 @@ Please follow these steps to process the limit order intent:
        - Previously failed or errored out
        - Were not completed successfully
    - Identify the limit order details:
-    * Order type (BUY, SELL) - MUST be explicitly specified by user
+    * Order type (BUY, SELL) - MUST be explicitly specified by the user. If not specified, try to infer it from the user's message. If still not specified, return error.
      * Target price/price range
      * Order expiration (if specified)
      * Order size/quantity
