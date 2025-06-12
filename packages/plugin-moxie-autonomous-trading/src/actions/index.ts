@@ -12,7 +12,7 @@ import {
     generateObjectDeprecated,
 } from "@moxie-protocol/core";
 import { MoxieClientWallet, MoxieUser, MoxieWalletClient, formatUserMention } from "@moxie-protocol/moxie-agent-lib";
-import { BaseParams, createTradingRule, getAutonomousTradingRuleDetails, getErrorMessageFromCode, GroupTradeParams, LimitOrderParams, RuleType, 
+import { BaseParams, createTradingRule, getAutonomousTradingRuleDetails, getErrorMessageFromCode, GroupTradeParams, LimitOrderParams, RuleType, StopLossParams,
     UserTradeParams, agentWalletNotFound, delegateAccessNotFound, moxieWalletClientNotFound, checkUserCommunicationPreferences, Condition } from "../utils/utility";
 import { autonomousTradingTemplate } from "../templates";
 
@@ -45,6 +45,8 @@ export interface AutonomousTradingRuleParams {
     sellPercentage?: number;
     tokenAge?: TokenAge;
     marketCap?: MarketCap;
+    stopLossPercentage?: number;
+    stopLossDurationInSec?: number;
 }
 
 export interface AutonomousTradingError {
@@ -183,6 +185,8 @@ export const autonomousTradingAction: Action = {
             let groupTradeParams: GroupTradeParams;
             let userTradeParams: UserTradeParams;
             let limitOrderParams: LimitOrderParams;
+            let stopLossParams: StopLossParams;
+
             let ruleTriggers: 'GROUP' | 'USER';
 
             if (ruleType === 'GROUP_COPY_TRADE' || ruleType === 'GROUP_COPY_TRADE_AND_PROFIT') {
@@ -233,6 +237,16 @@ export const autonomousTradingAction: Action = {
                 };
             }
 
+            if (params.stopLossPercentage) {
+                stopLossParams = {
+                    sellConditions: {
+                        sellPercentage: 100,
+                        priceChangePercentage: params.stopLossPercentage
+                    },
+                    stopLossValidityInSeconds: params.stopLossDurationInSec || 7 * 24 * 60 * 60
+                };
+            }
+
             try {
                 const response = await createTradingRule(
                     state.authorizationHeader as string,
@@ -242,7 +256,8 @@ export const autonomousTradingAction: Action = {
                     ruleTriggers,
                     groupTradeParams,
                     userTradeParams,
-                    limitOrderParams
+                    limitOrderParams,
+                    stopLossParams
                 );
 
                 await callback?.({

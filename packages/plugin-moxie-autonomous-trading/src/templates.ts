@@ -35,6 +35,8 @@ Please follow these steps to process the user input and generate the appropriate
    - sellTriggerCount: For COPY_SELL, how many users need to sell to trigger a sell.
    - sellTriggerCondition: For COPY_SELL, should the trigger happen when "ANY", "ALL", or a specific number of users sell.
    - sellPercentage: What percentage of their tokens must users sell for it to qualify as a trigger.
+   - stopLossPercentage: Find the stop loss percentage mentioned. Capture the exact percentage as stated by the user.
+   - stopLossDurationInSec (optional): Find the duration for which the stop loss should be active. Convert to seconds.
 
    For GROUP_COPY_TRADE and GROUP_COPY_TRADE_AND_PROFIT:
    - groupId: Find the match of #[groupname|id] and extract the 'id' part.
@@ -48,6 +50,9 @@ Please follow these steps to process the user input and generate the appropriate
    - sellTriggerCount: For COPY_SELL, how many group members need to sell to trigger a sell.
    - sellTriggerCondition: For COPY_SELL, should the trigger happen when "ANY", "ALL", or a specific number of group members sell.
    - sellPercentage: What percentage of their tokens must group members sell for it to qualify as a trigger.
+   - stopLossPercentage: Find the stop loss percentage mentioned. Capture the exact percentage as stated by the user.
+   - stopLossDurationInSec (optional): Find the duration for which the stop loss should be active. Convert to seconds.
+
 
 4. Look for optional token-level filters:
    - tokenAge: Look for mentions of the token age. Extract min and max values if present. Convert any time units (sec/hours/min/days/month/year) to seconds.
