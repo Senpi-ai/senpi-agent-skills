@@ -46,7 +46,7 @@ export default {
         elizaLogger.log("[PostContent] Starting post content");
 
         try {
-            const previousMessage = state?.recentMessagesData?.slice(-3);
+            const previousMessage = state?.recentMessagesData?.slice(0,3);
             previousMessage.forEach((msg) => (msg.embedding = []));
 
             if (previousMessage.length < 3) {

@@ -42,6 +42,10 @@ export interface ModifyGroupMembersInput {
     members: string[];
 }
 
+export interface GenerateUniqueGroupNameInput {
+    groupBaseName: string;
+}
+
 export interface DeleteGroupInput {
     groupId: string;
     groupName?: string;
