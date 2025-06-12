@@ -27,9 +27,6 @@ Step 1: Identify which type of query the question refers to. It might be about a
 - Mention the token name in the introduction, do not add the token name/symbol to the table.
 - Skip total PnL.
 
-<<<<<<< HEAD
-#### Required These Exact Fields in Response:
-=======
 ### If the question is about group PnL:
 - Mention the group name in the introduction.
 - Show total PnL for the group.
@@ -37,7 +34,6 @@ Step 1: Identify which type of query the question refers to. It might be about a
 - Sort members by their PnL (highest to lowest).
 
 #### Required Fields in Response:
->>>>>>> d9ea25dfc8f9ecffd5b798af74189898f445e0a8
 - User Name (only for token PnL)
 - Token Symbol (Mention the token symbol and their associated token address prefixed by $ using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006])
 - Total Profit/Loss
@@ -55,18 +51,6 @@ export const extractWalletTemplate = `
 Your objective is to identify the type of the request and extract important information from a given user message, then generate a structured JSON response.
 
 ### Query types
-<<<<<<< HEAD
-1. User/Wallet/User&Token queries
-   - TYPE: "wallet"
-   - VALUE: "0x....."
-
-   - TYPE: "ens"
-   - VALUE: "chetan.eth"
-
-   - TYPE: "moxieUserId"
-   - VALUE: "M[number_string]"
-     Can also contain token address to specifically show PnL for the user & that token.
-=======
 1. User/Wallet/User&Token or Group queries
    - TYPE: "wallet"
    - VALUE: "0x....."
@@ -82,7 +66,6 @@ Your objective is to identify the type of the request and extract important info
    - VALUE: "[group_id]"
      Extract only the UUID for group queries.
 
->>>>>>> d9ea25dfc8f9ecffd5b798af74189898f445e0a8
 
 2. Criteria for Token PnL:
    - TYPE: "tokenAddress"
@@ -128,5 +111,5 @@ General rules:
 - If the query mentions "my PnL", or "I earned/lost" use the following UserId: {{moxieUserId}}
 - If the query mentions "my agent PnL/senpi PnL" use the following wallet address: {{agentWalletAddress}}
 - Agent can also be called senpi.
-- Focus on the latest message to extract information.
+- Focus on the latest message to extract information. If no sufficient information is provided in the latest message, use the user's previous messages in the conversation history for additional context and extract additional information from there.
 `;

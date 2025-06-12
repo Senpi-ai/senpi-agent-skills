@@ -21,16 +21,15 @@ import { ETH_ADDRESS } from "../constants/constants";
 export const previewDustAction: Action = {
     name: "PREVIEW_DUST_TOKENS",
     similes: [
-        "PREVIEW_DUST",
         "SHOW_DUST_TOKENS",
         "WHAT_TOKENS_WILL_BE_DUSTED",
         "LIST_LOW_VALUE_TOKENS",
         "SHOW_TOKENS_BELOW_USD",
         "SHOW_TOKENS_BELOW_VALUE",
         "SHOW_TOKENS_BELOW_THRESHOLD",
-        "DUST_PREVIEW",
         "HOW_MUCH_DUST_IN_WALLET",
         "HOW_MANY_DUST_TOKENS_IN_WALLET",
+        "WHAT_VALUE_OF_DUST_IN_WALLET",
     ],
     description:
         "Select this action when user request to preview/show how much or how many dust or low-value tokens would be dusted based on USD threshold given by user. By default, the threshold is $5. Use this action if user only ask to preview or display the dust tokens, NOT when user ask to dust the tokens.",
@@ -198,6 +197,62 @@ export const previewDustAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: `Preview: You have 4 dust token(s) totaling ~$12.45:\n- 0xabc... (100000 tokens worth ~$2.14)\n- 0xdef... (90000 tokens worth ~$3.20)\n- 0x123... (5000 tokens worth ~$2.08)\n- 0x456... (30000 tokens worth ~$5.03)`,
+                    action: "PREVIEW_DUST_TOKENS",
+                },
+            },
+        ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Preview dusting my wallet",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
+                    action: "PREVIEW_DUST_TOKENS",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Great! can you dust them all?",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "You are trying to dust tokens under $5 from your agent wallet. Depending on the number of tokens, this may take a several minutes to complete. \n\nDo you want to proceed?",
+                    action: "DUST_WALLET_TO_ETH",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Yes, proceed",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Dusted 1 token under $5 into ETH.",
+                    action: "DUST_WALLET_TO_ETH",
+                },
+            },
+        ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "What's the value of dust in my agent wallet?",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "You have 1 dust token(s) totaling ~ $0.08: 0x123... (1000 tokens worth $0.08)",
                     action: "PREVIEW_DUST_TOKENS",
                 },
             },
