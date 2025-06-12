@@ -4,7 +4,7 @@ import { fetchPnlData, fetchTotalPnl, preparePnlQuery, prepareGroupPnlQuery } fr
 import { MoxieUser, moxieUserService } from "@moxie-protocol/moxie-agent-lib";
 import { ethers } from "ethers";
 import * as agentLib from "@moxie-protocol/moxie-agent-lib";
-import { getGroupDetails } from "@moxie-protocol/plugin-moxie-groups/src/utils";
+import { generateUniqueGroupName, getGroupDetails } from "@moxie-protocol/plugin-moxie-groups/src/utils";
 
 export const PnLAction = {
     name: "PROFIT_LOSS",
@@ -253,6 +253,17 @@ export const PnLAction = {
             for await (const textPart of response) {
                 callback({ text: textPart, action: "PROFIT_LOSS" });
             }
+
+            const groupName = await generateUniqueGroupName(state.authorizationHeader as string, "KTA_winners");
+
+            callback({
+                text: "Let’s create your first group using these top traders. I’ll watch their trades to trigger your strategies.",
+                action: "PROFIT_LOSS",
+                cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
+                metadata: {
+                    callbackPrompt : `Create the ${groupName} group and add all of the above users to it.`
+                }
+            })
 
             return true;
         } catch (error) {
