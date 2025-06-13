@@ -20,6 +20,27 @@ IMPORTANT INITIAL VALIDATION:
        - Request for confirmation to proceed with Step 1
      Example prompt_message format:
      "I apologize, but I cannot process [operations] in a single step at the moment. Here's how we can proceed:\n\nStep 1: [First operation details]\nStep 2: [Second operation details]\n\nWould you like me to proceed with Step 1 ([first operation description]) now? Please confirm with yes or no."
+5. Check for stop loss orders (CRITICAL - DO NOT MISS THIS CHECK):
+    * ALWAYS scan for stop loss indicators before any other processing
+    * Must analyze order intent for stop loss behavior:
+     - Check for explicit stop loss phrases:
+       * "stop loss", "stop-loss", "stoploss"
+     - Analyze order logic for stop loss patterns:
+       * Selling triggered by price decrease
+       * Price target below current market price
+       * Conditional sell orders based on price drops
+       * Orders combining price floors with sells
+     - Evaluate full order context:
+       * Compare target price to current price
+       * Check if sell is conditional on price decrease
+       * Look for protective selling behavior
+       * Identify downside risk management intent
+    * If ANY of these indicators are detected:
+     - IMMEDIATELY halt all other processing
+     - Return this EXACT error message with no modifications:
+       "\n**Stop Orders (sell below market) aren't supported yet—but they're coming soon!**  \nSoon, I'll be able to **protect your downside automatically**. 🚀"
+    * Double-check this scan runs on the FULL message text
+    * Never proceed with order processing if stop loss is detected
 
 
 Please follow these steps to process the transaction intent:
