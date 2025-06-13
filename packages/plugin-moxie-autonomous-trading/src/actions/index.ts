@@ -11,28 +11,9 @@ import {
     composeContext,
     generateObjectDeprecated,
 } from "@moxie-protocol/core";
-import {
-    MoxieClientWallet,
-    MoxieUser,
-    MoxieWalletClient,
-    formatUserMention,
-} from "@moxie-protocol/moxie-agent-lib";
-import {
-    BaseParams,
-    createTradingRule,
-    getAutonomousTradingRuleDetails,
-    getErrorMessageFromCode,
-    GroupTradeParams,
-    LimitOrderParams,
-    RuleType,
-    StopLossParams,
-    UserTradeParams,
-    agentWalletNotFound,
-    delegateAccessNotFound,
-    moxieWalletClientNotFound,
-    checkUserCommunicationPreferences,
-    Condition,
-} from "../utils/utility";
+import { MoxieClientWallet, MoxieUser, MoxieWalletClient, formatUserMention } from "@moxie-protocol/moxie-agent-lib";
+import { BaseParams, createTradingRule, getAutonomousTradingRuleDetails, getErrorMessageFromCode, GroupTradeParams, LimitOrderParams, RuleType, StopLossParams,
+    UserTradeParams, agentWalletNotFound, delegateAccessNotFound, moxieWalletClientNotFound, checkUserCommunicationPreferences, Condition } from "../utils/utility";
 import { autonomousTradingTemplate } from "../templates";
 
 export interface TokenAge {
@@ -226,10 +207,7 @@ export const autonomousTradingAction: Action = {
                         : undefined,
             };
 
-            if (
-                params.sellTriggerType === "COPY_SELL" ||
-                params.sellTriggerType === "BOTH"
-            ) {
+            if (params.sellTriggerType === 'COPY_SELL' || (params.sellTriggerType === 'BOTH' && (params?.sellTriggerCondition || params?.sellTriggerCount))) {
                 baseParams.sellConfig = {
                     buyToken: {
                         symbol: "ETH",
@@ -250,7 +228,7 @@ export const autonomousTradingAction: Action = {
             let limitOrderParams: LimitOrderParams;
             let stopLossParams: StopLossParams;
 
-            let ruleTriggers: "GROUP" | "USER";
+            let ruleTriggers: 'GROUP' | 'USER';
 
             if (
                 ruleType === "GROUP_COPY_TRADE" ||
@@ -317,6 +295,16 @@ export const autonomousTradingAction: Action = {
                     },
                     stopLossValidityInSeconds:
                         params.stopLossDurationInSec || 7 * 24 * 60 * 60,
+                };
+            }
+
+            if (params.stopLossPercentage) {
+                stopLossParams = {
+                    sellConditions: {
+                        sellPercentage: 100,
+                        priceChangePercentage: params.stopLossPercentage
+                    },
+                    stopLossValidityInSeconds: params.stopLossDurationInSec || 7 * 24 * 60 * 60
                 };
             }
 
