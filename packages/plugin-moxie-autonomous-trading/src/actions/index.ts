@@ -169,7 +169,7 @@ export const autonomousTradingAction: Action = {
                 } : undefined
             };
 
-            if (params.sellTriggerType === 'COPY_SELL' || params.sellTriggerType === 'BOTH') {
+            if (params.sellTriggerType === 'COPY_SELL' || (params.sellTriggerType === 'BOTH' && (params?.sellTriggerCondition || params?.sellTriggerCount))) {
                 baseParams.sellConfig = {
                     buyToken: {
                         symbol: 'ETH',
