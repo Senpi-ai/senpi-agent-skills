@@ -17,8 +17,18 @@ import {
 import * as templates from "../templates";
 import { fetchSwapData } from "../utils";
 import { TOP_CREATORS_COUNT } from "../config";
-import { getMoxieIdsFromMessage, streamTextByLines, handleIneligibleMoxieUsers } from "./utils";
-import { getTokenDetails, getTrendingTokenDetails, MoxieAgentDBAdapter, MoxieUser, moxieUserService } from "@moxie-protocol/moxie-agent-lib";
+import {
+    getMoxieIdsFromMessage,
+    streamTextByLines,
+    handleIneligibleMoxieUsers,
+} from "./utils";
+import {
+    getTokenDetails,
+    getTrendingTokenDetails,
+    MoxieAgentDBAdapter,
+    MoxieUser,
+    moxieUserService,
+} from "@moxie-protocol/moxie-agent-lib";
 export const tokenSwapSummary: Action = {
     name: "TRENDING_TOKENS",
     suppressInitialMessage: true,
@@ -30,7 +40,7 @@ export const tokenSwapSummary: Action = {
         "TOKEN_SWAP_SUMMARIES",
     ],
     description:
-        "Provides insights into recent trading and swapping activities on Base, covering ERC20 tokens. This action highlights trending tokens, popular swaps/trades, and individual user activity. It can fetch and summarize purchase & swapping data for multiple users upon request.",
+        "Analyzes recent ERC20 trading and swapping activity on Base. Best used when the user wants to explore or investigate token trends, popular swaps, or individual user trade behavior.",
     validate: async function (
         runtime: IAgentRuntime,
         message: Memory,
@@ -66,6 +76,7 @@ export const tokenSwapSummary: Action = {
                 user: "assistant",
                 content: {
                     text: "I'll check the recent onchain transactions from your favorite creators and summarize them for you.",
+                    action: "SWAP_TOKEN",
                 },
             },
         ],
@@ -81,6 +92,7 @@ export const tokenSwapSummary: Action = {
                 user: "assistant",
                 content: {
                     text: "I've looked through their recent transactions. Here's a summary:\n\nVitalik Buterin (@VitalikButerin) has been buying $ETH and $MATIC. His most recent purchase was 100 $ETH.\n\nBalaji (@balajis) has been buying $SOL and $FTM. He's also been swapping $BTC for $ETH.\n\nWould you like me to suggest a token to buy based on their recent activity?",
+                    action: "SWAP_TOKEN",
                 },
             },
         ],
@@ -96,6 +108,7 @@ export const tokenSwapSummary: Action = {
                 user: "assistant",
                 content: {
                     text: "I've looked through their recent transactions. Here's a summary:\n\nVitalik Buterin (@VitalikButerin) has been buying $ETH and $MATIC. His most recent purchase was 100 $ETH.\n\nBalaji (@balajis) has been buying $SOL and $FTM. He's also been swapping $BTC for $ETH.\n\nWould you like me to suggest a token to buy based on their recent activity?",
+                    action: "SWAP_TOKEN",
                 },
             },
         ],
@@ -111,6 +124,7 @@ export const tokenSwapSummary: Action = {
                 user: "assistant",
                 content: {
                     text: "I'll check dickybima's recent token swap transactions and provide a summary:\n\nLooking at dickybima's recent activity, they've been actively trading tokens. Here are their recent swaps:\n\n- Bought 0.5 $ETH (0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)\n- Swapped some $USDC (0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48) for $MATIC (0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0)\n\nWould you like me to help you swap any of these tokens? I can assist you with the purchase process.",
+                    action: "SWAP_TOKEN",
                 },
             },
         ],
@@ -125,13 +139,15 @@ async function swapSummaryHandler(
     callback?: HandlerCallback,
     tokenType: "ALL" | "CREATOR_COIN" | "NON_CREATOR_COIN" = "ALL"
 ) {
-
     elizaLogger.debug(`== in summary handler ==`);
     const context = composeContext({
         state: {
             ...state,
             message: message.content.text,
-            currentDate: new Date().toISOString().replace('T', ' ').substring(0, 19),
+            currentDate: new Date()
+                .toISOString()
+                .replace("T", " ")
+                .substring(0, 19),
         },
         template: templates.swapSummaryInputContextExtraction,
     });
@@ -193,13 +209,13 @@ async function swapSummaryHandler(
                     "Invalid mention format. Please use format: @[name|MID]"
             ) {
                 const errorResponse = {
-                    text: `Invalid mention format. Please use format: @[name|MID]`,
+                    text: `Invalid mention format. Please mention a name using **@name** and select it from the dropdown list. The name will appear as a highlighted tag once correctly selected.`,
                     content: {
                         success: false,
                         error: {
                             code: "INVALID_MENTION_FORMAT",
                             message:
-                                "Invalid mention format. Please use format: @[name|MID]",
+                                "Invalid mention format. Please mention a name using **@name** and select it from the dropdown list. The name will appear as a highlighted tag once correctly selected.",
                         },
                         metadata: {
                             timestamp: new Date().toISOString(),
@@ -222,14 +238,23 @@ async function swapSummaryHandler(
     let newstate;
     let totalFreeQueries;
     let usedFreeQueries;
-    let eligibleMoxieIds: string[] = [], ineligibleMoxieUsers = []
+    let eligibleMoxieIds: string[] = [],
+        ineligibleMoxieUsers = [];
 
     if (!isGeneralQuery) {
         let userInfoBatchOutput;
         try {
-            userInfoBatchOutput = await moxieUserService.getUserByMoxieIdMultipleTokenGate(moxieIds, state.authorizationHeader as string, stringToUuid("SOCIAL_ALPHA"));
+            userInfoBatchOutput =
+                await moxieUserService.getUserByMoxieIdMultipleTokenGate(
+                    moxieIds,
+                    state.authorizationHeader as string,
+                    stringToUuid("SOCIAL_ALPHA")
+                );
         } catch (error) {
-            elizaLogger.error("Error fetching user info batch:", error instanceof Error ? error.stack : error);
+            elizaLogger.error(
+                "Error fetching user info batch:",
+                error instanceof Error ? error.stack : error
+            );
             await callback({
                 text: "There was an error processing your request. Please try again later.",
                 action: "SWAP_SUMMARY_ERROR",
@@ -237,7 +262,9 @@ async function swapSummaryHandler(
             return false;
         }
         totalFreeQueries = userInfoBatchOutput.freeTrialLimit;
-        usedFreeQueries = userInfoBatchOutput.freeTrialLimit - userInfoBatchOutput.remainingFreeTrialCount;
+        usedFreeQueries =
+            userInfoBatchOutput.freeTrialLimit -
+            userInfoBatchOutput.remainingFreeTrialCount;
         for (const userInfo of userInfoBatchOutput.users) {
             if (userInfo.errorDetails) {
                 ineligibleMoxieUsers.push(userInfo.errorDetails);
@@ -246,13 +273,14 @@ async function swapSummaryHandler(
             }
         }
 
-        elizaLogger.debug(`eligibleMoxieIds: ${eligibleMoxieIds}, ineligibleMoxieUsers: ${ineligibleMoxieUsers}`);
+        elizaLogger.debug(
+            `eligibleMoxieIds: ${eligibleMoxieIds}, ineligibleMoxieUsers: ${ineligibleMoxieUsers}`
+        );
 
         if (ineligibleMoxieUsers.length >= 0 && eligibleMoxieIds.length == 0) {
             await handleIneligibleMoxieUsers(ineligibleMoxieUsers, callback);
             return false;
         }
-
     } else {
         eligibleMoxieIds = moxieIds;
     }
@@ -266,12 +294,20 @@ async function swapSummaryHandler(
 
     if (allSwaps.length === 0) {
         if (eligibleMoxieIds.length <= 3) {
-            const userProfiles = []
+            const userProfiles = [];
             let userProfilesOutput;
             try {
-                userProfilesOutput = await moxieUserService.getUserByMoxieIdMultipleTokenGate(eligibleMoxieIds, state.authorizationHeader as string, stringToUuid("SOCIAL_ALPHA"));
+                userProfilesOutput =
+                    await moxieUserService.getUserByMoxieIdMultipleTokenGate(
+                        eligibleMoxieIds,
+                        state.authorizationHeader as string,
+                        stringToUuid("SOCIAL_ALPHA")
+                    );
             } catch (error) {
-                elizaLogger.error("Error fetching user info batch:", error instanceof Error ? error.stack : error);
+                elizaLogger.error(
+                    "Error fetching user info batch:",
+                    error instanceof Error ? error.stack : error
+                );
                 await callback({
                     text: "There was an error processing your request. Please try again later.",
                     action: "SWAP_SUMMARY_ERROR",
@@ -283,8 +319,16 @@ async function swapSummaryHandler(
                     userProfiles.push(userInfo.user);
                 }
             }
-            const totalWallets = Array.from(userProfiles.values()).reduce((sum, profile) => sum + profile.wallets.length, 0);
-            const userLinks = Array.from(userProfiles.values()).map(profile => `[@${profile.userName}](https://moxie.xyz/profile/${profile.id})`).join(", ");
+            const totalWallets = Array.from(userProfiles.values()).reduce(
+                (sum, profile) => sum + profile.wallets.length,
+                0
+            );
+            const userLinks = Array.from(userProfiles.values())
+                .map(
+                    (profile) =>
+                        `[@${profile.userName}](https://moxie.xyz/profile/${profile.id})`
+                )
+                .join(", ");
             callback({
                 text: `I scanned ${totalWallets} wallets for ${userLinks} and I was not able to find any recent trades. Do you want to analyze their portfolio?`,
             });
@@ -307,7 +351,7 @@ async function swapSummaryHandler(
         tokenDetails = await getTrendingTokenDetails(tokenAddresses);
     }
 
-    elizaLogger.debug(`tokenDetails: ${JSON.stringify(tokenDetails)}`)
+    elizaLogger.debug(`tokenDetails: ${JSON.stringify(tokenDetails)}`);
 
     const memoryObj = await runtime.messageManager.getMemories({
         roomId: message.roomId,
@@ -315,7 +359,7 @@ async function swapSummaryHandler(
         unique: true,
     });
 
-    const formattedHistory = memoryObj.map(memory => {
+    const formattedHistory = memoryObj.map((memory) => {
         const role = memory.userId === runtime.agentId ? "Assistant" : "User";
         return `${role}: ${memory.content.text}`;
     });
@@ -330,7 +374,6 @@ async function swapSummaryHandler(
         message: message.content.text,
         previousConversations: memoryContents.length > 1 ? memoryContents : "",
     });
-
 
     // Create a summary context for the model
     let swapSummaryContext;
@@ -360,8 +403,8 @@ async function swapSummaryHandler(
             modelProvider: ModelProviderName.OPENAI,
             temperature: 1.0,
             apiKey: process.env.OPENAI_API_KEY!,
-            modelClass: ModelClass.LARGE
-        }
+            modelClass: ModelClass.LARGE,
+        },
     });
 
     // await streamTextByLines(summaryStream, (text: string) => {

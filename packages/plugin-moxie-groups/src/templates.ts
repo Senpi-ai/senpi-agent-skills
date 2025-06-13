@@ -71,6 +71,8 @@ Instructions:
 6. Error Handling:
    If the action cannot be determined, invalid combinations are provided, or required parameters are missing, return an error response with a list of missing fields and a prompt message.
 
+   In the special case where the user mentions a group name but does not provide a groupId, you should prompt the user with this exact message: "Please provide the groupId for the group you want to manage.".
+
 Remember to validate Ethereum addresses when extracting user IDs from wallet addresses. Ensure that all required parameters are present before proceeding with an action. If multiple actions are possible or if required parameters are missing, prepare an error response.
 
 Now, please process the user's conversation history and provide your response, starting with your analysis in <analysis_process> tags, followed by the JSON response with \`\`\`json and \`\`\` at the end.
