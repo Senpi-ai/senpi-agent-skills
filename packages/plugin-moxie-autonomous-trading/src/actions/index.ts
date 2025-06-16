@@ -11,9 +11,28 @@ import {
     composeContext,
     generateObjectDeprecated,
 } from "@moxie-protocol/core";
-import { MoxieClientWallet, MoxieUser, MoxieWalletClient, formatUserMention } from "@moxie-protocol/moxie-agent-lib";
-import { BaseParams, createTradingRule, getAutonomousTradingRuleDetails, getErrorMessageFromCode, GroupTradeParams, LimitOrderParams, RuleType, StopLossParams,
-    UserTradeParams, agentWalletNotFound, delegateAccessNotFound, moxieWalletClientNotFound, checkUserCommunicationPreferences, Condition } from "../utils/utility";
+import {
+    MoxieClientWallet,
+    MoxieUser,
+    MoxieWalletClient,
+    formatUserMention,
+} from "@moxie-protocol/moxie-agent-lib";
+import {
+    BaseParams,
+    createTradingRule,
+    getAutonomousTradingRuleDetails,
+    getErrorMessageFromCode,
+    GroupTradeParams,
+    LimitOrderParams,
+    RuleType,
+    StopLossParams,
+    UserTradeParams,
+    agentWalletNotFound,
+    delegateAccessNotFound,
+    moxieWalletClientNotFound,
+    checkUserCommunicationPreferences,
+    Condition,
+} from "../utils/utility";
 import { autonomousTradingTemplate } from "../templates";
 
 export interface TokenAge {
@@ -130,6 +149,10 @@ export const autonomousTradingAction: Action = {
                 traceId,
                 `[AUTONOMOUS_TRADING] [${moxieUserId}] [AUTONOMOUS_TRADING] [checkUserCommunicationPreferences] communicationPreference: ${communicationPreference}`
             );
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4216a4c3dbf09683fbf5a6aafcfdd2928df4cd07
             // Compose autonomous trading context
             // Compose swap context
             const swapContext = composeContext({
@@ -207,14 +230,25 @@ export const autonomousTradingAction: Action = {
                         : undefined,
             };
 
+<<<<<<< HEAD
             if (params.sellTriggerType === 'COPY_SELL' || (params.sellTriggerType === 'BOTH' && (params?.sellTriggerCondition || params?.sellTriggerCount))) {
+=======
+            if (
+                params.sellTriggerType === "COPY_SELL" ||
+                params.sellTriggerType === "BOTH"
+            ) {
+>>>>>>> 4216a4c3dbf09683fbf5a6aafcfdd2928df4cd07
                 baseParams.sellConfig = {
                     buyToken: {
                         symbol: "ETH",
                         address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
                     },
-                    // triggerPercentage: params.sellPercentage,
-                    triggerPercentage: 50, // Hardcoded for now
+                    triggerPercentage: Math.min(
+                        // default to 100
+                        params.sellPercentage ?? 100,
+                        // max to 100
+                        100
+                    ),
                     condition:
                         params.sellTriggerCondition === "ANY"
                             ? Condition.ANY
@@ -228,7 +262,7 @@ export const autonomousTradingAction: Action = {
             let limitOrderParams: LimitOrderParams;
             let stopLossParams: StopLossParams;
 
-            let ruleTriggers: 'GROUP' | 'USER';
+            let ruleTriggers: "GROUP" | "USER";
 
             if (
                 ruleType === "GROUP_COPY_TRADE" ||
@@ -284,6 +318,7 @@ export const autonomousTradingAction: Action = {
                         priceChangePercentage: params.profitPercentage,
                     },
                     limitOrderValidityInSeconds: 7 * 24 * 60 * 60, // 7 days in seconds
+<<<<<<< HEAD
                 };
             }
 
@@ -295,6 +330,8 @@ export const autonomousTradingAction: Action = {
                     },
                     stopLossValidityInSeconds:
                         params.stopLossDurationInSec || 7 * 24 * 60 * 60,
+=======
+>>>>>>> 4216a4c3dbf09683fbf5a6aafcfdd2928df4cd07
                 };
             }
 
@@ -302,9 +339,10 @@ export const autonomousTradingAction: Action = {
                 stopLossParams = {
                     sellConditions: {
                         sellPercentage: 100,
-                        priceChangePercentage: params.stopLossPercentage
+                        priceChangePercentage: params.stopLossPercentage,
                     },
-                    stopLossValidityInSeconds: params.stopLossDurationInSec || 7 * 24 * 60 * 60
+                    stopLossValidityInSeconds:
+                        params.stopLossDurationInSec || 7 * 24 * 60 * 60,
                 };
             }
 
