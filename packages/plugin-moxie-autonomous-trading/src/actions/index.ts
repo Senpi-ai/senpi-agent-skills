@@ -236,7 +236,12 @@ export const autonomousTradingAction: Action = {
                         symbol: "ETH",
                         address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
                     },
-                    triggerPercentage: params.sellPercentage,
+                    triggerPercentage: Math.min(
+                        // default to 100
+                        params.sellPercentage ?? 100,
+                        // max to 100
+                        100
+                    ),
                     condition:
                         params.sellTriggerCondition === "ANY"
                             ? Condition.ANY
