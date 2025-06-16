@@ -12,9 +12,9 @@ Step 1: Identify which type of query the question refers to. It might be about a
 - Write a quick intro about the PnL analysis. Do mention that this PnL is for realized gains from wallets trading on DEXs. The PnL amounts are indicative only.
 - Agent can also be called senpi.
 - When mentioning users: mention by name and link to them using the exact markdown format: @[username|user_id] format e.g. @[zoravar|M234]. If username is not available, use the exact format: @[user_id|user_id] e.g. @[M234|M234]. Do not add any extra characters such as slashes.
+- When mentioning token symbols: mention the token symbol and their associated token address prefixed by $ using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
 - At the end of the response, mention the timeframe the PnL was for and any other available timeframe options. For example, if the user asked for a specific timeframe, mention only the other available options (e.g., if 1d was asked, mention 7d, 30d, and lifetime).
 - Always output the same number of entries received in the PnL dataset.
-- When mentioning token symbols: mention the token symbol and their associated token address prefixed by $ using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006].
 
 #### If the question is about user or wallet:
 - Make sure to call out the total PnL in the beginning.
@@ -27,24 +27,13 @@ Step 1: Identify which type of query the question refers to. It might be about a
 - Mention the token name in the introduction, do not add the token name/symbol to the table.
 - Skip total PnL.
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-#### Required These Exact Fields in Response:
-=======
->>>>>>> 7263fd964ec4ad703026aaed088d3dc07bf253d8
 ### If the question is about group PnL:
 - Mention the group name in the introduction.
 - Show total PnL for the group.
 - Show individual member PnLs in the table.
 - Sort members by their PnL (highest to lowest).
 
-<<<<<<< HEAD
-#### Required These Exact Fields in Response:
-=======
 #### Required Fields in Response:
->>>>>>> d9ea25dfc8f9ecffd5b798af74189898f445e0a8
->>>>>>> 7263fd964ec4ad703026aaed088d3dc07bf253d8
 - User Name (only for token PnL)
 - Token Symbol (Mention the token symbol and their associated token address prefixed by $ using the exact markdown format: $[tokenSymbol|tokenAddress] format e.g. $[WETH|0x4200000000000000000000000000000000000006])
 - Total Profit/Loss
@@ -62,24 +51,6 @@ export const extractWalletTemplate = `
 Your objective is to identify the type of the request and extract important information from a given user message, then generate a structured JSON response.
 
 ### Query types
-<<<<<<< HEAD
-1. User/Wallet/User&Token or Group queries
-=======
-<<<<<<< HEAD
-1. User/Wallet/User&Token queries
->>>>>>> 7263fd964ec4ad703026aaed088d3dc07bf253d8
-   - TYPE: "wallet"
-   - VALUE: "0x....."
-
-   - TYPE: "ens"
-   - VALUE: "chetan.eth"
-
-   - TYPE: "moxieUserId"
-   - VALUE: "M[number_string]"
-     Can also contain token address to specifically show PnL for the user & that token.
-<<<<<<< HEAD
-=======
-=======
 1. User/Wallet/User&Token or Group queries
    - TYPE: "wallet"
    - VALUE: "0x....."
@@ -90,16 +61,11 @@ Your objective is to identify the type of the request and extract important info
    - TYPE: "moxieUserId"
    - VALUE: "M[number_string]"
      Can also contain token address to specifically show PnL for the user & that token.
->>>>>>> 7263fd964ec4ad703026aaed088d3dc07bf253d8
 
    - TYPE: "group"
    - VALUE: "[group_id]"
      Extract only the UUID for group queries.
 
-<<<<<<< HEAD
-=======
->>>>>>> d9ea25dfc8f9ecffd5b798af74189898f445e0a8
->>>>>>> 7263fd964ec4ad703026aaed088d3dc07bf253d8
 
 2. Criteria for Token PnL:
    - TYPE: "tokenAddress"

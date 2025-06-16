@@ -149,10 +149,7 @@ export const autonomousTradingAction: Action = {
                 traceId,
                 `[AUTONOMOUS_TRADING] [${moxieUserId}] [AUTONOMOUS_TRADING] [checkUserCommunicationPreferences] communicationPreference: ${communicationPreference}`
             );
-<<<<<<< HEAD
-=======
 
->>>>>>> 4216a4c3dbf09683fbf5a6aafcfdd2928df4cd07
             // Compose autonomous trading context
             // Compose swap context
             const swapContext = composeContext({
@@ -230,14 +227,10 @@ export const autonomousTradingAction: Action = {
                         : undefined,
             };
 
-<<<<<<< HEAD
-            if (params.sellTriggerType === 'COPY_SELL' || (params.sellTriggerType === 'BOTH' && (params?.sellTriggerCondition || params?.sellTriggerCount))) {
-=======
             if (
                 params.sellTriggerType === "COPY_SELL" ||
                 params.sellTriggerType === "BOTH"
             ) {
->>>>>>> 4216a4c3dbf09683fbf5a6aafcfdd2928df4cd07
                 baseParams.sellConfig = {
                     buyToken: {
                         symbol: "ETH",
@@ -318,20 +311,6 @@ export const autonomousTradingAction: Action = {
                         priceChangePercentage: params.profitPercentage,
                     },
                     limitOrderValidityInSeconds: 7 * 24 * 60 * 60, // 7 days in seconds
-<<<<<<< HEAD
-                };
-            }
-
-            if (params.stopLossPercentage) {
-                stopLossParams = {
-                    sellConditions: {
-                        sellPercentage: 100,
-                        priceChangePercentage: params.stopLossPercentage,
-                    },
-                    stopLossValidityInSeconds:
-                        params.stopLossDurationInSec || 7 * 24 * 60 * 60,
-=======
->>>>>>> 4216a4c3dbf09683fbf5a6aafcfdd2928df4cd07
                 };
             }
 
