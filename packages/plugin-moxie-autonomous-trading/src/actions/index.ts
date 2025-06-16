@@ -186,6 +186,22 @@ export const autonomousTradingAction: Action = {
             // Extract parameters from response
             const { ruleType, params } = autonomousTradingResponse;
 
+            if (params.moxieIds && params.moxieIds.length > 1 && !params.timeDurationInSec) {
+                callback?.({
+                    text: `Please specify the duration between which copied traders make trades to be counted for the rule`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+
+            if (params.conditionValue && params.conditionValue > 1 && !params.timeDurationInSec) {
+                callback?.({
+                    text: `Please specify the duration between which copied traders make trades to be counted for the rule`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+
             const baseParams: BaseParams = {
                 buyAmount: params.amountInUSD,
                 duration: params.timeDurationInSec,
