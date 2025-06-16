@@ -148,6 +148,30 @@ export const autonomousTradingAction: Action = {
 
             // Extract parameters from response
             const {ruleType, params} = autonomousTradingResponse;
+
+            if (params.moxieIds && params.moxieIds.length > 1 && !params.timeDurationInSec) {
+                callback?.({
+                    text: `Please specify the duration between which copied traders make trades to be counted for the rule`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+
+            if (params.conditionValue && params.conditionValue > 1 && !params.timeDurationInSec) {
+                callback?.({
+                    text: `Please specify the duration between which copied traders make trades to be counted for the rule`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+
+            if (params.stopLossPercentage && params.stopLossPercentage > 100) {
+                callback?.({
+                    text: `Please specify a stop loss percentage less than 100%. You can not lose more than you invested.`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
             
             const baseParams: BaseParams = {
                 buyAmount: params.amountInUSD,
@@ -169,7 +193,7 @@ export const autonomousTradingAction: Action = {
                 } : undefined
             };
 
-            if (params.sellTriggerType === 'COPY_SELL' || params.sellTriggerType === 'BOTH') {
+            if (params.sellTriggerType === 'COPY_SELL' || (params.sellTriggerType === 'BOTH' && (params?.sellTriggerCondition || params?.sellTriggerCount))) {
                 baseParams.sellConfig = {
                     buyToken: {
                         symbol: 'ETH',
