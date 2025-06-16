@@ -3057,7 +3057,7 @@ async function swap(
             `[tokenSwap] [${moxieUserId}] [swap] Error executing 0x swap: ${JSON.stringify(error)}`
         );
         await callback?.({
-            text: `\nAn error occurred while processing your request. Please try again.`,
+            text: `\nSorry, the swap you requested has failed at this time. Please try again.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏`,
             content: {
                 error: `${sellTokenSymbol}_TO_${buyTokenSymbol}_SWAP_FAILED`,
                 details: `An error occurred while processing your request. Please try again.`,
