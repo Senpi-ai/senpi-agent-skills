@@ -18,6 +18,15 @@ import {
     MoxieWalletClient,
     MoxieWalletSendTransactionResponseType,
     MoxieWalletSignTypedDataResponseType,
+    moxieUserService,
+    CreateRuleInput,
+    AddRuleExecutionLogInput,
+    RuleType,
+    RuleTrigger,
+    BuyAmountValueType,
+    SellAmountValueType,
+    PurchaseAmountValueType,
+    SwapSource,
 } from "@moxie-protocol/moxie-agent-lib";
 import { tokenSwapTemplate } from "../templates/tokenSwapTemplate";
 import {
@@ -1163,7 +1172,8 @@ export const tokenSwapAction = {
                                         buyTokenDecimals,
                                         callback,
                                         state.agentWalletBalance,
-                                        walletClient
+                                        walletClient,
+                                        state.authorizationHeader as string
                                     );
                                     elizaLogger.debug(
                                         traceId,
@@ -1237,10 +1247,6 @@ export const tokenSwapAction = {
                                         .toFixed(18) // Force exactly 18 decimal places
                                         .replace(/\.?0+$/, ""); // Remove trailing zeros and decimal point if whole number
 
-                                    await callback({
-                                        text: `\nYou will receive approximately ${result} ${sellTokenSubjectTokenDetails.name} creator coins`,
-                                    });
-
                                     elizaLogger.debug(
                                         traceId,
                                         `[tokenSwap] [${moxieUserId}] [tokenSwapAction] [SWAP] [CREATOR_TO_TOKEN] [USD_VALUE_TYPE] result: ${result}`
@@ -1304,7 +1310,8 @@ export const tokenSwapAction = {
                                                 buyTokenDecimals,
                                                 callback,
                                                 state.agentWalletBalance,
-                                                walletClient
+                                                walletClient,
+                                                state.authorizationHeader as string
                                             );
                                             elizaLogger.debug(
                                                 traceId,
@@ -1408,7 +1415,8 @@ export const tokenSwapAction = {
                                             buyTokenDecimals,
                                             callback,
                                             state.agentWalletBalance,
-                                            walletClient
+                                            walletClient,
+                                            state.authorizationHeader as string
                                         );
                                         elizaLogger.debug(
                                             traceId,
@@ -1505,7 +1513,8 @@ export const tokenSwapAction = {
                                             buyTokenDecimals,
                                             callback,
                                             state.agentWalletBalance,
-                                            walletClient
+                                            walletClient,
+                                            state.authorizationHeader as string
                                         );
                                         elizaLogger.debug(
                                             traceId,
@@ -1622,7 +1631,8 @@ export const tokenSwapAction = {
                                                 MOXIE_TOKEN_DECIMALS,
                                                 callback,
                                                 state.agentWalletBalance,
-                                                walletClient
+                                                walletClient,
+                                                state.authorizationHeader as string
                                             );
                                             elizaLogger.debug(
                                                 traceId,
@@ -1768,7 +1778,8 @@ export const tokenSwapAction = {
                                             MOXIE_TOKEN_DECIMALS,
                                             callback,
                                             state.agentWalletBalance,
-                                            walletClient
+                                            walletClient,
+                                            state.authorizationHeader as string
                                         );
                                         elizaLogger.debug(
                                             traceId,
@@ -1914,7 +1925,8 @@ export const tokenSwapAction = {
                                                 MOXIE_TOKEN_DECIMALS,
                                                 callback,
                                                 state.agentWalletBalance,
-                                                walletClient
+                                                walletClient,
+                                                state.authorizationHeader as string
                                             );
                                             elizaLogger.debug(
                                                 traceId,
@@ -2011,7 +2023,8 @@ export const tokenSwapAction = {
                                             MOXIE_TOKEN_DECIMALS,
                                             callback,
                                             state.agentWalletBalance,
-                                            walletClient
+                                            walletClient,
+                                            state.authorizationHeader as string
                                         );
                                         elizaLogger.debug(
                                             traceId,
@@ -2100,7 +2113,8 @@ export const tokenSwapAction = {
                                             MOXIE_TOKEN_DECIMALS,
                                             callback,
                                             state.agentWalletBalance,
-                                            walletClient
+                                            walletClient,
+                                            state.authorizationHeader as string
                                         );
                                         elizaLogger.debug(
                                             traceId,
@@ -2243,7 +2257,8 @@ export const tokenSwapAction = {
                                                 buyTokenDecimals,
                                                 callback,
                                                 state.agentWalletBalance,
-                                                walletClient
+                                                walletClient,
+                                                state.authorizationHeader as string
                                             );
                                             elizaLogger.debug(
                                                 traceId,
@@ -2342,7 +2357,8 @@ export const tokenSwapAction = {
                                         buyTokenDecimals,
                                         callback,
                                         state.agentWalletBalance,
-                                        walletClient
+                                        walletClient,
+                                        state.authorizationHeader as string
                                     );
                                 } catch (error) {
                                     elizaLogger.error(
@@ -2433,7 +2449,8 @@ export const tokenSwapAction = {
                                         buyTokenDecimals,
                                         callback,
                                         state.agentWalletBalance,
-                                        walletClient
+                                        walletClient,
+                                        state.authorizationHeader as string
                                     );
                                 } catch (error) {
                                     elizaLogger.error(
@@ -2486,7 +2503,8 @@ export const tokenSwapAction = {
                                         buyTokenDecimals,
                                         callback,
                                         state.agentWalletBalance,
-                                        walletClient
+                                        walletClient,
+                                        state.authorizationHeader as string
                                     );
                                 } catch (error) {
                                     elizaLogger.error(
@@ -2531,7 +2549,8 @@ export const tokenSwapAction = {
                                         buyTokenDecimals,
                                         callback,
                                         state.agentWalletBalance,
-                                        walletClient
+                                        walletClient,
+                                        state.authorizationHeader as string
                                     );
                                 } catch (error) {
                                     elizaLogger.error(
@@ -2762,7 +2781,8 @@ async function swap(
     buyTokenDecimals: number,
     callback: any,
     agentWalletBalance,
-    walletClient: MoxieWalletClient
+    walletClient: MoxieWalletClient,
+    bearerToken: string
 ): Promise<bigint> {
     elizaLogger.debug(
         traceId,
@@ -2771,7 +2791,30 @@ async function swap(
     let buyAmountInWEI: bigint;
     let tokenBalance: bigint;
     let quote: GetQuoteResponse | null = null;
+    let ruleId: string | null = null;
+    let tx: MoxieWalletSendTransactionResponseType | null = null;
+    let txnReceipt: ethers.TransactionReceipt | null = null;
+
     try {
+        // Create rule before swap
+        const createRuleInput: CreateRuleInput = {
+            requestId: traceId,
+            ruleType: RuleType.AGENT_SWAP,
+            ruleTrigger: RuleTrigger.USER,
+            ruleParameters: {
+                baseParams: {
+                    sellToken: {
+                        symbol: sellTokenSymbol,
+                        address: sellTokenAddress.toLowerCase()
+                    }
+                }
+            }
+        };
+
+        // Create rule
+        const { ruleId: newRuleId } = await moxieUserService.createRule(createRuleInput, bearerToken);
+        ruleId = newRuleId;
+
         // do balance check first
         const balance =
             sellTokenSymbol === "ETH"
@@ -2839,6 +2882,7 @@ async function swap(
                 `[tokenSwap] [${moxieUserId}] [swap] Insufficient liquidity for ${sellTokenSymbol} to ${buyTokenSymbol} swap`
             );
         }
+
         // for other currencies we need to check allowance and approve spending
         // check allowance and approve spending
         const issues = quote.issues;
@@ -2905,7 +2949,384 @@ async function swap(
                 );
             }
         }
+
+        // signature related
+        let signResponse: MoxieWalletSignTypedDataResponseType | undefined;
+        try {
+            elizaLogger.debug(
+                traceId,
+                `[tokenSwap] [${moxieUserId}] [swap] quote.permit2.eip712: ${JSON.stringify(quote.permit2?.eip712)}`
+            );
+            if (quote.permit2?.eip712) {
+                const MAX_RETRIES = 3;
+                let retryCount = 0;
+                let lastError: any;
+
+                while (retryCount < MAX_RETRIES) {
+                    try {
+                        elizaLogger.debug(
+                            traceId,
+                            `[tokenSwap] [${moxieUserId}] [swap] Signing attempt ${retryCount + 1} of ${MAX_RETRIES}`
+                        );
+
+                        signResponse = await walletClient.signTypedData(
+                            quote.permit2.eip712.domain,
+                            quote.permit2.eip712.types,
+                            quote.permit2.eip712.message,
+                            quote.permit2.eip712.primaryType
+                        );
+
+                        elizaLogger.debug(
+                            traceId,
+                            `[tokenSwap] [${moxieUserId}] [swap] signResponse: ${JSON.stringify(signResponse)}`
+                        );
+                        break; // Success, exit the retry loop
+                    } catch (error) {
+                        lastError = error;
+                        retryCount++;
+                        const errorMessage =
+                            error instanceof Error
+                                ? error.message
+                                : "Unknown error";
+                        elizaLogger.warn(
+                            traceId,
+                            `[tokenSwap] [${moxieUserId}] [swap] Error signing on attempt ${retryCount}: ${errorMessage}`
+                        );
+
+                        if (retryCount < MAX_RETRIES) {
+                            // Exponential backoff
+                            const delay = 1000 * Math.pow(2, retryCount);
+                            elizaLogger.debug(
+                                traceId,
+                                `[tokenSwap] [${moxieUserId}] [swap] Retrying signing in ${delay}ms...`
+                            );
+                            await new Promise((resolve) =>
+                                setTimeout(resolve, delay)
+                            );
+                        } else {
+                            throw error; // Re-throw the last error after all retries fail
+                        }
+                    }
+                }
+            }
+
+            if (signResponse && signResponse.signature && quote.transaction?.data) {
+                const signatureLengthInHex = numberToHex(
+                    size(signResponse.signature as MoxieHex),
+                    {
+                        signed: false,
+                        size: 32,
+                    }
+                );
+                // Append signature length and data to transaction
+                quote.transaction.data = concat([
+                    quote.transaction.data,
+                    signatureLengthInHex,
+                    signResponse.signature,
+                ]);
+                elizaLogger.debug(
+                    traceId,
+                    `[tokenSwap] [${moxieUserId}] [swap] quote.transaction.data: ${JSON.stringify(quote.transaction.data)}`
+                );
+            }
+        } catch (error) {
+            elizaLogger.error(
+                traceId,
+                `[tokenSwap] [${moxieUserId}] [swap] Error signing typed data after retries: ${JSON.stringify(error)}`
+            );
+            await callback?.({
+                text: `\nAn error occurred while processing your request. Please try again.`,
+                content: {
+                    error: "SIGN_TYPED_DATA_FAILED",
+                    details: `An error occurred while processing your request. Please try again.`,
+                },
+            });
+        }
+
+    // execute 0x swap
+    let tx: MoxieWalletSendTransactionResponseType | null = null;
+    try {
+        tx = await execute0xSwap({
+            traceId: traceId,
+            moxieUserId: moxieUserId,
+            walletAddress: agentWalletAddress,
+            quote: quote,
+            walletClient: walletClient,
+        });
+        elizaLogger.debug(
+            traceId,
+            `[tokenSwap] [${moxieUserId}] [swap] 0x tx: ${JSON.stringify(tx)}`
+        );
     } catch (error) {
+        elizaLogger.error(
+            traceId,
+            `[tokenSwap] [${moxieUserId}] [swap] Error executing 0x swap: ${JSON.stringify(error)}`
+        );
+        await callback?.({
+            text: `\nSorry, the swap you requested has failed at this time. Please try again.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏`,
+            content: {
+                error: `${sellTokenSymbol}_TO_${buyTokenSymbol}_SWAP_FAILED`,
+                details: `An error occurred while processing your request. Please try again.`,
+            },
+        });
+        throw new Error(
+            `[tokenSwap] [${moxieUserId}] [swap] Error executing 0x swap: ${JSON.stringify(error)}`
+        );
+    }
+
+        await callback?.(
+            swapInProgressTemplate(
+                sellTokenSymbol,
+                sellTokenAddress,
+                buyTokenSymbol,
+                buyTokenAddress,
+                tx.hash
+            )
+        );
+
+    // wait for tx to be mined
+    let txnReceipt: ethers.TransactionReceipt | null;
+        try {
+            txnReceipt = await handleTransactionStatus(
+                traceId,
+                moxieUserId,
+                provider,
+                tx.hash
+            );
+            if (!txnReceipt) {
+                elizaLogger.error(
+                    traceId,
+                    `[tokenSwap] [${moxieUserId}] [swap] txnReceipt is null`
+                );
+                await callback?.({
+                    text: `\nTransaction verification timed out. Please check [BaseScan](https://basescan.org/tx/${tx.hash}) to verify the status before retrying.`,
+                    content: {
+                        url: `https://basescan.org/tx/${tx.hash}`,
+                    },
+                });
+                throw new Error("Transaction verification timed out");
+            }
+            if (txnReceipt.status == 1) {
+                elizaLogger.debug(
+                    traceId,
+                    `[tokenSwap] [${moxieUserId}] [swap] txnReceipt: ${JSON.stringify(txnReceipt)}`
+                );
+            } else {
+                elizaLogger.error(
+                    traceId,
+                    `[tokenSwap] [${moxieUserId}] [swap] txnReceipt status is not 1: ${JSON.stringify(txnReceipt)}`
+                );
+                await callback?.({
+                    text: `\nTransaction is failed. Please try again`,
+                    content: {
+                        error: "TRANSACTION_FAILED",
+                        details: `Transaction failed. Please try again.`,
+                    },
+                });
+                throw new Error("Transaction failed");
+            }
+        } catch (error) {
+            elizaLogger.error(
+                traceId,
+                `[tokenSwap] [${moxieUserId}] [swap] Error handling transaction status: ${JSON.stringify(error)}`
+            );
+            await callback?.({
+                text: `\nAn error occurred while processing your request. Please try again.`,
+                content: {
+                    error: "TRANSACTION_FAILED",
+                    details: `An error occurred while processing your request. Please try again.`,
+                },
+            });
+            return buyAmountInWEI;
+        }
+
+        elizaLogger.debug(
+            traceId,
+            `[tokenSwap] [${moxieUserId}] [swap] 0x swap txnReceipt: ${JSON.stringify(txnReceipt)}`
+        );
+        if (txnReceipt.status == 1) {
+            if (
+                buyTokenAddress.toLowerCase() !== ETH_ADDRESS.toLowerCase() &&
+                buyTokenAddress.toLowerCase() !== WETH_ADDRESS.toLowerCase()
+            ) {
+                // decode the txn receipt to get the moxie purchased
+                const transferDetails = await decodeTokenTransfer(
+                    traceId,
+                    moxieUserId,
+                    txnReceipt,
+                    buyTokenAddress,
+                    agentWalletAddress
+                );
+                elizaLogger.debug(
+                    traceId,
+                    `[tokenSwap] [${moxieUserId}] [swap] 0x swap decodeTokenTransfer: ${JSON.stringify(transferDetails)}`
+                );
+                if (transferDetails) {
+                    buyAmountInWEI = BigInt(transferDetails.amount);
+                    elizaLogger.debug(
+                        traceId,
+                        `[tokenSwap] [${moxieUserId}] [swap] buyAmountInWEI: ${buyAmountInWEI}`
+                    );
+                } else {
+                    elizaLogger.error(
+                        traceId,
+                        `[tokenSwap] [${moxieUserId}] [swap] Error decoding token transfer`
+                    );
+                    await callback?.({
+                        text: `\nAn error occurred while processing your request. Please try again.`,
+                        content: {
+                            error: "TOKEN_DECODE_ERROR",
+                            details: `An error occurred while processing your request. Please try again.`,
+                        },
+                    });
+                    return buyAmountInWEI;
+                }
+            }
+
+            // Log successful rule execution
+            if (ruleId) {
+                const executionLogInput: AddRuleExecutionLogInput = {
+                    ruleId: ruleId,
+                    action: SwapSource.AGENT_SWAP,
+                    status: "SUCCESS",
+                    metadata: {
+                        swapExecutionMetadata: {
+                            metadata: {
+                                sellAmountInWEI: sellAmountInWEI.toString(),
+                                sellAmount: ethers.formatUnits(sellAmountInWEI, sellTokenDecimals),
+                                sellTokenPriceInUSD: "0", // TODO: Get from token details
+                                sellAmountInUSD: "0", // TODO: Calculate with actual price
+                                buyTokenAddress: buyTokenAddress.toLowerCase(),
+                                buyTokenSymbol,
+                                swapTransactionHash: tx.hash,
+                                buyTokenDecimals,
+                                sellTokenDecimals,
+                                sellTokenAddress: sellTokenAddress.toLowerCase(),
+                                sellTokenSymbol,
+                                agentWalletAddress,
+                                executionDateTime: new Date().toISOString(),
+                                status: "BUY_TX_SUCCESS",
+                                quote: quote,
+                                buyAmountInWEI: buyAmountInWEI.toString(),
+                                buyAmount: ethers.formatUnits(buyAmountInWEI, buyTokenDecimals),
+                                buyAmountInUSD: "0", // TODO: Calculate with actual price
+                                buyTokenPriceInUSD: "0", // TODO: Get from token details
+                                verifiedDateTime: new Date().toISOString()
+                            }
+                        },
+                        limitOrderResult: {},
+                        stopLossResult: {}
+                    },
+                    inputParams: {
+                        swapTransactionParams: {
+                            buyQuantity: Number(buyAmountInWEI) / Math.pow(10, buyTokenDecimals),
+                            sellTokenAddress: sellTokenAddress.toLowerCase(),
+                            sellTokenSymbol: sellTokenSymbol,
+                            buyTokenAddress: buyTokenAddress.toLowerCase(),
+                            buyTokenSymbol: buyTokenSymbol,
+                            agentWalletAddress: agentWalletAddress,
+                            sellQuantity: Number(sellAmountInWEI) / Math.pow(10, sellTokenDecimals),
+                            valueType: "USD",
+                            triggerIndicators: [
+                                {
+                                    initiator_moxie_user_id: moxieUserId,
+                                    initiator_wallet_address: agentWalletAddress,
+                                    token_symbol: buyTokenSymbol,
+                                    token_address: buyTokenAddress.toLowerCase(),
+                                    tx_hash: tx.hash,
+                                    initiator_event_ts: new Date().toISOString(),
+                                    wallet: agentWalletAddress,
+                                    initiator_buy_amount: buyAmountInWEI ? 
+                                    Number(buyAmountInWEI) / Math.pow(10, buyTokenDecimals) : 0
+                                }
+                            ],
+                            tradeType: "BUY",
+                        }
+                    },
+                    source: SwapSource.AGENT_SWAP
+                };
+
+                await moxieUserService.addRuleExecutionLog(executionLogInput, process.env.MOXIE_API_KEY || "");
+            }
+
+            await callback?.(
+                swapCompletedTemplate(
+                    sellTokenSymbol,
+                    sellTokenAddress,
+                    buyTokenSymbol,
+                    buyTokenAddress,
+                    buyAmountInWEI,
+                    buyTokenDecimals
+                )
+            );
+            return buyAmountInWEI;
+        } else {
+            // Log failed rule execution
+            if (ruleId) {
+                const failedExecutionLogInput: AddRuleExecutionLogInput = {
+                    ruleId: ruleId,
+                    action: SwapSource.AGENT_SWAP,
+                    status: "FAILED",
+                    metadata: {
+                        swapExecutionMetadata: {
+                            metadata: {
+                                sellAmountInWEI: sellAmountInWEI.toString(),
+                                sellAmount: ethers.formatUnits(sellAmountInWEI, sellTokenDecimals),
+                                sellTokenPriceInUSD: "0", // TODO: Get from token details
+                                sellAmountInUSD: "0", // TODO: Calculate with actual price
+                                buyTokenAddress: buyTokenAddress.toLowerCase(),
+                                buyTokenSymbol,
+                                swapTransactionHash: tx?.hash || "",
+                                buyTokenDecimals,
+                                sellTokenDecimals,
+                                sellTokenAddress: sellTokenAddress.toLowerCase(),
+                                sellTokenSymbol,
+                                agentWalletAddress,
+                                executionDateTime: new Date().toISOString(),
+                                status: "FAILED",
+                                quote: quote || "",
+                                buyAmountInWEI: "0",
+                                buyAmount: "0",
+                                buyAmountInUSD: "0",
+                                buyTokenPriceInUSD: "0",
+                                verifiedDateTime: new Date().toISOString()
+                            }
+                        },
+                        limitOrderResult: {},
+                        stopLossResult: {}
+                    },
+                    inputParams: {
+                        swapTransactionParams: {
+                            sellTokenAddress: sellTokenAddress.toLowerCase(),
+                            sellTokenSymbol: sellTokenSymbol,
+                            buyTokenAddress: buyTokenAddress.toLowerCase(),
+                            buyTokenSymbol: buyTokenSymbol,
+                        }
+                    },
+                    source: SwapSource.AGENT_SWAP
+                };
+
+                await moxieUserService.addRuleExecutionLog(failedExecutionLogInput, process.env.MOXIE_API_KEY || "");
+            }
+
+            elizaLogger.error(
+                traceId,
+                `[tokenSwap] [${moxieUserId}] [swap] 0x swap failed: ${tx.hash} `
+            );
+            await callback?.({
+                text: `\nAn error occurred while processing your request. Please try again.`,
+                content: {
+                    error: `${sellTokenSymbol}_TO_${buyTokenSymbol}_SWAP_FAILED`,
+                    details: `An error occurred while processing your request. Please try again.`,
+                },
+            });
+            return buyAmountInWEI;
+        }
+    } catch (error) {
+        elizaLogger.error(
+            traceId,
+            `[tokenSwap] [${moxieUserId}] [swap] Error: ${error.message}`
+        );
         elizaLogger.error(
             traceId,
             `[tokenSwap] [${moxieUserId}] [swap] Error getting 0x quote: ${error.message}`
@@ -2940,267 +3361,6 @@ async function swap(
         throw new Error(
             `[tokenSwap] [${moxieUserId}] [swap] Error getting 0x quote: ${error.message}`
         );
-    }
-
-    // if (sellTokenSymbol != "ETH") { // skip for ETH
-    // signature related
-    let signResponse: MoxieWalletSignTypedDataResponseType | undefined;
-    try {
-        elizaLogger.debug(
-            traceId,
-            `[tokenSwap] [${moxieUserId}] [swap] quote.permit2.eip712: ${JSON.stringify(quote.permit2?.eip712)}`
-        );
-        if (quote.permit2?.eip712) {
-            const MAX_RETRIES = 3;
-            let retryCount = 0;
-            let lastError: any;
-
-            while (retryCount < MAX_RETRIES) {
-                try {
-                    elizaLogger.debug(
-                        traceId,
-                        `[tokenSwap] [${moxieUserId}] [swap] Signing attempt ${retryCount + 1} of ${MAX_RETRIES}`
-                    );
-
-                    signResponse = await walletClient.signTypedData(
-                        quote.permit2.eip712.domain,
-                        quote.permit2.eip712.types,
-                        quote.permit2.eip712.message,
-                        quote.permit2.eip712.primaryType
-                    );
-
-                    elizaLogger.debug(
-                        traceId,
-                        `[tokenSwap] [${moxieUserId}] [swap] signResponse: ${JSON.stringify(signResponse)}`
-                    );
-                    break; // Success, exit the retry loop
-                } catch (error) {
-                    lastError = error;
-                    retryCount++;
-                    const errorMessage =
-                        error instanceof Error
-                            ? error.message
-                            : "Unknown error";
-                    elizaLogger.warn(
-                        traceId,
-                        `[tokenSwap] [${moxieUserId}] [swap] Error signing on attempt ${retryCount}: ${errorMessage}`
-                    );
-
-                    if (retryCount < MAX_RETRIES) {
-                        // Exponential backoff
-                        const delay = 1000 * Math.pow(2, retryCount);
-                        elizaLogger.debug(
-                            traceId,
-                            `[tokenSwap] [${moxieUserId}] [swap] Retrying signing in ${delay}ms...`
-                        );
-                        await new Promise((resolve) =>
-                            setTimeout(resolve, delay)
-                        );
-                    } else {
-                        throw error; // Re-throw the last error after all retries fail
-                    }
-                }
-            }
-        }
-
-        if (signResponse && signResponse.signature && quote.transaction?.data) {
-            const signatureLengthInHex = numberToHex(
-                size(signResponse.signature as MoxieHex),
-                {
-                    signed: false,
-                    size: 32,
-                }
-            );
-            // Append signature length and data to transaction
-            quote.transaction.data = concat([
-                quote.transaction.data,
-                signatureLengthInHex,
-                signResponse.signature,
-            ]);
-            elizaLogger.debug(
-                traceId,
-                `[tokenSwap] [${moxieUserId}] [swap] quote.transaction.data: ${JSON.stringify(quote.transaction.data)}`
-            );
-        }
-    } catch (error) {
-        elizaLogger.error(
-            traceId,
-            `[tokenSwap] [${moxieUserId}] [swap] Error signing typed data after retries: ${JSON.stringify(error)}`
-        );
-        await callback?.({
-            text: `\nAn error occurred while processing your request. Please try again.`,
-            content: {
-                error: "SIGN_TYPED_DATA_FAILED",
-                details: `An error occurred while processing your request. Please try again.`,
-            },
-        });
-    }
-    // }
-
-    // execute 0x swap
-    let tx: MoxieWalletSendTransactionResponseType | null = null;
-    try {
-        tx = await execute0xSwap({
-            traceId: traceId,
-            moxieUserId: moxieUserId,
-            walletAddress: agentWalletAddress,
-            quote: quote,
-            walletClient: walletClient,
-        });
-        elizaLogger.debug(
-            traceId,
-            `[tokenSwap] [${moxieUserId}] [swap] 0x tx: ${JSON.stringify(tx)}`
-        );
-    } catch (error) {
-        elizaLogger.error(
-            traceId,
-            `[tokenSwap] [${moxieUserId}] [swap] Error executing 0x swap: ${JSON.stringify(error)}`
-        );
-        await callback?.({
-            text: `\nSorry, the swap you requested has failed at this time. Please try again.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏`,
-            content: {
-                error: `${sellTokenSymbol}_TO_${buyTokenSymbol}_SWAP_FAILED`,
-                details: `An error occurred while processing your request. Please try again.`,
-            },
-        });
-        throw new Error(
-            `[tokenSwap] [${moxieUserId}] [swap] Error executing 0x swap: ${JSON.stringify(error)}`
-        );
-    }
-
-    await callback?.(
-        swapInProgressTemplate(
-            sellTokenSymbol,
-            sellTokenAddress,
-            buyTokenSymbol,
-            buyTokenAddress,
-            tx.hash
-        )
-    );
-
-    // wait for tx to be mined
-    let txnReceipt: ethers.TransactionReceipt | null;
-    try {
-        txnReceipt = await handleTransactionStatus(
-            traceId,
-            moxieUserId,
-            provider,
-            tx.hash
-        );
-        if (!txnReceipt) {
-            elizaLogger.error(
-                traceId,
-                `[tokenSwap] [${moxieUserId}] [swap] txnReceipt is null`
-            );
-            await callback?.({
-                text: `\nTransaction verification timed out. Please check [BaseScan](https://basescan.org/tx/${tx.hash}) to verify the status before retrying.`,
-                content: {
-                    url: `https://basescan.org/tx/${tx.hash}`,
-                },
-            });
-            throw new Error("Transaction verification timed out");
-        }
-        if (txnReceipt.status == 1) {
-            elizaLogger.debug(
-                traceId,
-                `[tokenSwap] [${moxieUserId}] [swap] txnReceipt: ${JSON.stringify(txnReceipt)}`
-            );
-        } else {
-            elizaLogger.error(
-                traceId,
-                `[tokenSwap] [${moxieUserId}] [swap] txnReceipt status is not 1: ${JSON.stringify(txnReceipt)}`
-            );
-            await callback?.({
-                text: `\nTransaction is failed. Please try again`,
-                content: {
-                    error: "TRANSACTION_FAILED",
-                    details: `Transaction failed. Please try again.`,
-                },
-            });
-            throw new Error("Transaction failed");
-        }
-    } catch (error) {
-        elizaLogger.error(
-            traceId,
-            `[tokenSwap] [${moxieUserId}] [swap] Error handling transaction status: ${JSON.stringify(error)}`
-        );
-        await callback?.({
-            text: `\nAn error occurred while processing your request. Please try again.`,
-            content: {
-                error: "TRANSACTION_FAILED",
-                details: `An error occurred while processing your request. Please try again.`,
-            },
-        });
-        return buyAmountInWEI;
-    }
-
-    elizaLogger.debug(
-        traceId,
-        `[tokenSwap] [${moxieUserId}] [swap] 0x swap txnReceipt: ${JSON.stringify(txnReceipt)}`
-    );
-    if (txnReceipt.status == 1) {
-        if (
-            buyTokenAddress.toLowerCase() !== ETH_ADDRESS.toLowerCase() &&
-            buyTokenAddress.toLowerCase() !== WETH_ADDRESS.toLowerCase()
-        ) {
-            // decode the txn receipt to get the moxie purchased
-            const transferDetails = await decodeTokenTransfer(
-                traceId,
-                moxieUserId,
-                txnReceipt,
-                buyTokenAddress,
-                agentWalletAddress
-            );
-            elizaLogger.debug(
-                traceId,
-                `[tokenSwap] [${moxieUserId}] [swap] 0x swap decodeTokenTransfer: ${JSON.stringify(transferDetails)}`
-            );
-            if (transferDetails) {
-                buyAmountInWEI = BigInt(transferDetails.amount);
-                elizaLogger.debug(
-                    traceId,
-                    `[tokenSwap] [${moxieUserId}] [swap] buyAmountInWEI: ${buyAmountInWEI}`
-                );
-            } else {
-                elizaLogger.error(
-                    traceId,
-                    `[tokenSwap] [${moxieUserId}] [swap] Error decoding token transfer`
-                );
-                await callback?.({
-                    text: `\nAn error occurred while processing your request. Please try again.`,
-                    content: {
-                        error: "TOKEN_DECODE_ERROR",
-                        details: `An error occurred while processing your request. Please try again.`,
-                    },
-                });
-                return buyAmountInWEI;
-            }
-        }
-
-        await callback?.(
-            swapCompletedTemplate(
-                sellTokenSymbol,
-                sellTokenAddress,
-                buyTokenSymbol,
-                buyTokenAddress,
-                buyAmountInWEI,
-                buyTokenDecimals
-            )
-        );
-        return buyAmountInWEI;
-    } else {
-        elizaLogger.error(
-            traceId,
-            `[tokenSwap] [${moxieUserId}] [swap] 0x swap failed: ${tx.hash} `
-        );
-        await callback?.({
-            text: `\nAn error occurred while processing your request. Please try again.`,
-            content: {
-                error: `${sellTokenSymbol}_TO_${buyTokenSymbol}_SWAP_FAILED`,
-                details: `An error occurred while processing your request. Please try again.`,
-            },
-        });
-        return buyAmountInWEI;
     }
 }
 

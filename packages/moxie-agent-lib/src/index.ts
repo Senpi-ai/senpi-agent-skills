@@ -38,6 +38,8 @@ export type {
     TokenDetails,
     LiquidityPool,
     CampaignTokenDetails,
+    CreateRuleInput,
+    AddRuleExecutionLogInput,
 } from "./services/types";
 
 export {
@@ -69,3 +71,21 @@ export {
 export { deleteLimitOrders } from "./services/cowService";
 
 export { formatUserMention, formatGroupMention, formatTokenMention, fetchWithRetries } from "./utils";
+
+export {
+    RuleType,
+    RuleStatus,
+    RuleTrigger,
+    BuyAmountValueType,
+    SellAmountValueType,
+    PurchaseAmountValueType,
+    GenericTradeRuleParamsInput,
+    BaseTradeRuleParamsInput,
+    UserTradeRuleParamsInput,
+    GroupTradeRuleParamsInput,
+    LimitOrderParamsInput,
+    SellTokenInput,
+    SellConfigInput,
+    TokenMetricsInput,
+    SwapSource,
+} from "./services/types";
