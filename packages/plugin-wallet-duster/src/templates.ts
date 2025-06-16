@@ -24,9 +24,9 @@ Provide the result in the following JSON format:
 ## isConfirmed
 1. Direct Dusting Requests (no preview involved)
 - If the user says “Dust tokens under $X” or “Dust my tokens” without a prior PREVIEW_DUST_TOKENS action, set \`isConfirmed: true\`
-2. Preview Flow
+2. Preview Flow (See Example 3 & 5)
 - If the last action is \`PREVIEW_DUST_TOKENS\`, only set \`isConfirmed: true\` if the user explicitly confirms after requesting the dusting after the preview, such as:
-    - "Yes", "Proceed", "Confirm", "Go ahead"
+    - "Yes", "Proceed", "Confirm", "Go ahead" or similar
 - If the user says "No", "Cancel", or similar, set \`isConfirmed: false\`
 - If no clear confirmation or rejection yet, set \`isConfirmed: null\`
 3. Dusting Without Preview
@@ -149,6 +149,38 @@ Here are some examples of user's conversation with the agent and the expected re
 \`\`\`json
 {
     "threshold": null,
+    "isConfirmed": null
+}
+\`\`\`
+# Example 5 (Combination with preview action and specific threshold)
+**Message 5**
+\`\`\`
+[
+    {
+        "user": "{{user1}}",
+        "content": {
+            "text": "Preview dusting all tokens under $15"
+        }
+    },
+    {
+        "user": "{{user2}}",
+        "content": {
+            "text": "Here are the tokens under $15 in your wallet: 0x123... (1000 tokens worth $4.99)",
+            "action": "PREVIEW_DUST_TOKENS"
+        }
+    },
+    {
+        "user": "{{user1}}",
+        "content": {
+            "text": "Great! can you dust them all?"
+        }
+    },
+]
+\`\`\`
+**Response 5**
+\`\`\`json
+{
+    "threshold": 15,
     "isConfirmed": null
 }
 \`\`\`

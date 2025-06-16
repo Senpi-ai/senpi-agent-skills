@@ -220,6 +220,11 @@ async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: strin
             await callback?.({
                     text: `✅ Group #[${response.group?.name}|${response.group?.id}] created successfully and added ${addMembersResponse.group?.members.length} members to the group.`,
                     action: "MANAGE_GROUPS",
+                    metadata: {
+                        groupId: response.group?.id,
+                        groupName: response.group?.name,
+                        groupMemberCount: addMembersResponse.group?.members.length,
+                    }
             });
         } else {
             await callback?.({
