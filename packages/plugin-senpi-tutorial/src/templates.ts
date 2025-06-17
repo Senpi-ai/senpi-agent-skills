@@ -17,8 +17,8 @@ Link: ${process.env.GET_STARTED_TUTORIAL_URL_EMBED}
 
 2. Autonomous Trade Tutorial
 
-- This tutorial is for users who want to learn how to set up an autonomous trade on Senpi.
-- It's also helpful for users who have trouble setting up their autonomous trade.
+- This tutorial is for users who want to learn how to set up an autonomous trade orders on Senpi. From the tutorial, user can learn how to set up custom rules for their autonomous trade orders.
+- It's also helpful for users who have trouble setting up their autonomous trade orders with custom complex rules.
 
 Link: ${process.env.AUTONOMOUS_TRADE_TUTORIAL_URL_EMBED}
 
