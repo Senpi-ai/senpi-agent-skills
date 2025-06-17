@@ -100,12 +100,6 @@ export const autonomousTradingAction: Action = {
                 return true;
             }
 
-            if (!agentWallet.delegated) {
-                elizaLogger.error(traceId,`[AUTONOMOUS_TRADING] [${moxieUserId}] [AUTONOMOUS_TRADING] agentWallet is not delegated`);
-                await callback?.(delegateAccessNotFound);
-                return true;
-            }
-
             const walletClient = state.moxieWalletClient as MoxieWalletClient;
             if (!walletClient) {
                 elizaLogger.error(traceId,`[AUTONOMOUS_TRADING] [${moxieUserId}] [AUTONOMOUS_TRADING] walletClient not found`);
