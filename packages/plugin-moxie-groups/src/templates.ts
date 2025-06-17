@@ -68,6 +68,25 @@ Instructions:
    }
    \`\`\`
 
+   where "GroupParams" is defined as:
+
+   \`\`\`json
+   {
+     "groupId": string | undefined,
+     "groupName": string | undefined,
+     "senpiUserIdsToAdd": string[] | undefined,
+     "senpiUserIdsToRemove": string[] | undefined
+   }
+   \`\`\`
+
+   and "ManageGroupsError" is defined as:
+   \`\`\`json
+   {
+     "missingFields": string[],
+     "message": string
+   }
+   \`\`\`
+
 6. Error Handling:
    If the action cannot be determined, invalid combinations are provided, or required parameters are missing, return an error response with a list of missing fields and a prompt message.
 
