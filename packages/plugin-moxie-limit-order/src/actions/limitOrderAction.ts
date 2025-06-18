@@ -64,7 +64,16 @@ import {
     swapTransactionVerificationTimedOut,
 } from "../utils/callbackTemplates";
 import { createCowLimitOrder } from "../service/cowLimitOrder";
-import { getERC20TokenSymbol } from "@moxie-protocol/moxie-agent-lib";
+import { 
+    getERC20TokenSymbol, 
+    moxieUserService,
+    CreateRuleInput,
+    RuleType,
+    RuleTrigger,
+    BuyAmountValueType,
+    SellAmountValueType
+} from "@moxie-protocol/moxie-agent-lib";
+import { AddRuleExecutionLogInput, SwapSource } from "@moxie-protocol/moxie-agent-lib";
 
 export const limitOrderAction = {
     suppressInitialMessage: true,
@@ -914,6 +923,61 @@ async function processSingleLimitOrder(
             traceId,
             `[limitOrder] [${moxieUserId}] [processSingleLimitOrder] [cowLimitOrder] cowLimitOrderId: ${cowLimitOrderId}`
         );
+
+        // Create rule for the limit order
+        const ruleInput: CreateRuleInput = {
+            requestId: traceId,
+            ruleType: limitOrder.order_type === 'TAKE_PROFIT' ? RuleType.AGENT_LIMIT_ORDER : RuleType.AGENT_STOP_LOSS,
+            ruleTrigger: RuleTrigger.USER,
+            ruleParameters: {
+                baseParams: {
+                    sellToken: {
+                        symbol: sellTokenSymbol,
+                        address: sellTokenAddress.toLowerCase()
+                    }
+                }
+            }
+        };
+
+        try {
+            const ruleResponse = await moxieUserService.createRule(ruleInput, process.env.MOXIE_API_KEY || "");
+            elizaLogger.debug(
+                traceId,
+                `[limitOrder] [${moxieUserId}] [processSingleLimitOrder] [createRule] ruleId: ${ruleResponse.ruleId}, ruleType: ${ruleInput.ruleType}`
+            );
+
+            // Add rule execution log
+            const ruleExecutionLog: AddRuleExecutionLogInput = {
+                ruleId: ruleResponse.ruleId,
+                action: "CREATE_LIMIT_ORDER",
+                status: "SUCCESS",
+                metadata: {
+                    limitOrderId: cowLimitOrderId,
+                    sellAmountInWEI: sellTokenAmountInWEI.toString(),
+                    sellAmount: ethers.utils.formatUnits(sellTokenAmountInWEI, sellTokenDecimals),
+                    sellTokenAddress: sellTokenAddress.toLowerCase(),
+                    sellTokenSymbol,
+                    buyAmountInWEI: buyTokenAmountInWEI.toString(),
+                    buyAmount: ethers.utils.formatUnits(buyTokenAmountInWEI, buyTokenDecimals),
+                    buyTokenAddress: buyTokenAddress.toLowerCase(),
+                    buyTokenSymbol,
+                    status: "LIMIT_ORDER_OPEN"
+                },
+                source: SwapSource.AGENT_LIMIT_ORDER
+            };
+
+            await moxieUserService.addRuleExecutionLog(ruleExecutionLog, process.env.MOXIE_API_KEY || "");
+            elizaLogger.debug(
+                traceId,
+                `[limitOrder] [${moxieUserId}] [processSingleLimitOrder] [addRuleExecutionLog] Added execution log for rule: ${ruleResponse.ruleId}`
+            );
+        } catch (error) {
+            elizaLogger.error(
+                traceId,
+                `[limitOrder] [${moxieUserId}] [processSingleLimitOrder] [createRule] Error creating rule: ${error}`
+            );
+            // Continue execution even if rule creation fails
+        }
 
         // then insert into the database
         await (

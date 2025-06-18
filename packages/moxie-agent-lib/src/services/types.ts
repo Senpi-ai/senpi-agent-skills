@@ -393,3 +393,129 @@ export interface PublishPostResponse {
         username: string;
     };
 }
+
+export enum RuleType {
+    COPY_TRADE = "COPY_TRADE",
+    COPY_TRADE_AND_PROFIT = "COPY_TRADE_AND_PROFIT", 
+    GROUP_COPY_TRADE = "GROUP_COPY_TRADE",
+    GROUP_COPY_TRADE_AND_PROFIT = "GROUP_COPY_TRADE_AND_PROFIT",
+    AGENT_SWAP = "AGENT_SWAP",
+    WIDGET_SWAP = "WIDGET_SWAP",
+    AGENT_SWAP_AND_LIMIT_ORDER = "AGENT_SWAP_AND_LIMIT_ORDER",
+    AGENT_LIMIT_ORDER = "AGENT_LIMIT_ORDER",
+    AGENT_STOP_LOSS = "AGENT_STOP_LOSS",
+    AGENT_LIMIT_ORDER_STOP_LOSS = "AGENT_LIMIT_ORDER_STOP_LOSS"
+}
+
+export enum RuleStatus {
+    ACTIVE = "ACTIVE",
+    INACTIVE = "INACTIVE",
+    DELETED = "DELETED",
+    CANCELLED = "CANCELLED",
+    FAILED = "FAILED",
+}
+
+export enum RuleTrigger {
+    USER = "USER",
+    GROUP = "GROUP",
+}
+
+export enum BuyAmountValueType {
+    USD = "USD",
+    TOKEN = "TOKEN"
+}
+
+export enum SellAmountValueType {
+    USD = "USD",
+    TOKEN = "TOKEN"
+}
+
+export enum PurchaseAmountValueType {
+    USD = "USD",
+    TOKEN = "TOKEN"
+}
+
+export type SellTokenInput = {
+    symbol: string;
+    address: string;
+}
+
+export type BuyTokenInput = {
+    symbol: string;
+    address: string;
+}
+
+export type SellConfigInput = {
+    // Add sell config properties as needed
+}
+
+export type TokenMetricsInput = {
+    // Add token metrics properties as needed
+}
+
+export type BaseTradeRuleParamsInput = {
+    buyAmount?: number;
+    sellAmount?: number;
+    duration?: number;
+    buyAmountValueType?: BuyAmountValueType;
+    sellAmountValueType?: SellAmountValueType;
+    sellToken?: SellTokenInput;
+    buyToken?: BuyTokenInput;
+    sellConfig?: SellConfigInput;
+    tokenMetrics?: TokenMetricsInput;
+    transferTo?: string;
+};
+
+
+export type UserTradeRuleParamsInput = {
+    moxieUsers: string[];
+    minPurchaseAmount: {
+        amount: number;
+        valueType: PurchaseAmountValueType;
+    }
+}
+
+export type GroupTradeRuleParamsInput = {
+    // Add group trade params as needed
+}
+
+export type SellConditionInput = {
+    priceChangePercentage: number;
+    sellPercentage: number;
+};
+
+export type LimitOrderParamsInput = {
+    sellConditions: SellConditionInput[];
+    limitOrderValidityInSeconds?: number;
+};
+
+
+export type GenericTradeRuleParamsInput = {
+    baseParams: BaseTradeRuleParamsInput;
+    userTradeParams?: UserTradeRuleParamsInput;
+    groupTradeParams?: GroupTradeRuleParamsInput;
+    limitOrderParams?: LimitOrderParamsInput;
+}
+
+export type CreateRuleInput = {
+    requestId: string;
+    ruleType: RuleType;
+    ruleTrigger: RuleTrigger;
+    ruleParameters: GenericTradeRuleParamsInput;
+}
+
+export enum SwapSource {
+    AGENT_SWAP = "AGENT_SWAP",
+    WIDGET_SWAP = "WIDGET_SWAP",
+    MANUAL_SWAP = "MANUAL_SWAP"
+}
+
+export interface AddRuleExecutionLogInput {
+    ruleId: string;
+    action: string;
+    status: string;
+    reason?: string;
+    metadata?: any;
+    inputParams?: any;
+    source: SwapSource;
+}
