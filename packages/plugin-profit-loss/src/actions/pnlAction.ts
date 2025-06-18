@@ -394,7 +394,22 @@ export const PnLAction = {
                 callback({ text: textPart, action: "PROFIT_LOSS" });
             }
 
-            const groupName = await generateUniqueGroupName(state.authorizationHeader as string, "KTA_winners");
+            let groupBaseName: string;
+
+            if (tokenAddresses.length > 0) {
+                const tokenSymbols: string[] = [];
+                for (const tokenAddress of tokenAddresses) {
+                    const tokenSymbol = await agentLib.getERC20TokenSymbol(tokenAddress);
+                        elizaLogger.debug(
+                            traceId,
+                            `[PnLAction] tokenSymbol: ${JSON.stringify(tokenSymbol)}`
+                    );
+                    tokenSymbols.push(tokenSymbol)
+                }
+                groupBaseName = tokenSymbols.join("_") + "_winners";
+            }
+
+            const groupName = await generateUniqueGroupName(state.authorizationHeader as string, groupBaseName);
 
             callback({
                 text: "Let’s create your first group using these top traders. I’ll watch their trades to trigger your strategies.",
