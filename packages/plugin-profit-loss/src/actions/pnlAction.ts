@@ -267,18 +267,18 @@ export const PnLAction = {
                     tokenSymbols.push(tokenSymbol)
                 }
                 groupBaseName = tokenSymbols.join("_") + "_winners";
+
+                const groupName = await generateUniqueGroupName(state.authorizationHeader as string, groupBaseName);
+
+                callback({
+                    text: "Let’s create your first group using these top traders. I’ll watch their trades to trigger your strategies.",
+                    action: "PROFIT_LOSS",
+                    cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
+                    metadata: {
+                        callbackPrompt : `Create the ${groupName} group and add all of the above users to it.`
+                    }
+                })
             }
-
-            const groupName = await generateUniqueGroupName(state.authorizationHeader as string, groupBaseName);
-
-            callback({
-                text: "Let’s create your first group using these top traders. I’ll watch their trades to trigger your strategies.",
-                action: "PROFIT_LOSS",
-                cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
-                metadata: {
-                    callbackPrompt : `Create the ${groupName} group and add all of the above users to it.`
-                }
-            })
 
             return true;
         } catch (error) {
