@@ -46,15 +46,6 @@ import {
 import { get0xPrice } from "../utils/0xApis";
 import Decimal from "decimal.js";
 import { getERC20TokenSymbol } from "@moxie-protocol/moxie-agent-lib";
-import {
-    CreateRuleInput,
-    RuleType,
-    RuleTrigger,
-    AddRuleExecutionLogInput,
-    moxieUserService,
-    SwapSource,
-    BuyAmountValueType
-} from "@moxie-protocol/moxie-agent-lib";
 
 // Consider adding JSDoc for the tokenTransferAction object
 export const tokenTransferAction = {
@@ -700,31 +691,6 @@ async function processSingleTransfer(
             );
         }
 
-        // Create rule for the transfer
-        const createRuleInput: CreateRuleInput = {
-            requestId: context.traceId,
-            ruleType: RuleType.AGENT_TOKEN_TRANSFER,
-            ruleTrigger: RuleTrigger.USER,
-            ruleParameters: {
-                baseParams: {
-                    sellToken: {
-                        symbol: resolvedTokenSymbol,
-                        address: resolvedTokenAddress
-                    },
-                    buyAmount: Number(ethers.formatUnits(transferAmountInWEI, resolvedTokenDecimals)),
-                    buyAmountValueType: BuyAmountValueType.TOKEN,
-                    transferTo: resolvedRecipientAddress
-                }
-            }
-        };
-
-        const ruleResponse = await moxieUserService.createRule(createRuleInput, process.env.MOXIE_API_KEY || "");
-        const ruleId = ruleResponse.ruleId;
-        elizaLogger.debug(
-            context.traceId,
-            `[tokenTransfer] [${context.moxieUserId}] [processTransfer] [transferAmountInWEI]: ${transferAmountInWEI}`
-        );
-
         // check if the agent wallet has enough balance to cover the transfer amount
         const currentBalanceInWEI =
             resolvedTokenAddress.toLowerCase() == ETH_ADDRESS.toLowerCase()
@@ -767,48 +733,6 @@ async function processSingleTransfer(
                 `[tokenTransfer] [${context.moxieUserId}] [processTransfer] [EXECUTE_TRANSFER] [ERROR] Error: ${transferResult.callBackTemplate}`
             );
 
-            // Log failed rule execution
-            if (ruleId) {
-                const failedExecutionLogInput: AddRuleExecutionLogInput = {
-                    ruleId: ruleId,
-                    action: RuleType.AGENT_TOKEN_TRANSFER,
-                    status: "FAILED",
-                    metadata: {
-                        transferExecutionMetadata: {
-                            metadata: {
-                                transferAmountInWEI: transferAmountInWEI.toString(),
-                                transferAmount: ethers.formatUnits(transferAmountInWEI, resolvedTokenDecimals),
-                                tokenPriceInUSD: "0", // TODO: Get from token details
-                                transferAmountInUSD: "0", // TODO: Calculate with actual price
-                                tokenAddress: resolvedTokenAddress.toLowerCase(),
-                                tokenSymbol: resolvedTokenSymbol,
-                                transferTransactionHash: transferResult.data || "",
-                                tokenDecimals: resolvedTokenDecimals,
-                                recipientAddress: resolvedRecipientAddress.toLowerCase(),
-                                agentWalletAddress: agentWallet.address,
-                                executionDateTime: new Date().toISOString(),
-                                status: "FAILED",
-                                verifiedDateTime: new Date().toISOString()
-                            }
-                        }
-                    },
-                    inputParams: {
-                        baseParams: {
-                            sellToken: {
-                                symbol: resolvedTokenSymbol,
-                                address: resolvedTokenAddress.toLowerCase()
-                            },
-                            buyAmount: Number(ethers.formatUnits(transferAmountInWEI, resolvedTokenDecimals)),
-                            buyAmountValueType: BuyAmountValueType.TOKEN,
-                            transferTo: resolvedRecipientAddress.toLowerCase()
-                        }
-                    },
-                    source: SwapSource.AGENT_TOKEN_TRANSFER
-                };
-
-                await moxieUserService.addRuleExecutionLog(failedExecutionLogInput, process.env.MOXIE_API_KEY || "");
-            }
-
             return {
                 callBackTemplate: transferResult.callBackTemplate,
             };
@@ -829,48 +753,6 @@ async function processSingleTransfer(
                 `[tokenTransfer] [${context.moxieUserId}] [processTransfer] [HANDLE_TRANSACTION_STATUS] [ERROR] Transaction failed`
             );
 
-            // Log failed rule execution
-            if (ruleId) {
-                const failedExecutionLogInput: AddRuleExecutionLogInput = {
-                    ruleId: ruleId,
-                    action: SwapSource.AGENT_TOKEN_TRANSFER,
-                    status: "FAILED",
-                    metadata: {
-                        transferExecutionMetadata: {
-                            metadata: {
-                                transferAmountInWEI: transferAmountInWEI.toString(),
-                                transferAmount: ethers.formatUnits(transferAmountInWEI, resolvedTokenDecimals),
-                                tokenPriceInUSD: "0", // TODO: Get from token details
-                                transferAmountInUSD: "0", // TODO: Calculate with actual price
-                                tokenAddress: resolvedTokenAddress.toLowerCase(),
-                                tokenSymbol: resolvedTokenSymbol,
-                                transferTransactionHash: transferResult.data || "",
-                                tokenDecimals: resolvedTokenDecimals,
-                                recipientAddress: resolvedRecipientAddress.toLowerCase(),
-                                agentWalletAddress: agentWallet.address,
-                                executionDateTime: new Date().toISOString(),
-                                status: "FAILED",
-                                verifiedDateTime: new Date().toISOString()
-                            }
-                        }
-                    },
-                    inputParams: {
-                        baseParams: {
-                            sellToken: {
-                                symbol: resolvedTokenSymbol,
-                                address: resolvedTokenAddress.toLowerCase()
-                            },
-                            buyAmount: Number(ethers.formatUnits(transferAmountInWEI, resolvedTokenDecimals)),
-                            buyAmountValueType: BuyAmountValueType.TOKEN,
-                            transferTo: resolvedRecipientAddress.toLowerCase()
-                        }
-                    },
-                    source: SwapSource.AGENT_TOKEN_TRANSFER
-                };
-
-                await moxieUserService.addRuleExecutionLog(failedExecutionLogInput, process.env.MOXIE_API_KEY || "");
-            }
-
             return {
                 callBackTemplate: txnReceipt.callBackTemplate,
             };
@@ -881,48 +763,6 @@ async function processSingleTransfer(
                 context.traceId,
                 `[tokenTransfer] [${context.moxieUserId}] [processTransfer] [HANDLE_TRANSACTION_STATUS] [SUCCESS] Transaction successful: ${txnReceipt.data}`
             );
-
-            // Log successful rule execution
-            if (ruleId) {
-                const executionLogInput: AddRuleExecutionLogInput = {
-                    ruleId: ruleId,
-                    action: SwapSource.AGENT_TOKEN_TRANSFER,
-                    status: "SUCCESS",
-                    metadata: {
-                        transferExecutionMetadata: {
-                            metadata: {
-                                transferAmountInWEI: transferAmountInWEI.toString(),
-                                transferAmount: ethers.formatUnits(transferAmountInWEI, resolvedTokenDecimals),
-                                tokenPriceInUSD: "0", // TODO: Get from token details
-                                transferAmountInUSD: "0", // TODO: Calculate with actual price
-                                tokenAddress: resolvedTokenAddress.toLowerCase(),
-                                tokenSymbol: resolvedTokenSymbol,
-                                transferTransactionHash: txnReceipt.data,
-                                tokenDecimals: resolvedTokenDecimals,
-                                recipientAddress: resolvedRecipientAddress.toLowerCase(),
-                                agentWalletAddress: agentWallet.address,
-                                executionDateTime: new Date().toISOString(),
-                                status: "SUCCESS",
-                                verifiedDateTime: new Date().toISOString()
-                            }
-                        }
-                    },
-                    inputParams: {
-                        baseParams: {
-                            sellToken: {
-                                symbol: resolvedTokenSymbol,
-                                address: resolvedTokenAddress.toLowerCase()
-                            },
-                            buyAmount: Number(ethers.formatUnits(transferAmountInWEI, resolvedTokenDecimals)),
-                            buyAmountValueType: BuyAmountValueType.TOKEN,
-                            transferTo: resolvedRecipientAddress.toLowerCase()
-                        }
-                    },
-                    source: SwapSource.AGENT_TOKEN_TRANSFER
-                };
-
-                await moxieUserService.addRuleExecutionLog(executionLogInput, process.env.MOXIE_API_KEY || "");
-            }
 
             return {
                 data: callBackTemplate.TRANSACTION_SUCCESSFUL(
