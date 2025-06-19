@@ -12,7 +12,7 @@ import {
     generateObjectDeprecated,
 } from "@moxie-protocol/core";
 import { MoxieClientWallet, MoxieUser, MoxieWalletClient, formatUserMention } from "@moxie-protocol/moxie-agent-lib";
-import { BaseParams, createTradingRule, getAutonomousTradingRuleDetails, getErrorMessageFromCode, GroupTradeParams, LimitOrderParams, RuleType, 
+import { BaseParams, createTradingRule, getAutonomousTradingRuleDetails, getErrorMessageFromCode, GroupTradeParams, LimitOrderParams, RuleType, StopLossParams,
     UserTradeParams, agentWalletNotFound, delegateAccessNotFound, moxieWalletClientNotFound, checkUserCommunicationPreferences, Condition } from "../utils/utility";
 import { autonomousTradingTemplate } from "../templates";
 
@@ -45,6 +45,8 @@ export interface AutonomousTradingRuleParams {
     sellPercentage?: number;
     tokenAge?: TokenAge;
     marketCap?: MarketCap;
+    stopLossPercentage?: number;
+    stopLossDurationInSec?: number;
 }
 
 export interface AutonomousTradingError {
@@ -146,6 +148,30 @@ export const autonomousTradingAction: Action = {
 
             // Extract parameters from response
             const {ruleType, params} = autonomousTradingResponse;
+
+            if (params.moxieIds && params.moxieIds.length > 1 && !params.timeDurationInSec) {
+                callback?.({
+                    text: `Please specify the duration between which copied traders make trades to be counted for the rule`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+
+            if (params.conditionValue && params.conditionValue > 1 && !params.timeDurationInSec) {
+                callback?.({
+                    text: `Please specify the duration between which copied traders make trades to be counted for the rule`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+
+            if (params.stopLossPercentage && params.stopLossPercentage > 100) {
+                callback?.({
+                    text: `Please specify a stop loss percentage less than 100%. You can not lose more than you invested.`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
             
             const baseParams: BaseParams = {
                 buyAmount: params.amountInUSD,
@@ -167,7 +193,7 @@ export const autonomousTradingAction: Action = {
                 } : undefined
             };
 
-            if (params.sellTriggerType === 'COPY_SELL' || params.sellTriggerType === 'BOTH') {
+            if (params.sellTriggerType === 'COPY_SELL' || (params.sellTriggerType === 'BOTH' && (params?.sellTriggerCondition || params?.sellTriggerCount))) {
                 baseParams.sellConfig = {
                     buyToken: {
                         symbol: 'ETH',
@@ -183,6 +209,8 @@ export const autonomousTradingAction: Action = {
             let groupTradeParams: GroupTradeParams;
             let userTradeParams: UserTradeParams;
             let limitOrderParams: LimitOrderParams;
+            let stopLossParams: StopLossParams;
+
             let ruleTriggers: 'GROUP' | 'USER';
 
             if (ruleType === 'GROUP_COPY_TRADE' || ruleType === 'GROUP_COPY_TRADE_AND_PROFIT') {
@@ -233,6 +261,16 @@ export const autonomousTradingAction: Action = {
                 };
             }
 
+            if (params.stopLossPercentage) {
+                stopLossParams = {
+                    sellConditions: {
+                        sellPercentage: 100,
+                        priceChangePercentage: params.stopLossPercentage
+                    },
+                    stopLossValidityInSeconds: params.stopLossDurationInSec || 7 * 24 * 60 * 60
+                };
+            }
+
             try {
                 const response = await createTradingRule(
                     state.authorizationHeader as string,
@@ -242,7 +280,8 @@ export const autonomousTradingAction: Action = {
                     ruleTriggers,
                     groupTradeParams,
                     userTradeParams,
-                    limitOrderParams
+                    limitOrderParams,
+                    stopLossParams
                 );
 
                 await callback?.({

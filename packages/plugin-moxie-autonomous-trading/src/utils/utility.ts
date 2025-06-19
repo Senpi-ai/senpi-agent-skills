@@ -62,6 +62,14 @@ export interface LimitOrderParams {
     limitOrderValidityInSeconds: number;
 }
 
+export interface StopLossParams {
+    sellConditions: {
+        sellPercentage: number;
+        priceChangePercentage: number;
+    };
+    stopLossValidityInSeconds: number;
+}
+
 export interface GroupTradeParams {
     groupId: string;
     condition: 'ANY' | 'ALL';
@@ -80,6 +88,7 @@ export interface CreateRuleInput {
     ruleParameters: {
         baseParams: BaseParams;
         limitOrderParams?: LimitOrderParams;
+        stopLossParams?: StopLossParams;
         groupTradeParams?: GroupTradeParams;
         userTradeParams?: UserTradeParams;
     };
@@ -216,6 +225,10 @@ const errorMessages: Record<string, string> = {
     AERR053: "Minimum market cap and maximum market cap must be non-negative numbers",
     AERR054: "Minimum token age must be less than maximum token age",
     AERR055: "Minimum market cap must be less than maximum market cap",
+    AERR056: "Stop loss sell conditions not provided",
+    AERR057: "Stop loss sell conditions percentages must be numbers",
+    AERR058: "Stop loss percentage must be greater than 1%",
+    AERR059: "Stop loss sell percentage must be greater than 0%",
     AERR060: "Agent wallet not found",
     AERR061: "Delegate access not found for agent wallet",
     AERR062: "Something went wrong while activating the rule. Please try again.",
@@ -255,7 +268,8 @@ export async function createTradingRule(
     ruleTrigger: 'GROUP' | 'USER',
     groupTradeParams?: GroupTradeParams,
     userTradeParams?: UserTradeParams,
-    limitOrderParams?: LimitOrderParams
+    limitOrderParams?: LimitOrderParams,
+    stopLossParams?: StopLossParams
 ): Promise<CreateRuleResponse> {
 
     // Ensure either groupTradeParams or userTradeParams is provided, but not both
@@ -282,6 +296,10 @@ export async function createTradingRule(
 
     if (limitOrderParams) {
         createRuleInput.ruleParameters.limitOrderParams = limitOrderParams;
+    }
+
+    if (stopLossParams) {
+        createRuleInput.ruleParameters.stopLossParams = stopLossParams;
     }
 
     if (groupTradeParams) {
@@ -339,8 +357,7 @@ export async function createTradingRule(
     }
 }
 
-export const getAutonomousTradingRuleDetails = (currentUser: string) => `Hi There!\n&nbsp;\nI can help you easily set up auto-trading — so you never miss that alpha. Here are some examples of auto-trades I can currently do:\n&nbsp;\n\n1. **Buy when someone else buys**\nIf @betashop.eth and @jessepollak buy >500 of a token with 30 minutes of each other, then buy me $100 of it.\n\n2. **Buy when group buys**\nIf 3 people #copytrade buy >$500 of the same token within 20 mins of each other, then buy me $100 of it.\n\n3. **Auto-Buy then Auto-Sell**\nIf 3 people #copytrade buy >$500 of the same token within 20 mins of each other, then buy me $100 of it, and then sell all when 2 of them sell or when it increases by 30%.\n\n&nbsp;\nGo to Groups to set up your #copytrade group and create additional groups.\n&nbsp;\nThen just use #[groupname] to create your auto-trade rules!\n&nbsp;\nCopy and edit the prompts above or start with one of the templates below — just tweak it to fit your strategy!`;
-
+export const getAutonomousTradingRuleDetails = (currentUser: string) => `Hi there! \n \nI can help you easily set up auto-trading — so you never miss that alpha. Here are some examples of auto-trades I can currently do: \n \n1. Auto-buy: If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss at 10%. \n2. Auto-buy + Limit sell: If any 2 people in #copytrade buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%. \n3. Auto-buy + Auto-sell: If any 2 people in #copytrade buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss at 10%. \n4. Auto-buy + combo sell: If any 2 people in #copytrade buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss at 10%. \n5. Auto-buy-mcap + combo-sell: If any 3 people in #copytrade buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss at 10%. \n6. Auto-buy-age + combo-sell: If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss at 10%. \n \nGo to Groups to set up your #copytrade group and create additional groups. \n \nThen just use #[groupname] to create your auto-trade rules! \n \nCopy and edit the prompts above or start with one of the templates below — just tweak it to fit your strategy!`;
 
 export const agentWalletNotFound = {
     text: `\nPlease make sure to set up your agent wallet first and try again.`,
