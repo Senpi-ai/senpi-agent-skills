@@ -1,6 +1,6 @@
 import { elizaLogger } from '@moxie-protocol/core';
 import { gql } from 'graphql-request';
-import { GetGroupsInput, GetGroupsOutput, GroupOutput, CreateGroupInput, UpdateGroupInput, DeleteGroupInput, ModifyGroupMembersInput, Status, DeleteGroupOutput } from '../types';
+import { GetGroupsInput, GetGroupsOutput, GroupOutput, CreateGroupInput, UpdateGroupInput, DeleteGroupInput, ModifyGroupMembersInput, Status, DeleteGroupOutput, GenerateUniqueGroupNameInput } from '../types';
 
 export const GET_GROUP_DETAILS = gql`
     query GetGroups($input: GetGroupsInput!) {
@@ -110,6 +110,14 @@ export const REMOVE_MEMBERS_FROM_GROUP = gql`
                 status
             }
             membersNotAdded
+        }
+    }
+`;
+
+export const GENERATE_UNIQUE_GROUP_NAME = gql`
+    query GenerateUniqueGroupName($input: GenerateUniqueGroupNameInput!) {
+        GenerateUniqueGroupName(input: $input) {
+            groupName
         }
     }
 `;
@@ -357,6 +365,41 @@ export async function removeMembersFromGroup(
     } catch (error) {
         elizaLogger.error('Error in removeMembersFromGroup', { error: error.message });
         throw new Error(`Error removing members from group: ${error.message}`);
+    }
+}
+
+export async function generateUniqueGroupName(authorizationHeader: string, groupBaseName: string): Promise<string> {
+    elizaLogger.info('generateUniqueGroupName called', { groupBaseName });
+
+    try {
+        const input: GenerateUniqueGroupNameInput = { groupBaseName };
+        elizaLogger.debug('generateUniqueGroupName input constructed', { input });
+
+        const data = await fetch(process.env.RULE_API_MOXIE_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': authorizationHeader
+            },
+            body: JSON.stringify({
+                query: GENERATE_UNIQUE_GROUP_NAME,
+                variables: { input }
+            })
+        });
+
+        elizaLogger.debug('generateUniqueGroupName fetch completed', { status: data.status });
+
+        const result = await data.json();
+        if (result.errors) {
+            elizaLogger.error('generateUniqueGroupName failed', { errors: result.errors });
+            throw new Error(`Failed to generate unique group name: ${result.errors[0].message}`);
+        }
+
+        elizaLogger.info('generateUniqueGroupName successful', { data: result.data.GenerateUniqueGroupName });
+        return result.data.GenerateUniqueGroupName.groupName;
+    } catch (error) {
+        elizaLogger.error('Error in generateUniqueGroupName', { error: error.message });
+        throw new Error(`Error generating unique group name: ${error.message}`);
     }
 }
 
