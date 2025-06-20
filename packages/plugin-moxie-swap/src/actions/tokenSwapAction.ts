@@ -2552,6 +2552,8 @@ export const tokenSwapAction = {
                                 return true;
                             }
                         }
+
+                        // check if stop loss is enabled
                     }
                 }
                 // delete the cache
@@ -2698,6 +2700,20 @@ async function isValidSwapContent(
         }
     }
 
+    // check if stop loss is enabled
+    if (content.stop_loss && content.stop_loss.percentage) {
+        if (content.stop_loss.percentage <= 0 || content.stop_loss.percentage > 100) {
+            elizaLogger.error(
+                traceId,
+                `[tokenSwap] [${moxieUserId}] [isValidSwapContent] Invalid stop loss percentage: ${content.stop_loss.percentage}`
+            );
+            await callback?.({
+                text: "\nStop loss percentage must be between 0 and 100."
+            });
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -2720,12 +2736,17 @@ interface SwapTransaction {
     };
 }
 
+interface StopLoss {
+    percentage: number | null;
+}
+
 interface TokenSwapResponse {
     success: boolean;
     action: "BUY" | "SELL" | "SWAP";
     transaction_type: "DIRECT" | "BALANCE_BASED" | "MULTI_CREATOR";
     is_followup: boolean;
     transactions: SwapTransaction[];
+    stop_loss?: StopLoss;
     error?: {
         missing_fields: string[];
         prompt_message: string;
