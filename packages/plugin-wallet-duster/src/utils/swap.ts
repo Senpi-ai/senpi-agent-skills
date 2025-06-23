@@ -162,7 +162,7 @@ export async function swap(
                 });
             }
 
-            return null;
+            return buyAmountInWEI;
         }
         // for other currencies we need to check allowance and approve spending
         // check allowance and approve spending
