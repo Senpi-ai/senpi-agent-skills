@@ -217,7 +217,7 @@ export const autonomousTradingAction: Action = {
                 return true;
             }
 
-            if (params.groupId && validate(params.groupId)) {
+            if (params.groupId && !validate(params.groupId)) {
                 callback?.({
                     text: `Please provide a valid group in the following format: #groupname. Remember to select the group from the dropdown and press 'Enter' to confirm.`,
                     action: "AUTONOMOUS_TRADING",
