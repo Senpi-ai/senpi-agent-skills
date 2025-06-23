@@ -349,16 +349,17 @@ export async function swap(
         if (!txnReceipt) {
             elizaLogger.error(
                 traceId,
-                `[tokenSwap] [${moxieUserId}] [swap] txnReceipt is null`
+                `[tokenSwap] [${moxieUserId}] [swap] [TRANSACTION_RECEIPT_NULL] txnReceipt is null`
             );
             await callback?.({
-                text: `\nTransaction is failed. Please try again`,
+                text: `\nTransaction failed. Please try again.`,
                 content: {
-                    error: "TRANSACTION_RECEIPT_NULL",
                     details: `Transaction receipt is not present for ${tx.hash}.`,
                 },
             });
-            throw new Error("Transaction receipt is null");
+            throw new Error(
+                "[TRANSACTION_RECEIPT_NULL] Transaction receipt is null"
+            );
         }
     } catch (error) {
         elizaLogger.error(
