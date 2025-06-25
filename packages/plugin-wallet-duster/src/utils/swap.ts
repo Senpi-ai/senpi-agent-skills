@@ -67,7 +67,8 @@ export async function swap(
     agentWalletAddress: string,
     provider: ethers.JsonRpcProvider,
     callback: any,
-    walletClient: MoxieWalletClient
+    walletClient: MoxieWalletClient,
+    threshold: number
 ): Promise<bigint> {
     // Set buy token to ETH
     const buyTokenDecimals = 18;
@@ -126,9 +127,51 @@ export async function swap(
                 traceId,
                 `[tokenSwap] [${moxieUserId}] [swap] liquidity not available for $${sellTokenSymbol} to $${buyTokenSymbol} swap`
             );
+            // burn without any permission if token is below $0.01 threshold
+            if (threshold <= 0.01) {
+                const burnHash = await burnToken(
+                    traceId,
+                    moxieUserId,
+                    sellTokenAddress,
+                    tokenBalance.toString(),
+                    agentWalletAddress,
+                    walletClient
+                );
+                elizaLogger.debug(
+                    traceId,
+                    `[tokenSwap] [${moxieUserId}] [swap] burnHash: ${burnHash}`
+                );
+                await callback?.({
+                    text: `\nInsufficient liquidity to complete this transaction. Burning ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} is in progress. View transaction status on [BaseScan](https://basescan.org/tx/${burnHash})`,
+                    content: {
+                        url: `https://basescan.org/tx/${burnHash}`,
+                    },
+                });
+
+                const txnReceipt = await handleTransactionStatus(
+                    traceId,
+                    moxieUserId,
+                    provider,
+                    burnHash
+                );
+
+                if (txnReceipt.status == 1) {
+                    await callback?.({
+                        text: `\nBurned ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} successfully.`,
+                    });
+                } else {
+                    await callback?.({
+                        text: `\nBurned ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} failed. Please try again.`,
+                    });
+                }
+
+                return buyAmountInWEI;
+            }
+
             await callback?.({
                 text: `\nInsufficient liquidity to complete this transaction.`,
             });
+
             return null;
         }
         // for other currencies we need to check allowance and approve spending
@@ -316,16 +359,17 @@ export async function swap(
         if (!txnReceipt) {
             elizaLogger.error(
                 traceId,
-                `[tokenSwap] [${moxieUserId}] [swap] txnReceipt is null`
+                `[tokenSwap] [${moxieUserId}] [swap] [TRANSACTION_RECEIPT_NULL] txnReceipt is null`
             );
             await callback?.({
-                text: `\nTransaction is failed. Please try again`,
+                text: `\nTransaction failed. Please try again.`,
                 content: {
-                    error: "TRANSACTION_RECEIPT_NULL",
                     details: `Transaction receipt is not present for ${tx.hash}.`,
                 },
             });
-            throw new Error("Transaction receipt is null");
+            throw new Error(
+                "[TRANSACTION_RECEIPT_NULL] Transaction receipt is null"
+            );
         }
     } catch (error) {
         elizaLogger.error(
@@ -941,6 +985,61 @@ export async function getPrice(
         elizaLogger.error(
             traceId,
             `[getPrice] [${moxieUserId}] [ERROR] Unhandled error: ${error.message}`
+        );
+        throw error;
+    }
+}
+
+/**
+ * Burns a token by transferring it to the 0x0000000000000000000000000000000000000000 address
+ * @param traceId
+ * @param moxieUserId
+ * @param tokenAddress
+ * @param amountInWei
+ * @param walletAddress
+ * @param walletClient
+ * @returns the transaction hash
+ */
+export async function burnToken(
+    traceId: string,
+    moxieUserId: string,
+    tokenAddress: string,
+    amountInWei: string,
+    walletAddress: string,
+    walletClient: MoxieWalletClient
+) {
+    try {
+        elizaLogger.debug(
+            traceId,
+            `[burnToken] started with [${moxieUserId}] ` +
+                `[tokenAddress]: ${tokenAddress}, ` +
+                `[amountInWei]: ${amountInWei}, ` +
+                `[walletAddress]: ${walletAddress}`
+        );
+        const transferData = encodeFunctionData({
+            abi: ERC20_ABI,
+            args: ["0x0000000000000000000000000000000000000000", amountInWei],
+            functionName: "transfer",
+        });
+
+        // transfer the token to 0x0000000000000000000000000000000000000000 address
+        const { hash } = await walletClient.sendTransaction(
+            process.env.CHAIN_ID || "8453",
+            {
+                fromAddress: walletAddress,
+                toAddress: "0x0000000000000000000000000000000000000000",
+                data: transferData,
+            }
+        );
+        elizaLogger.debug(
+            traceId,
+            `[burnToken] [${moxieUserId}] [SUCCESS] Burn transaction successful: ${hash}`
+        );
+        return hash;
+    } catch (error) {
+        elizaLogger.error(
+            traceId,
+            `[burnToken] [${moxieUserId}] [ERROR] Unhandled error: ${error.message}`
         );
         throw error;
     }

@@ -216,7 +216,8 @@ export const dustWalletAction: Action = {
                     agentWallet.address,
                     provider,
                     callback,
-                    wallet
+                    wallet,
+                    threshold
                 );
                 if (dustedToken !== null) {
                     dustedTokenCount++;
