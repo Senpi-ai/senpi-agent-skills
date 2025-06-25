@@ -17,8 +17,8 @@ Link: ${process.env.GET_STARTED_TUTORIAL_URL_EMBED}
 
 2. Autonomous Trade Tutorial
 
-- This tutorial is for users who want to learn how to set up an autonomous trade on Senpi.
-- It's also helpful for users who have trouble setting up their autonomous trade.
+- This tutorial is for users who want to learn how to set up an autonomous trade orders on Senpi. From the tutorial, user can learn how to set up all possible different types of custom rules for their autonomous trade orders.
+- It's also helpful for users who have trouble setting up their autonomous trade orders with custom complex rules.
 
 Link: ${process.env.AUTONOMOUS_TRADE_TUTORIAL_URL_EMBED}
 
@@ -35,6 +35,13 @@ Link: ${process.env.TOKEN_RESEARCH_TUTORIAL_URL_EMBED}
 - It's also helpful for users who have trouble setting up their limit order.
 
 Link: ${process.env.LIMIT_ORDER_TUTORIAL_URL_EMBED}
+
+5. Stop Loss Tutorial
+
+- This tutorial is for users who want to learn how to set up a stop loss on Senpi.
+- It's also helpful for users who have trouble setting up their stop loss.
+
+Link: ${process.env.STOP_LOSS_TUTORIAL_URL_EMBED}
 
 If you don't find any of the tutorials relevant to the user's request, just say "Sorry, I don't find any tutorials for that request. For more help, please contact the Senpi team at [our Dojo](${process.env.SENPI_TELEGRAM_GROUP_URL})."
 
