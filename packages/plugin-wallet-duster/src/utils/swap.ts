@@ -67,7 +67,8 @@ export async function swap(
     agentWalletAddress: string,
     provider: ethers.JsonRpcProvider,
     callback: any,
-    walletClient: MoxieWalletClient
+    walletClient: MoxieWalletClient,
+    threshold: number
 ): Promise<bigint> {
     // Set buy token to ETH
     const buyTokenDecimals = 18;
@@ -126,43 +127,52 @@ export async function swap(
                 traceId,
                 `[tokenSwap] [${moxieUserId}] [swap] liquidity not available for $${sellTokenSymbol} to $${buyTokenSymbol} swap`
             );
-            const burnHash = await burnToken(
-                traceId,
-                moxieUserId,
-                sellTokenAddress,
-                tokenBalance.toString(),
-                agentWalletAddress,
-                walletClient
-            );
-            elizaLogger.debug(
-                traceId,
-                `[tokenSwap] [${moxieUserId}] [swap] burnHash: ${burnHash}`
-            );
-            await callback?.({
-                text: `\nInsufficient liquidity to complete this transaction. Burning ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} is in progress. View transaction status on [BaseScan](https://basescan.org/tx/${burnHash})`,
-                content: {
-                    url: `https://basescan.org/tx/${burnHash}`,
-                },
-            });
-
-            const txnReceipt = await handleTransactionStatus(
-                traceId,
-                moxieUserId,
-                provider,
-                burnHash
-            );
-
-            if (txnReceipt.status == 1) {
+            // burn without any permission if token is below $0.01 threshold
+            if (threshold <= 0.01) {
+                const burnHash = await burnToken(
+                    traceId,
+                    moxieUserId,
+                    sellTokenAddress,
+                    tokenBalance.toString(),
+                    agentWalletAddress,
+                    walletClient
+                );
+                elizaLogger.debug(
+                    traceId,
+                    `[tokenSwap] [${moxieUserId}] [swap] burnHash: ${burnHash}`
+                );
                 await callback?.({
-                    text: `\nBurned ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} successfully.`,
+                    text: `\nInsufficient liquidity to complete this transaction. Burning ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} is in progress. View transaction status on [BaseScan](https://basescan.org/tx/${burnHash})`,
+                    content: {
+                        url: `https://basescan.org/tx/${burnHash}`,
+                    },
                 });
-            } else {
-                await callback?.({
-                    text: `\nBurned ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} failed. Please try again.`,
-                });
+
+                const txnReceipt = await handleTransactionStatus(
+                    traceId,
+                    moxieUserId,
+                    provider,
+                    burnHash
+                );
+
+                if (txnReceipt.status == 1) {
+                    await callback?.({
+                        text: `\nBurned ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} successfully.`,
+                    });
+                } else {
+                    await callback?.({
+                        text: `\nBurned ${formatTokenMention(sellTokenSymbol, sellTokenAddress)} failed. Please try again.`,
+                    });
+                }
+
+                return buyAmountInWEI;
             }
 
-            return buyAmountInWEI;
+            await callback?.({
+                text: `\nInsufficient liquidity to complete this transaction.`,
+            });
+
+            return null;
         }
         // for other currencies we need to check allowance and approve spending
         // check allowance and approve spending
