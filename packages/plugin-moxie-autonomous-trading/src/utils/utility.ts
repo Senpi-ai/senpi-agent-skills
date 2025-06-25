@@ -106,6 +106,7 @@ export type Group = {
     createdAt: string;
     updatedAt: string;
     members: GroupMember[];
+    membersCount: number;
     status: Status;
 };
 
@@ -166,6 +167,7 @@ export const GET_GROUP_DETAILS = gql`
                 id
                 name
                 createdBy
+                membersCount
                 members {
                     moxieUserId
                 }
@@ -355,7 +357,7 @@ export async function createTradingRule(
             );
         }
 
-        const groupMembersLength = groupDetails.groups[0].members.length;
+        const groupMembersLength = groupDetails.groups[0].membersCount;
 
         if (groupMembersLength === 0) {
             throw new Error(
