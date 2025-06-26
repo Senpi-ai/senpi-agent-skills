@@ -20,12 +20,12 @@ Instructions:
 
 2. Parameter Extraction:
    - User mentions: Extract "senpiUserId" from @[username|senpiUserId]. Here, senpiUserId can be an ID starting with 'M' or an Ethereum address starting with '0x'.
-   - Group references: Extract both "groupName" and "groupId" from #[groupName|groupId]
+   - Group references: Extract both "groupName" and "groupId" from #[groupName|groupId]. If only groupName is provided, use the groupName to search and leave groupId as undefined. Regard any reference to accounts as equivalent to groups.
 
 3. Action Requirements:
    - CREATE_GROUP: Requires explicitly mentioned groupName
-   - ADD_GROUP_MEMBER: Requires groupId and senpiUserIdsToAdd
-   - CREATE_GROUP_AND_ADD_GROUP_MEMBER: Requires explicitly mentioned groupName and senpiUserIdsToAdd
+   - ADD_GROUP_MEMBER: Requires groupName/groupId and senpiUserIdsToAdd
+   - CREATE_GROUP_AND_ADD_GROUP_MEMBER: Requires explicitly mentioned groupName and senpiUserIdsToAdd. Select this ONLY if the user explicitly request to create a new group and add members.
    - REMOVE_GROUP_MEMBER: Requires groupId and senpiUserIdsToRemove
    - DELETE_GROUP: Requires either groupId or groupName
    - GET_GROUP_DETAILS: No required parameters
@@ -49,7 +49,6 @@ Instructions:
       - If the count is less than expected, review the input for any missed mentions.
       - Note any discrepancies.
    i. Determine the final action or prepare for an error response.
-   j. If the intent is to add members but only a group name is provided, choose CREATE_GROUP_AND_ADD_GROUP_MEMBER as the action.
    k. Summarize your final decision, explaining the reasoning and listing any missing parameters.
 
 5. Response Format:
