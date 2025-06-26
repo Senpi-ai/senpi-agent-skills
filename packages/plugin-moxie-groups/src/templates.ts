@@ -26,7 +26,7 @@ Instructions:
    - CREATE_GROUP: Requires explicitly mentioned groupName
    - ADD_GROUP_MEMBER: Requires senpiUserIdsToAdd and either groupName or groupId
    - CREATE_GROUP_AND_ADD_GROUP_MEMBER: Requires explicitly mentioned groupName and senpiUserIdsToAdd. Select this ONLY if the user explicitly request to create a new group and add members.
-   - REMOVE_GROUP_MEMBER: Requires groupId and senpiUserIdsToRemove
+   - REMOVE_GROUP_MEMBER: Requires senpiUserIdsToRemove and either groupName or groupId
    - DELETE_GROUP: Requires either groupId or groupName
    - GET_GROUP_DETAILS: No required parameters
    - UPDATE_GROUP: Requires groupId and new groupName
