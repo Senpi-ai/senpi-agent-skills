@@ -20,13 +20,13 @@ Instructions:
 
 2. Parameter Extraction:
    - User mentions: Extract "senpiUserId" from @[username|senpiUserId]. Here, senpiUserId can be an ID starting with 'M' or an Ethereum address starting with '0x'.
-   - Group references: Extract both "groupName" and "groupId" from #[groupName|groupId]
+   - Group mentions: Extract both "groupName" and "groupId" from #[groupName|groupId] format, if any. If only groupName is provided, use the groupName only and leave groupId as null. Interpret 'account' and 'group' as equivalent terms—e.g., 'copytrade account' means 'copytrade group', thus assign groupName as 'copytrade' and groupId as null.
 
 3. Action Requirements:
    - CREATE_GROUP: Requires explicitly mentioned groupName
-   - ADD_GROUP_MEMBER: Requires groupId and senpiUserIdsToAdd
-   - CREATE_GROUP_AND_ADD_GROUP_MEMBER: Requires explicitly mentioned groupName and senpiUserIdsToAdd
-   - REMOVE_GROUP_MEMBER: Requires groupId and senpiUserIdsToRemove
+   - ADD_GROUP_MEMBER: Requires senpiUserIdsToAdd and either groupName or groupId
+   - CREATE_GROUP_AND_ADD_GROUP_MEMBER: Requires explicitly mentioned groupName and senpiUserIdsToAdd. Select this ONLY if the user explicitly request to create a new group and add members.
+   - REMOVE_GROUP_MEMBER: Requires senpiUserIdsToRemove and either groupName or groupId
    - DELETE_GROUP: Requires either groupId or groupName
    - GET_GROUP_DETAILS: No required parameters
    - UPDATE_GROUP: Requires groupId and new groupName
@@ -49,7 +49,6 @@ Instructions:
       - If the count is less than expected, review the input for any missed mentions.
       - Note any discrepancies.
    i. Determine the final action or prepare for an error response.
-   j. If the intent is to add members but only a group name is provided, choose CREATE_GROUP_AND_ADD_GROUP_MEMBER as the action.
    k. Summarize your final decision, explaining the reasoning and listing any missing parameters.
 
 5. Response Format:
@@ -72,10 +71,10 @@ Instructions:
 
    \`\`\`json
    {
-     "groupId": string | undefined,
-     "groupName": string | undefined,
-     "senpiUserIdsToAdd": string[] | undefined,
-     "senpiUserIdsToRemove": string[] | undefined
+     "groupId": string | null,
+     "groupName": string | null,
+     "senpiUserIdsToAdd": string[] | null,
+     "senpiUserIdsToRemove": string[] | null
    }
    \`\`\`
 

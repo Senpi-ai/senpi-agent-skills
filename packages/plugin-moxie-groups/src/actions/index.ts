@@ -244,14 +244,34 @@ async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: strin
 
 async function handleAddGroupMember(traceId: string, moxieUserId: string, state: State, params: GroupParams, callback: HandlerCallback) {
     try {
-        const { groupId, senpiUserIdsToAdd } = params;
+        let groupId: string;
+        const {
+            groupId: extractedGroupId,
+            senpiUserIdsToAdd,
+            groupName,
+        } = params;
+        groupId = extractedGroupId;
         if (!groupId || !senpiUserIdsToAdd) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Group ID and Senpi user IDs to add are required`);
-            await callback?.({
-                text: `❌ Group ID and Senpi user IDs to add are required. Please try again.`,
-                action: "MANAGE_GROUPS",
-            });
-            return;
+            if (!groupName) {
+                elizaLogger.warn(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Group ID and Senpi user IDs to add are required`);
+                await callback?.({
+                    text: `❌ Group ID and Senpi user IDs to add are required. Please try again.`,
+                    action: "MANAGE_GROUPS",
+                });
+                return;
+            }
+
+            groupId = await handleGetGroupDetailsByGroupName(
+                traceId,
+                state,
+                params,
+                callback
+            );
+
+            elizaLogger.debug(
+                traceId,
+                `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Fetch Group ID By Group Name ${groupName}: ${groupId}`
+            );
         }
         
         try {
@@ -340,14 +360,34 @@ async function handleDeleteGroup(traceId: string, moxieUserId: string, state: St
 
 async function handleRemoveGroupMember(traceId: string, moxieUserId: string, state: State, params: GroupParams, callback: HandlerCallback) {
     try {
-        const { groupId, senpiUserIdsToRemove } = params;
+        let groupId: string;
+        const { 
+            groupId: extractedGroupId,
+            senpiUserIdsToRemove,
+            groupName,
+        } = params;
+        groupId = extractedGroupId;
         if (!groupId || !senpiUserIdsToRemove) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [REMOVE_GROUP_MEMBER] Group ID and Senpi user IDs to remove are required`);
-            await callback?.({
-                text: `❌ Group ID and Senpi user IDs to remove are required. Please try again.`,
-                action: "MANAGE_GROUPS",
-            });
-            return;
+            if (!groupName) {
+                elizaLogger.warn(traceId, `[MANAGE_GROUPS] [REMOVE_GROUP_MEMBER] Group ID and Senpi user IDs to remove are required`);
+                await callback?.({
+                    text: `❌ Group ID and Senpi user IDs to add are required. Please try again.`,
+                    action: "MANAGE_GROUPS",
+                });
+                return;
+            }
+
+            groupId = await handleGetGroupDetailsByGroupName(
+                traceId,
+                state,
+                params,
+                callback
+            );
+
+            elizaLogger.debug(
+                traceId,
+                `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Fetch Group ID By Group Name ${groupName}: ${groupId}`
+            );
         }
 
         const isValidUserId = senpiUserIdsToRemove.every(userId => userId.startsWith('M'));
@@ -474,6 +514,60 @@ async function handleGetGroupDetails(traceId: string, runtime: IAgentRuntime, me
         elizaLogger.error(traceId, `[MANAGE_GROUPS] Error retrieving group details: ${error.message}`);
         await callback?.({
             text: `❌ Failed to retrieve group details | ${getErrorMessageFromCode(error)}`,
+            action: "MANAGE_GROUPS",
+        });
+    }
+}
+
+async function handleGetGroupDetailsByGroupName(
+    traceId: string,
+    state: State,
+    params: GroupParams,
+    callback: HandlerCallback
+) {
+    const { groupName } = params;
+    try {
+        if (!groupName) {
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [GET_GROUP_DETAILS_BY_GROUP_NAME] Group name is required`
+            );
+            await callback?.({
+                text: `❌ Group name is required. Please try again.`,
+                action: "MANAGE_GROUPS",
+            });
+            return;
+        }
+
+        const response = (await getGroupDetails(
+            state.authorizationHeader as string,
+            undefined,
+            groupName
+        )) as GetGroupsOutput;
+
+        if (response.groups.length === 0) {
+            await callback?.({
+                text: `No groups found!`,
+                action: "MANAGE_GROUPS",
+            });
+            return;
+        }
+
+        const groupDetails = response.groups;
+
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [GET_GROUP_DETAILS_BY_GROUP_NAME] Group details: ${JSON.stringify(groupDetails)}`
+        );
+
+        return groupDetails?.[0]?.id;
+    } catch (error) {
+        elizaLogger.error(
+            traceId,
+            `[MANAGE_GROUPS] Error retrieving group details by group name: ${error.message}`
+        );
+        await callback?.({
+            text: `❌ Failed to retrieve group details for group **${groupName}**. Please provide an existing group name using the **#groupName** format.`,
             action: "MANAGE_GROUPS",
         });
     }
