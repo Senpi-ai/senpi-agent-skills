@@ -755,6 +755,7 @@ async function handleGetGroupDetailsByGroupName(
 
         const response = (await getGroupDetails(
             state.authorizationHeader as string,
+            undefined,
             groupName
         )) as GetGroupsOutput;
 
