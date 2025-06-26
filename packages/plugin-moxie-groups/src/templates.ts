@@ -20,7 +20,7 @@ Instructions:
 
 2. Parameter Extraction:
    - User mentions: Extract "senpiUserId" from @[username|senpiUserId]. Here, senpiUserId can be an ID starting with 'M' or an Ethereum address starting with '0x'.
-   - Group mentions: Extract both "groupName" and "groupId" from #[groupName|groupId] format, if any. If only groupName is provided, use the groupName only and leave groupId as undefined. Interpret 'account' and 'group' as equivalent terms—e.g., 'copytrade account' means 'copytrade group'..
+   - Group mentions: Extract both "groupName" and "groupId" from #[groupName|groupId] format, if any. If only groupName is provided, use the groupName only and leave groupId as undefined. Interpret 'account' and 'group' as equivalent terms—e.g., 'copytrade account' means 'copytrade group', thus assign groupName as 'copytrade' and groupId as undefined.
 
 3. Action Requirements:
    - CREATE_GROUP: Requires explicitly mentioned groupName
