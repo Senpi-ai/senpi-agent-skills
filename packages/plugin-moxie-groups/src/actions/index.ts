@@ -525,8 +525,8 @@ async function handleGetGroupDetailsByGroupName(
     params: GroupParams,
     callback: HandlerCallback
 ) {
+    const { groupName } = params;
     try {
-        const { groupName } = params;
         if (!groupName) {
             elizaLogger.warn(
                 traceId,
@@ -567,7 +567,7 @@ async function handleGetGroupDetailsByGroupName(
             `[MANAGE_GROUPS] Error retrieving group details by group name: ${error.message}`
         );
         await callback?.({
-            text: `❌ Failed to retrieve group details by group name | ${getErrorMessageFromCode(error)}`,
+            text: `❌ Failed to retrieve group details for group **${groupName}**. Please provide an existing group name using the **#groupName** format.`,
             action: "MANAGE_GROUPS",
         });
     }
