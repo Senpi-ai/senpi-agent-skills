@@ -266,6 +266,7 @@ const errorMessages: Record<string, string> = {
     AERR061: "Delegate access not found for agent wallet",
     AERR062:
         "Something went wrong while activating the rule. Please try again.",
+    AERR063: "Something went wrong while adding the target group. Please try again.",
     AERR201:
         "Please try again with a valid group. Make sure to use '#' to select from your available groups. You can also ask me to create a new group by typing: create the group [groupname]",
     AERR202:
