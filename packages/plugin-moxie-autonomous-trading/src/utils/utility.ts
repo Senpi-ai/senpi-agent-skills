@@ -346,44 +346,6 @@ export async function createTradingRule(
 
     if (groupTradeParams) {
         createRuleInput.ruleParameters.groupTradeParams = groupTradeParams;
-        const groupDetails = await getGroupDetails(
-            authorizationHeader,
-            groupTradeParams.groupId
-        );
-
-        if (groupDetails.groups.length === 0) {
-            throw new Error(
-                "AERR201: Group not found. Please check the group ID."
-            );
-        }
-
-        const groupMembersLength = groupDetails.groups[0].membersCount;
-
-        if (groupMembersLength === 0) {
-            throw new Error(
-                "AERR202: The group has no members. Please add members to the group."
-            );
-        }
-
-        if (
-            groupTradeParams.condition === "ANY" &&
-            groupMembersLength < groupTradeParams.conditionValue
-        ) {
-            throw new Error(
-                "AERR203: The number of users in the group is less than the buy condition value. Please provide a lower condition value."
-            );
-        }
-
-        if (
-            createRuleInput?.ruleParameters?.baseParams?.sellConfig &&
-            groupMembersLength <
-                createRuleInput.ruleParameters.baseParams.sellConfig
-                    .conditionValue
-        ) {
-            throw new Error(
-                "AERR204: The number of users in the group is less than the sell condition value. Please provide a lower condition value."
-            );
-        }
     }
 
     if (userTradeParams) {
