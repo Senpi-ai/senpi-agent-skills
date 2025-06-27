@@ -139,7 +139,7 @@ export async function swap(
                 );
                 if (!burnHash) {
                     await callback?.({
-                        text: `\nFailed to burn token due to restrictions on the token contract.`,
+                        text: `\nInsufficient liquidity to complete this transaction. Failed to burn token due to restrictions on the token contract.`,
                     });
                     return null;
                 }
