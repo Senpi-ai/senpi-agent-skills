@@ -137,6 +137,13 @@ export async function swap(
                     agentWalletAddress,
                     walletClient
                 );
+                if (!burnHash) {
+                    await callback?.({
+                        text: `\nFailed to burn token due to restrictions on the token contract.`,
+                    });
+                    return null;
+                }
+
                 elizaLogger.debug(
                     traceId,
                     `[tokenSwap] [${moxieUserId}] [swap] burnHash: ${burnHash}`
@@ -1041,6 +1048,5 @@ export async function burnToken(
             traceId,
             `[burnToken] [${moxieUserId}] [ERROR] Unhandled error: ${error.message}`
         );
-        throw error;
     }
 }
