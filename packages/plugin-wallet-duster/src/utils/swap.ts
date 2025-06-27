@@ -1027,7 +1027,7 @@ export async function burnToken(
             process.env.CHAIN_ID || "8453",
             {
                 fromAddress: walletAddress,
-                toAddress: "0x0000000000000000000000000000000000000000",
+                toAddress: tokenAddress,
                 data: transferData,
             }
         );
