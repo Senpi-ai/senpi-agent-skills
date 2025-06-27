@@ -1048,5 +1048,6 @@ export async function burnToken(
             traceId,
             `[burnToken] [${moxieUserId}] [ERROR] Unhandled error: ${error.message}`
         );
+        return null;
     }
 }
