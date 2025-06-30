@@ -4,7 +4,7 @@ import { fetchPnlData, fetchTotalPnl, preparePnlQuery, prepareGroupPnlQuery } fr
 import { MoxieUser, moxieUserService } from "@moxie-protocol/moxie-agent-lib";
 import { ethers } from "ethers";
 import * as agentLib from "@moxie-protocol/moxie-agent-lib";
-import { getGroupDetails } from "@moxie-protocol/plugin-moxie-groups/src/utils";
+import { generateUniqueGroupName, getGroupDetails } from "@moxie-protocol/plugin-moxie-groups/src/utils";
 
 export const PnLAction = {
     name: "PROFIT_LOSS",
@@ -252,6 +252,32 @@ export const PnLAction = {
             elizaLogger.debug(traceId, `[PnLAction] time taken to generate pnl data template: ${new Date().getTime() - pnlStart.getTime()}ms`);
             for await (const textPart of response) {
                 callback({ text: textPart, action: "PROFIT_LOSS" });
+            }
+
+            let groupBaseName: string;
+
+            if (tokenAddresses.length > 0) {
+                const tokenSymbols: string[] = [];
+                for (const tokenAddress of tokenAddresses) {
+                    const tokenSymbol = await agentLib.getERC20TokenSymbol(tokenAddress);
+                        elizaLogger.debug(
+                            traceId,
+                            `[PnLAction] tokenSymbol: ${JSON.stringify(tokenSymbol)}`
+                    );
+                    tokenSymbols.push(tokenSymbol)
+                }
+                groupBaseName = tokenSymbols.join("_") + "_winners";
+
+                const groupName = await generateUniqueGroupName(state.authorizationHeader as string, groupBaseName);
+
+                callback({
+                    text: "Let’s create your first group using these top traders. I’ll watch their trades to trigger your strategies.",
+                    action: "PROFIT_LOSS",
+                    cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
+                    metadata: {
+                        callbackPrompt : `Create the ${groupName} group and add all of the above users to it.`
+                    }
+                })
             }
 
             return true;
