@@ -902,7 +902,7 @@
         "author": null,
         "description": "Discover top groups to copy trade on Senpi.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-discover",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/create-discover-skill/packages/plugin-senpi-discover/images/logo.png",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-discover/images/logo.png",
         "settings": {},
         "capabilities": [
             "View the top 25 performing groups in copy trading from the past 1, 7, or 30 days."
