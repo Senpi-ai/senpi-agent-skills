@@ -105,7 +105,7 @@ export const discoverGroupsAction: Action = {
 
             await callback?.({
                 // Make it table format markdown
-                text: `The top groups to copy trade on Senpi are in the last ${days} day${days > 1 ? "s" : ""} are as follows:\n | Group | Trades | ROI | PnL | Win Rate | Scam Rate |\n |---|---|---|---|---|---| \n ${groupRows.join("\n")}\n\nTo discover more groups, go to the [Discover page](https://${process.env.SENPI_URL}/discover/top-groups) on Senpi.`,
+                text: `The top groups to copy trade on Senpi are in the last ${days} day${days > 1 ? "s" : ""} are as follows:\n | Group | Trades | ROI | PnL | Win Rate | Scam Rate |\n |---|---|---|---|---|---| \n ${groupRows.join("\n")}\n\nTo copy trade one of the groups here, simply click on the highlighted group name to build your copy trading strategy.\n\nTo discover more groups, go to the [Discover page](https://${process.env.SENPI_URL}/discover/top-groups) on Senpi.`,
                 action: "DISCOVER_GROUPS",
             });
         } catch (e) {
