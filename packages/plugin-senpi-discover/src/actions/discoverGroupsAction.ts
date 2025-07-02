@@ -17,7 +17,7 @@ import {
     getTopGroupTargets,
 } from "../utils/discover";
 import { discoverTemplate } from "../templates";
-import { MoxieUser } from "@moxie-protocol/moxie-agent-lib";
+import { fetchWithRetries, MoxieUser } from "@moxie-protocol/moxie-agent-lib";
 import { getUserByMoxieId } from "@moxie-protocol/moxie-agent-lib/src/services/moxieUserService";
 import { DiscoverResponse } from "../types";
 
@@ -67,7 +67,11 @@ export const discoverGroupsAction: Action = {
             const { params } = discoverResponse ?? {};
             const { timeframe } = params ?? {};
             // Step 2: Fetch the data from the API
-            const topGroupTargets = await getTopGroupTargets(timeframe);
+            const topGroupTargets = await fetchWithRetries(
+                () => getTopGroupTargets(timeframe),
+                3,
+                1000
+            );
             const days = convertTimeframeToDays(timeframe);
 
             elizaLogger.debug(
