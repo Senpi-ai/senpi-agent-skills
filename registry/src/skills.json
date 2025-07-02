@@ -896,7 +896,7 @@
     },
     {
         "pluginId": "45e83c46-89cd-4ad4-9cbc-0764788839e7",
-        "name": "plugin-senpi-discover",
+        "name": "@moxie-protocol/plugin-senpi-discover",
         "displayName": "Senpi Discover",
         "version": "0.0.1",
         "author": null,
@@ -905,15 +905,20 @@
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-discover/images/logo.png",
         "settings": {},
         "capabilities": [],
-        "starterQuestions": [],
+        "starterQuestions": [
+            {
+                "label": "Who should I copy trade?",
+                "value": "Who should I copy trade?"
+            }
+        ],
         "mediaUrls": [],
-        "actions": [],
+        "actions": ["DISCOVER_GROUPS", "WHAT_GROUPS_TO_COPY_TRADE"],
         "isPremium": false,
         "freeQueries": 0,
         "skillCoinAddress": "",
         "minimumSkillBalance": 0,
         "status": "ACTIVE",
-        "isDefault": false,
+        "isDefault": true,
         "loaders": [],
         "orderIndex": 15
     }
