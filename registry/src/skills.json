@@ -893,5 +893,28 @@
         "isDefault": true,
         "loaders": ["Dusting your wallet"],
         "orderIndex": 14
+    },
+    {
+        "pluginId": "45e83c46-89cd-4ad4-9cbc-0764788839e7",
+        "name": "plugin-senpi-discover",
+        "displayName": "Senpi Discover",
+        "version": "0.0.1",
+        "author": null,
+        "description": "Discover top groups to copy trade on Senpi.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-discover",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-discover/images/logo.png",
+        "settings": {},
+        "capabilities": [],
+        "starterQuestions": [],
+        "mediaUrls": [],
+        "actions": [],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": false,
+        "loaders": [],
+        "orderIndex": 15
     }
 ]
