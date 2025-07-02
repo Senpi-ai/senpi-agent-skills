@@ -99,7 +99,7 @@ export const discoverGroupsAction: Action = {
                         const userName =
                             (await getUserByMoxieId(groupCreatedBy))
                                 ?.userName ?? groupCreatedBy;
-                        return `| #[${groupName} (by ${userName})|${groupId}] | ${formatNumber(totalTrades)} | ${formatNumber(roi)}x | $${formatPnl(pnl)} | ${formatNumber(winRate, 2)}% | ${formatNumber(scamRate, 2)}% |`;
+                        return `| #[${groupName} (by ${userName})|${groupId}] | ${formatNumber(totalTrades)} | ${formatNumber(roi)}x | ${formatPnl(pnl)} | ${formatNumber(winRate, 2)}% | ${formatNumber(scamRate, 2)}% |`;
                     }
                 )
             );
