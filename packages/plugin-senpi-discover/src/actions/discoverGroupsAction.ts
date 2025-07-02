@@ -98,14 +98,14 @@ export const discoverGroupsAction: Action = {
                         const userName =
                             (await getUserByMoxieId(groupCreatedBy))
                                 ?.userName ?? groupCreatedBy;
-                        return `| #[${groupName} by ${userName}|${groupId}] | ${formatNumber(totalTrades)} | ${formatNumber(roi)}x | $${formatNumber(pnl, 2)} | ${formatNumber(winRate, 2)}% | ${formatNumber(scamRate, 2)}% |`;
+                        return `| #[${groupName} (by ${userName})|${groupId}] | ${formatNumber(totalTrades)} | ${formatNumber(roi)}x | $${formatNumber(pnl, 2)} | ${formatNumber(winRate, 2)}% | ${formatNumber(scamRate, 2)}% |`;
                     }
                 )
             );
 
             await callback?.({
                 // Make it table format markdown
-                text: `The top groups to copy trade on Senpi are in the last ${days} day${days > 1 ? "s" : ""} are as follows:\n | Group | Trades | ROI | PnL | Win Rate | Scam Rate |\n |---|---|---|---|---|---| \n ${groupRows.join("\n")}\nTo discover more groups, go to the [Discover page](https://${process.env.SENPI_URL}/discover/top-groups) on Senpi.`,
+                text: `The top groups to copy trade on Senpi are in the last ${days} day${days > 1 ? "s" : ""} are as follows:\n | Group | Trades | ROI | PnL | Win Rate | Scam Rate |\n |---|---|---|---|---|---| \n ${groupRows.join("\n")}\n\nTo discover more groups, go to the [Discover page](https://${process.env.SENPI_URL}/discover/top-groups) on Senpi.`,
                 action: "DISCOVER_GROUPS",
             });
         } catch (e) {
