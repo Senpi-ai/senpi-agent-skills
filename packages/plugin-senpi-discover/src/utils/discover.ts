@@ -87,3 +87,16 @@ export const formatNumber = (
         maximumFractionDigits,
     });
 };
+
+export const formatPnl = (
+    pnl: number,
+    maximumFractionDigits: number = 2
+): string => {
+    const sign = pnl >= 0 ? "+" : "-";
+    const absoluteValue = Math.abs(pnl);
+    const formattedValue = absoluteValue.toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits,
+    });
+    return `${sign}$${formattedValue}`;
+};
