@@ -902,13 +902,17 @@
         "author": null,
         "description": "Discover top groups to copy trade on Senpi.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-discover",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-discover/images/logo.png",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/create-discover-skill/packages/plugin-senpi-discover/images/logo.png",
         "settings": {},
         "capabilities": [],
         "starterQuestions": [
             {
                 "label": "Who should I copy trade?",
                 "value": "Who should I copy trade?"
+            },
+            {
+                "label": "What are the top groups in the last 30 days to copy trade?",
+                "value": "What are the top groups in the last 30 days to copy trade?"
             }
         ],
         "mediaUrls": [],

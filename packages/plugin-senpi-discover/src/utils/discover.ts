@@ -53,6 +53,7 @@ export const getTopGroupTargets = async (
                 query,
                 variables: {
                     timeframe,
+                    limit: 25,
                 },
             }),
         });
