@@ -893,5 +893,43 @@
         "isDefault": true,
         "loaders": ["Dusting your wallet"],
         "orderIndex": 14
+    },
+    {
+        "pluginId": "45e83c46-89cd-4ad4-9cbc-0764788839e7",
+        "name": "@moxie-protocol/plugin-senpi-discover",
+        "displayName": "Discover Groups",
+        "version": "0.0.1",
+        "author": null,
+        "description": "Discover top groups to copy trade on Senpi.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-discover",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-discover/images/logo.png",
+        "settings": {},
+        "capabilities": [
+            "View the top 25 performing groups in copy trading from the past 1, 7, or 30 days."
+        ],
+        "starterQuestions": [
+            {
+                "label": "Who should I copy trade?",
+                "value": "Who should I copy trade?"
+            },
+            {
+                "label": "What are the top groups in the last 30 days to copy trade?",
+                "value": "What are the top groups in the last 30 days to copy trade?"
+            }
+        ],
+        "mediaUrls": [],
+        "actions": ["DISCOVER_GROUPS", "WHAT_GROUPS_TO_COPY_TRADE"],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Scouting top trading clans",
+            "Tracking elite traders to shadow",
+            "Hunting copy trade senseis"
+        ],
+        "orderIndex": 15
     }
 ]

@@ -137,6 +137,13 @@ export async function swap(
                     agentWalletAddress,
                     walletClient
                 );
+                if (!burnHash) {
+                    await callback?.({
+                        text: `\nInsufficient liquidity to complete this transaction. Failed to burn token due to restrictions on the token contract.`,
+                    });
+                    return null;
+                }
+
                 elizaLogger.debug(
                     traceId,
                     `[tokenSwap] [${moxieUserId}] [swap] burnHash: ${burnHash}`
@@ -1027,7 +1034,7 @@ export async function burnToken(
             process.env.CHAIN_ID || "8453",
             {
                 fromAddress: walletAddress,
-                toAddress: "0x0000000000000000000000000000000000000000",
+                toAddress: tokenAddress,
                 data: transferData,
             }
         );
@@ -1041,6 +1048,6 @@ export async function burnToken(
             traceId,
             `[burnToken] [${moxieUserId}] [ERROR] Unhandled error: ${error.message}`
         );
-        throw error;
+        return null;
     }
 }

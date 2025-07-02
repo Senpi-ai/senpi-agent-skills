@@ -218,12 +218,13 @@ export const PnLAction = {
                 delete data.wallet_address;
             });
             pnlData.forEach((data) => {
-                const usernameMatch = data.username.match(/@\[(.*?)\|/);
+                const usernameMatch = data.username.match(/@\[(.*?)\|(.*?)\]/);
                 if (usernameMatch) {
                     const username = usernameMatch[1];
+                    const identifier = usernameMatch[2];
                     if (username.length > 20) {
                         const shortenedUsername = `${username.slice(0, 6)}...${username.slice(-10)}`;
-                        data.username = `@[${shortenedUsername}|${data.moxie_user_id || username}]`;
+                        data.username = `@[${shortenedUsername}|${identifier}]`;
                     }
                 }
             });

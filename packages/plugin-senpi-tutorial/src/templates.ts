@@ -43,6 +43,13 @@ Link: ${process.env.LIMIT_ORDER_TUTORIAL_URL_EMBED}
 
 Link: ${process.env.STOP_LOSS_TUTORIAL_URL_EMBED}
 
+6. Senpi Scam Shield Tutorial
+
+- This tutorial is for users who want to learn how to use the Senpi Scam Shield feature to protect themselves from scams.
+- It's also helpful for users who have trouble using the Senpi Scam Shield feature.
+
+Link: ${process.env.SCAM_SHIELD_TUTORIAL_URL_EMBED}
+
 If you don't find any of the tutorials relevant to the user's request, just say "Sorry, I don't find any tutorials for that request. For more help, please contact the Senpi team at [our Dojo](${process.env.SENPI_TELEGRAM_GROUP_URL})."
 
 Here are the recent user messages for context:
