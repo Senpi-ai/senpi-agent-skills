@@ -790,7 +790,7 @@ async function handleGetGroupDetailsByGroupName(
 
         if (response.groups.length === 0) {
             await callback?.({
-                text: `No groups named ${groupName} found!`,
+                text: `No groups named ${groupName} found! `,
                 action: "MANAGE_GROUPS",
             });
             return;
