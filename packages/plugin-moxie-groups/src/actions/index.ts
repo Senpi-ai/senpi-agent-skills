@@ -14,7 +14,15 @@ import {
 } from "@moxie-protocol/core";
 import { MoxieUser, moxieUserService } from "@moxie-protocol/moxie-agent-lib";
 import { manageGroupsTemplate, groupDetailsTemplate } from "../templates";
-import { addMembersToGroup, createGroup, deleteGroup, getGroupDetails, removeMembersFromGroup, updateGroup, getErrorMessageFromCode } from "../utils";
+import {
+    addMembersToGroup,
+    createGroup,
+    deleteGroup,
+    getGroupDetails,
+    removeMembersFromGroup,
+    updateGroup,
+    getErrorMessageFromCode,
+} from "../utils";
 import { GetGroupsOutput, GroupOutput } from "../types";
 
 export interface ManageGroupsError {
@@ -48,7 +56,8 @@ export const manageGroupsAction: Action = {
         "REMOVE_GROUP_MEMBER",
         "MANAGE_GROUP_MEMBERS",
     ],
-    description: "This action is designed for managing user groups, allowing users to create, modify, and delete groups, as well as add or remove members from these groups. It provides a comprehensive set of functionalities to handle group dynamics efficiently, ensuring seamless integration with the Senpi platform.",
+    description:
+        "This action is designed for managing user groups, allowing users to create, modify, and delete groups, as well as add or remove members from these groups. It provides a comprehensive set of functionalities to handle group dynamics efficiently, ensuring seamless integration with the Senpi platform.",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (
@@ -63,14 +72,17 @@ export const manageGroupsAction: Action = {
         const moxieUserId = moxieUserInfo.id;
 
         try {
-            elizaLogger.debug(traceId, `[MANAGE_GROUPS] [${moxieUserId}] Starting handler with user message: ${JSON.stringify(message)}`);
+            elizaLogger.debug(
+                traceId,
+                `[MANAGE_GROUPS] [${moxieUserId}] Starting handler with user message: ${JSON.stringify(message)}`
+            );
 
             const manageGroupsContext = composeContext({
                 state,
                 template: manageGroupsTemplate,
             });
 
-            const manageGroupsResponse = await generateObjectDeprecated({
+            const manageGroupsResponse = (await generateObjectDeprecated({
                 runtime,
                 context: manageGroupsContext,
                 modelClass: ModelClass.LARGE,
@@ -80,11 +92,14 @@ export const manageGroupsAction: Action = {
                     modelProvider: ModelProviderName.ANTHROPIC,
                     apiKey: process.env.ANTHROPIC_API_KEY,
                     modelClass: ModelClass.LARGE,
-                }
-            }) as ManageGroupsResponse;
+                },
+            })) as ManageGroupsResponse;
 
             if (!manageGroupsResponse.success) {
-                elizaLogger.warn(traceId, `[MANAGE_GROUPS] Error: ${JSON.stringify(manageGroupsResponse.error)}`);
+                elizaLogger.warn(
+                    traceId,
+                    `[MANAGE_GROUPS] Error: ${JSON.stringify(manageGroupsResponse.error)}`
+                );
                 callback?.({
                     text: manageGroupsResponse.error.message,
                     action: "MANAGE_GROUPS",
@@ -95,35 +110,81 @@ export const manageGroupsAction: Action = {
             const { actionType, params } = manageGroupsResponse;
 
             switch (actionType) {
-                case 'CREATE_GROUP':
-                    await handleCreateGroup(traceId, moxieUserId, state, params, callback);
+                case "CREATE_GROUP":
+                    await handleCreateGroup(
+                        traceId,
+                        moxieUserId,
+                        state,
+                        params,
+                        callback
+                    );
                     break;
-                case 'CREATE_GROUP_AND_ADD_GROUP_MEMBER':
-                    await handleCreateGroupAndAddMember(traceId, moxieUserId, state, params, callback);
+                case "CREATE_GROUP_AND_ADD_GROUP_MEMBER":
+                    await handleCreateGroupAndAddMember(
+                        traceId,
+                        moxieUserId,
+                        state,
+                        params,
+                        callback
+                    );
                     break;
-                case 'ADD_GROUP_MEMBER':
-                    await handleAddGroupMember(traceId, moxieUserId, state, params, callback);
+                case "ADD_GROUP_MEMBER":
+                    await handleAddGroupMember(
+                        traceId,
+                        moxieUserId,
+                        state,
+                        params,
+                        callback
+                    );
                     break;
-                case 'DELETE_GROUP':
-                    await handleDeleteGroup(traceId, moxieUserId, state, params, callback);
+                case "DELETE_GROUP":
+                    await handleDeleteGroup(
+                        traceId,
+                        moxieUserId,
+                        state,
+                        params,
+                        callback
+                    );
                     break;
-                case 'REMOVE_GROUP_MEMBER':
-                    await handleRemoveGroupMember(traceId, moxieUserId, state, params, callback);
+                case "REMOVE_GROUP_MEMBER":
+                    await handleRemoveGroupMember(
+                        traceId,
+                        moxieUserId,
+                        state,
+                        params,
+                        callback
+                    );
                     break;
-                case 'GET_GROUP_DETAILS':
-                    await handleGetGroupDetails(traceId, runtime, message, state, params, callback);
+                case "GET_GROUP_DETAILS":
+                    await handleGetGroupDetails(
+                        traceId,
+                        runtime,
+                        message,
+                        state,
+                        params,
+                        callback
+                    );
                     break;
-                case 'UPDATE_GROUP':
-                    await handleUpdateGroup(traceId, moxieUserId, state, params, callback);
+                case "UPDATE_GROUP":
+                    await handleUpdateGroup(
+                        traceId,
+                        moxieUserId,
+                        state,
+                        params,
+                        callback
+                    );
                     break;
-                case 'GROUP_SETUP_INSTRUCTIONS':
+                case "GROUP_SETUP_INSTRUCTIONS":
                     callback?.({
                         text: `I can help you create groups and add people to groups. \n Try asking: Create the [insert name] group \n Or: Add @[betashop.eth|M4] to the Senpi Founders group`,
                         action: "MANAGE_GROUPS",
                     });
                     break;
                 default:
-                    elizaLogger.error(traceId, `[MANAGE_GROUPS] Invalid action type: ${actionType}`);
+                    elizaLogger.error(
+                        traceId,
+                        `[MANAGE_GROUPS] Invalid action type: ${actionType}`
+                    );
                     callback?.({
                         text: `Something went wrong while managing groups. Please try again later.`,
                         action: "MANAGE_GROUPS",
@@ -131,7 +192,10 @@ export const manageGroupsAction: Action = {
                     return true;
             }
         } catch (error) {
-            elizaLogger.error(traceId, `[MANAGE_GROUPS] Unexpected error: ${JSON.stringify(error)}`);
+            elizaLogger.error(
+                traceId,
+                `[MANAGE_GROUPS] Unexpected error: ${JSON.stringify(error)}`
+            );
             callback?.({
                 text: getErrorMessageFromCode(error),
                 action: "MANAGE_GROUPS",
@@ -140,14 +204,23 @@ export const manageGroupsAction: Action = {
 
         return true;
     },
-    examples: [[],] as ActionExample[][],
+    examples: [[]] as ActionExample[][],
 };
 
-async function handleCreateGroup(traceId: string, moxieUserId: string, state: State, params: GroupParams, callback: HandlerCallback) {
+async function handleCreateGroup(
+    traceId: string,
+    moxieUserId: string,
+    state: State,
+    params: GroupParams,
+    callback: HandlerCallback
+) {
     try {
         const { groupName } = params;
         if (!groupName) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [CREATE_GROUP] Group name is required`);
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [CREATE_GROUP] Group name is required`
+            );
             await callback?.({
                 text: `❌ Group name is required. Please try again.`,
                 action: "MANAGE_GROUPS",
@@ -155,13 +228,19 @@ async function handleCreateGroup(traceId: string, moxieUserId: string, state: St
             return;
         }
 
-        const response = await createGroup(state.authorizationHeader as string, groupName) as GroupOutput;
+        const response = (await createGroup(
+            state.authorizationHeader as string,
+            groupName
+        )) as GroupOutput;
         await callback?.({
             text: `✅ Group #[${response.group?.name}|${response.group?.id}] created successfully! Start adding members to the group.`,
             action: "MANAGE_GROUPS",
         });
     } catch (error) {
-        elizaLogger.error(traceId, `[MANAGE_GROUPS] Error creating group: ${error.message}`);
+        elizaLogger.error(
+            traceId,
+            `[MANAGE_GROUPS] Error creating group: ${error.message}`
+        );
         await callback?.({
             text: `❌ Failed to create group | ${getErrorMessageFromCode(error)}`,
             action: "MANAGE_GROUPS",
@@ -169,12 +248,21 @@ async function handleCreateGroup(traceId: string, moxieUserId: string, state: St
     }
 }
 
-async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: string, state: State, params: GroupParams, callback: HandlerCallback) {
+async function handleCreateGroupAndAddMember(
+    traceId: string,
+    moxieUserId: string,
+    state: State,
+    params: GroupParams,
+    callback: HandlerCallback
+) {
     try {
         const { groupName, senpiUserIdsToAdd } = params;
 
         if (!groupName) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [CREATE_GROUP_AND_ADD_GROUP_MEMBER] Group name is required`);
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [CREATE_GROUP_AND_ADD_GROUP_MEMBER] Group name is required`
+            );
             await callback?.({
                 text: `❌ Group name is required. Please try again.`,
                 action: "MANAGE_GROUPS",
@@ -183,7 +271,10 @@ async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: strin
         }
 
         if (!senpiUserIdsToAdd) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [CREATE_GROUP_AND_ADD_GROUP_MEMBER] Senpi user IDs to add is required`);
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [CREATE_GROUP_AND_ADD_GROUP_MEMBER] Senpi user IDs to add is required`
+            );
             await callback?.({
                 text: `❌ Senpi user IDs to add is required. Please try again.`,
                 action: "MANAGE_GROUPS",
@@ -191,11 +282,21 @@ async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: strin
             return;
         }
 
-        const response = await createGroup(state.authorizationHeader as string, groupName) as GroupOutput;
+        const response = (await createGroup(
+            state.authorizationHeader as string,
+            groupName
+        )) as GroupOutput;
         try {
-            await createStubAccountsForEthereumAddresses(traceId, senpiUserIdsToAdd, callback);
+            await createStubAccountsForEthereumAddresses(
+                traceId,
+                senpiUserIdsToAdd,
+                callback
+            );
         } catch (error) {
-            elizaLogger.error(traceId, `[MANAGE_GROUPS] Error creating stub accounts for Ethereum addresses: ${error.message}`);
+            elizaLogger.error(
+                traceId,
+                `[MANAGE_GROUPS] Error creating stub accounts for Ethereum addresses: ${error.message}`
+            );
             await callback?.({
                 text: `❌ Failed to create stub accounts for Ethereum addresses | ${getErrorMessageFromCode(error)}`,
                 action: "MANAGE_GROUPS",
@@ -203,10 +304,18 @@ async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: strin
             return;
         }
 
-        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [CREATE_GROUP_AND_ADD_GROUP_MEMBER] Senpi user IDs to add: ${senpiUserIdsToAdd}`);
-        const isValidUserId = senpiUserIdsToAdd.every(userId => userId.startsWith('M'));
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [CREATE_GROUP_AND_ADD_GROUP_MEMBER] Senpi user IDs to add: ${senpiUserIdsToAdd}`
+        );
+        const isValidUserId = senpiUserIdsToAdd.every((userId) =>
+            userId.startsWith("M")
+        );
         if (!isValidUserId) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [CREATE_GROUP_AND_ADD_GROUP_MEMBER] All Senpi user IDs must start with a capital 'M'`);
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [CREATE_GROUP_AND_ADD_GROUP_MEMBER] All Senpi user IDs must start with a capital 'M'`
+            );
             await callback?.({
                 text: `❌ Invalid Senpi user(s) provided. Please provide valid Senpi user IDs.`,
                 action: "MANAGE_GROUPS",
@@ -214,18 +323,22 @@ async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: strin
             return;
         }
 
-        const addMembersResponse = await addMembersToGroup(state.authorizationHeader as string, response.group?.id, senpiUserIdsToAdd) as GroupOutput;
+        const addMembersResponse = (await addMembersToGroup(
+            state.authorizationHeader as string,
+            response.group?.id,
+            senpiUserIdsToAdd
+        )) as GroupOutput;
 
         if (addMembersResponse.success) {
             await callback?.({
-                    text: `✅ Group #[${response.group?.name}|${response.group?.id}] created successfully and added ${addMembersResponse.group?.members.length} members to the group.`,
-                    action: "MANAGE_GROUPS",
-                    cta: "RULE_TEMPLATE_CARDS",
-                    metadata: {
-                        groupId: response.group?.id,
-                        groupName: response.group?.name,
-                        groupMemberCount: addMembersResponse.group?.members.length,
-                    }
+                text: `✅ Group #[${response.group?.name}|${response.group?.id}] created successfully and added ${addMembersResponse.group?.members.length} members to the group.`,
+                action: "MANAGE_GROUPS",
+                cta: "RULE_TEMPLATE_CARDS",
+                metadata: {
+                    groupId: response.group?.id,
+                    groupName: response.group?.name,
+                    groupMemberCount: addMembersResponse.group?.members.length,
+                },
             });
         } else {
             await callback?.({
@@ -234,7 +347,10 @@ async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: strin
             });
         }
     } catch (error) {
-        elizaLogger.error(traceId, `[MANAGE_GROUPS] Error creating group and adding member: ${error.message}`);
+        elizaLogger.error(
+            traceId,
+            `[MANAGE_GROUPS] Error creating group and adding member: ${error.message}`
+        );
         await callback?.({
             text: `❌ Failed to create group and add member(s) | ${getErrorMessageFromCode(error)}`,
             action: "MANAGE_GROUPS",
@@ -242,7 +358,13 @@ async function handleCreateGroupAndAddMember(traceId: string, moxieUserId: strin
     }
 }
 
-async function handleAddGroupMember(traceId: string, moxieUserId: string, state: State, params: GroupParams, callback: HandlerCallback) {
+async function handleAddGroupMember(
+    traceId: string,
+    moxieUserId: string,
+    state: State,
+    params: GroupParams,
+    callback: HandlerCallback
+) {
     try {
         let groupId: string;
         const {
@@ -253,7 +375,10 @@ async function handleAddGroupMember(traceId: string, moxieUserId: string, state:
         groupId = extractedGroupId;
         if (!groupId || !senpiUserIdsToAdd) {
             if (!groupName) {
-                elizaLogger.warn(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Group ID and Senpi user IDs to add are required`);
+                elizaLogger.warn(
+                    traceId,
+                    `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Group ID and Senpi user IDs to add are required`
+                );
                 await callback?.({
                     text: `❌ Group ID and Senpi user IDs to add are required. Please try again.`,
                     action: "MANAGE_GROUPS",
@@ -268,16 +393,32 @@ async function handleAddGroupMember(traceId: string, moxieUserId: string, state:
                 callback
             );
 
+            if (!groupId) {
+                await callback?.({
+                    text: `Would you like to create a new group named ${groupName}?`,
+                    action: "MANAGE_GROUPS",
+                });
+                // Stop if no group is found
+                return true;
+            }
+
             elizaLogger.debug(
                 traceId,
                 `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Fetch Group ID By Group Name ${groupName}: ${groupId}`
             );
         }
-        
+
         try {
-            await createStubAccountsForEthereumAddresses(traceId, senpiUserIdsToAdd, callback);
+            await createStubAccountsForEthereumAddresses(
+                traceId,
+                senpiUserIdsToAdd,
+                callback
+            );
         } catch (error) {
-            elizaLogger.error(traceId, `[MANAGE_GROUPS] Error creating stub accounts for Ethereum addresses: ${error.message}`);
+            elizaLogger.error(
+                traceId,
+                `[MANAGE_GROUPS] Error creating stub accounts for Ethereum addresses: ${error.message}`
+            );
             await callback?.({
                 text: `❌ Failed to create stub accounts for Ethereum addresses | ${getErrorMessageFromCode(error)}`,
                 action: "MANAGE_GROUPS",
@@ -285,10 +426,18 @@ async function handleAddGroupMember(traceId: string, moxieUserId: string, state:
             return;
         }
 
-        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Senpi user IDs to add: ${senpiUserIdsToAdd}`);
-        const isValidUserId = senpiUserIdsToAdd.every(userId => userId.startsWith('M'));
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Senpi user IDs to add: ${senpiUserIdsToAdd}`
+        );
+        const isValidUserId = senpiUserIdsToAdd.every((userId) =>
+            userId.startsWith("M")
+        );
         if (!isValidUserId) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] All Senpi user IDs must start with a capital 'M'`);
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] All Senpi user IDs must start with a capital 'M'`
+            );
             await callback?.({
                 text: `❌ Invalid Senpi user(s) provided. Please provide valid Senpi user IDs.`,
                 action: "MANAGE_GROUPS",
@@ -296,9 +445,19 @@ async function handleAddGroupMember(traceId: string, moxieUserId: string, state:
             return;
         }
 
-        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Senpi user IDs to add: ${senpiUserIdsToAdd}`);
-        const response = await addMembersToGroup(state.authorizationHeader as string, groupId, senpiUserIdsToAdd) as GroupOutput;
-        const moxieUserProfiles = await moxieUserService.getUserByMoxieIdMultipleMinimal(senpiUserIdsToAdd);
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Senpi user IDs to add: ${senpiUserIdsToAdd}`
+        );
+        const response = (await addMembersToGroup(
+            state.authorizationHeader as string,
+            groupId,
+            senpiUserIdsToAdd
+        )) as GroupOutput;
+        const moxieUserProfiles =
+            await moxieUserService.getUserByMoxieIdMultipleMinimal(
+                senpiUserIdsToAdd
+            );
         const idToUsernameMap = new Map();
         moxieUserProfiles.forEach((user, id) => {
             idToUsernameMap.set(id, user.userName || id);
@@ -306,7 +465,11 @@ async function handleAddGroupMember(traceId: string, moxieUserId: string, state:
 
         if (response.success) {
             await callback?.({
-                text: `✅ ${senpiUserIdsToAdd?.length} member(s) added to group #[${response.group?.name}|${response.group?.id}] successfully! Added members: ${Array.from(idToUsernameMap.entries()).map(([id, username]) => `@[${username}|${id}]`).join(', ')}`,
+                text: `✅ ${senpiUserIdsToAdd?.length} member(s) added to group #[${response.group?.name}|${response.group?.id}] successfully! Added members: ${Array.from(
+                    idToUsernameMap.entries()
+                )
+                    .map(([id, username]) => `@[${username}|${id}]`)
+                    .join(", ")}`,
                 action: "MANAGE_GROUPS",
             });
         } else {
@@ -316,7 +479,10 @@ async function handleAddGroupMember(traceId: string, moxieUserId: string, state:
             });
         }
     } catch (error) {
-        elizaLogger.error(traceId, `[MANAGE_GROUPS] Error adding member to group: ${error.message}`);
+        elizaLogger.error(
+            traceId,
+            `[MANAGE_GROUPS] Error adding member to group: ${error.message}`
+        );
         await callback?.({
             text: `❌ Failed to add member to group | ${getErrorMessageFromCode(error)}`,
             action: "MANAGE_GROUPS",
@@ -324,11 +490,20 @@ async function handleAddGroupMember(traceId: string, moxieUserId: string, state:
     }
 }
 
-async function handleDeleteGroup(traceId: string, moxieUserId: string, state: State, params: GroupParams, callback: HandlerCallback) {
+async function handleDeleteGroup(
+    traceId: string,
+    moxieUserId: string,
+    state: State,
+    params: GroupParams,
+    callback: HandlerCallback
+) {
     try {
         const { groupId } = params;
         if (!groupId) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [DELETE_GROUP] Group ID is required`);
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [DELETE_GROUP] Group ID is required`
+            );
             await callback?.({
                 text: `❌ Group ID is required. Please try again.`,
                 action: "MANAGE_GROUPS",
@@ -336,7 +511,10 @@ async function handleDeleteGroup(traceId: string, moxieUserId: string, state: St
             return;
         }
 
-        const response = await deleteGroup(state.authorizationHeader as string, groupId) as GroupOutput;
+        const response = (await deleteGroup(
+            state.authorizationHeader as string,
+            groupId
+        )) as GroupOutput;
 
         if (response.success) {
             await callback?.({
@@ -350,7 +528,10 @@ async function handleDeleteGroup(traceId: string, moxieUserId: string, state: St
             });
         }
     } catch (error) {
-        elizaLogger.error(traceId, `[MANAGE_GROUPS] Error deleting group: ${error.message}`);
+        elizaLogger.error(
+            traceId,
+            `[MANAGE_GROUPS] Error deleting group: ${error.message}`
+        );
         await callback?.({
             text: `❌ Failed to delete group | ${getErrorMessageFromCode(error)}`,
             action: "MANAGE_GROUPS",
@@ -358,10 +539,16 @@ async function handleDeleteGroup(traceId: string, moxieUserId: string, state: St
     }
 }
 
-async function handleRemoveGroupMember(traceId: string, moxieUserId: string, state: State, params: GroupParams, callback: HandlerCallback) {
+async function handleRemoveGroupMember(
+    traceId: string,
+    moxieUserId: string,
+    state: State,
+    params: GroupParams,
+    callback: HandlerCallback
+) {
     try {
         let groupId: string;
-        const { 
+        const {
             groupId: extractedGroupId,
             senpiUserIdsToRemove,
             groupName,
@@ -369,7 +556,10 @@ async function handleRemoveGroupMember(traceId: string, moxieUserId: string, sta
         groupId = extractedGroupId;
         if (!groupId || !senpiUserIdsToRemove) {
             if (!groupName) {
-                elizaLogger.warn(traceId, `[MANAGE_GROUPS] [REMOVE_GROUP_MEMBER] Group ID and Senpi user IDs to remove are required`);
+                elizaLogger.warn(
+                    traceId,
+                    `[MANAGE_GROUPS] [REMOVE_GROUP_MEMBER] Group ID and Senpi user IDs to remove are required`
+                );
                 await callback?.({
                     text: `❌ Group ID and Senpi user IDs to add are required. Please try again.`,
                     action: "MANAGE_GROUPS",
@@ -390,17 +580,29 @@ async function handleRemoveGroupMember(traceId: string, moxieUserId: string, sta
             );
         }
 
-        const isValidUserId = senpiUserIdsToRemove.every(userId => userId.startsWith('M'));
+        const isValidUserId = senpiUserIdsToRemove.every((userId) =>
+            userId.startsWith("M")
+        );
         if (!isValidUserId) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [REMOVE_GROUP_MEMBER] All Senpi user IDs must start with a capital 'M'`);
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [REMOVE_GROUP_MEMBER] All Senpi user IDs must start with a capital 'M'`
+            );
             await callback?.({
                 text: `❌ Invalid Senpi user(s) provided. Please provide valid Senpi user IDs.`,
                 action: "MANAGE_GROUPS",
             });
         }
-        const response = await removeMembersFromGroup(state.authorizationHeader as string, groupId, senpiUserIdsToRemove) as GroupOutput;
+        const response = (await removeMembersFromGroup(
+            state.authorizationHeader as string,
+            groupId,
+            senpiUserIdsToRemove
+        )) as GroupOutput;
 
-        const moxieUserProfiles = await moxieUserService.getUserByMoxieIdMultipleMinimal(senpiUserIdsToRemove);
+        const moxieUserProfiles =
+            await moxieUserService.getUserByMoxieIdMultipleMinimal(
+                senpiUserIdsToRemove
+            );
         const idToUsernameMap = new Map();
         moxieUserProfiles.forEach((user, id) => {
             idToUsernameMap.set(id, user.userName || id);
@@ -408,7 +610,11 @@ async function handleRemoveGroupMember(traceId: string, moxieUserId: string, sta
 
         if (response.success) {
             await callback?.({
-                text: `✅ ${senpiUserIdsToRemove?.length} member(s) removed from group #[${response.group?.name}|${response.group?.id}] successfully! Removed members: ${Array.from(idToUsernameMap.entries()).map(([id, username]) => `@[${username}|${id}]`).join(', ')}`,
+                text: `✅ ${senpiUserIdsToRemove?.length} member(s) removed from group #[${response.group?.name}|${response.group?.id}] successfully! Removed members: ${Array.from(
+                    idToUsernameMap.entries()
+                )
+                    .map(([id, username]) => `@[${username}|${id}]`)
+                    .join(", ")}`,
                 action: "MANAGE_GROUPS",
             });
         } else {
@@ -418,7 +624,10 @@ async function handleRemoveGroupMember(traceId: string, moxieUserId: string, sta
             });
         }
     } catch (error) {
-        elizaLogger.error(traceId, `[MANAGE_GROUPS] Error removing member from group: ${error.message}`);
+        elizaLogger.error(
+            traceId,
+            `[MANAGE_GROUPS] Error removing member from group: ${error.message}`
+        );
         await callback?.({
             text: `❌ Failed to remove member from group | ${getErrorMessageFromCode(error)}`,
             action: "MANAGE_GROUPS",
@@ -426,15 +635,27 @@ async function handleRemoveGroupMember(traceId: string, moxieUserId: string, sta
     }
 }
 
-async function handleGetGroupDetails(traceId: string, runtime: IAgentRuntime, message: Memory, state: State, params: GroupParams, callback: HandlerCallback) {
+async function handleGetGroupDetails(
+    traceId: string,
+    runtime: IAgentRuntime,
+    message: Memory,
+    state: State,
+    params: GroupParams,
+    callback: HandlerCallback
+) {
     try {
         const { groupId } = params;
 
         let response: GetGroupsOutput;
         if (!groupId) {
-            response = await getGroupDetails(state.authorizationHeader as string) as GetGroupsOutput;
+            response = (await getGroupDetails(
+                state.authorizationHeader as string
+            )) as GetGroupsOutput;
         } else {
-            response = await getGroupDetails(state.authorizationHeader as string, groupId) as GetGroupsOutput;
+            response = (await getGroupDetails(
+                state.authorizationHeader as string,
+                groupId
+            )) as GetGroupsOutput;
         }
 
         if (response.groups.length === 0) {
@@ -447,20 +668,29 @@ async function handleGetGroupDetails(traceId: string, runtime: IAgentRuntime, me
 
         const groupDetails = response.groups;
 
-        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [GET_GROUP_DETAILS] <<<Group details>>>: ${JSON.stringify(groupDetails)}`);
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [GET_GROUP_DETAILS] <<<Group details>>>: ${JSON.stringify(groupDetails)}`
+        );
 
         const memberIds: Set<string> = new Set();
-            groupDetails.forEach(group => {
-                (group.members || []).forEach(member => {
+        groupDetails.forEach((group) => {
+            (group.members || []).forEach((member) => {
                 if (member?.moxieUserId) {
                     memberIds.add(member.moxieUserId);
                 }
-                });
+            });
         });
 
-        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [GET_GROUP_DETAILS] Member IDs: ${Array.from(memberIds).join(", ")}`);
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [GET_GROUP_DETAILS] Member IDs: ${Array.from(memberIds).join(", ")}`
+        );
 
-        const moxieUserProfiles = await moxieUserService.getUserByMoxieIdMultipleMinimal(Array.from(memberIds));
+        const moxieUserProfiles =
+            await moxieUserService.getUserByMoxieIdMultipleMinimal(
+                Array.from(memberIds)
+            );
 
         const userDetails: Record<string, string> = {};
 
@@ -472,13 +702,21 @@ async function handleGetGroupDetails(traceId: string, runtime: IAgentRuntime, me
         // Step 2: Add fallback for any missing member IDs
         for (const id of memberIds) {
             if (!(id in userDetails)) {
-                elizaLogger.warn(`[MANAGE_GROUPS] Missing user profile for ID: ${id}`);
+                elizaLogger.warn(
+                    `[MANAGE_GROUPS] Missing user profile for ID: ${id}`
+                );
                 userDetails[id] = id;
             }
         }
 
-        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [GET_GROUP_DETAILS] Group details: ${JSON.stringify(groupDetails)}`);
-        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [GET_GROUP_DETAILS] User details: ${JSON.stringify(userDetails)}`);
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [GET_GROUP_DETAILS] Group details: ${JSON.stringify(groupDetails)}`
+        );
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [GET_GROUP_DETAILS] User details: ${JSON.stringify(userDetails)}`
+        );
 
         const newState = await runtime.composeState(message, {
             currentDate: new Date().toLocaleString(),
@@ -486,14 +724,17 @@ async function handleGetGroupDetails(traceId: string, runtime: IAgentRuntime, me
             userDetails: JSON.stringify(userDetails),
         });
 
-        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [GET_GROUP_DETAILS] New state: ${JSON.stringify(newState)}`);
+        elizaLogger.debug(
+            traceId,
+            `[MANAGE_GROUPS] [GET_GROUP_DETAILS] New state: ${JSON.stringify(newState)}`
+        );
 
         const context = composeContext({
             state: newState,
             template: groupDetailsTemplate,
         });
 
-        const groupDetailsResponse = await generateObjectDeprecated({
+        const groupDetailsResponse = (await generateObjectDeprecated({
             runtime,
             context,
             modelClass: ModelClass.LARGE,
@@ -503,15 +744,17 @@ async function handleGetGroupDetails(traceId: string, runtime: IAgentRuntime, me
                 modelProvider: ModelProviderName.ANTHROPIC,
                 apiKey: process.env.ANTHROPIC_API_KEY,
                 modelClass: ModelClass.LARGE,
-            }
-        }) as GroupDetailsResponse;
+            },
+        })) as GroupDetailsResponse;
 
         for await (const textPart of groupDetailsResponse.message) {
             callback({ text: textPart, action: "MANAGE_GROUPS" });
         }
-
     } catch (error) {
-        elizaLogger.error(traceId, `[MANAGE_GROUPS] Error retrieving group details: ${error.message}`);
+        elizaLogger.error(
+            traceId,
+            `[MANAGE_GROUPS] Error retrieving group details: ${error.message}`
+        );
         await callback?.({
             text: `❌ Failed to retrieve group details | ${getErrorMessageFromCode(error)}`,
             action: "MANAGE_GROUPS",
@@ -547,7 +790,7 @@ async function handleGetGroupDetailsByGroupName(
 
         if (response.groups.length === 0) {
             await callback?.({
-                text: `No groups found!`,
+                text: `No groups named ${groupName} found!`,
                 action: "MANAGE_GROUPS",
             });
             return;
@@ -573,11 +816,20 @@ async function handleGetGroupDetailsByGroupName(
     }
 }
 
-async function handleUpdateGroup(traceId: string, moxieUserId: string, state: State, params: GroupParams, callback: HandlerCallback) {
+async function handleUpdateGroup(
+    traceId: string,
+    moxieUserId: string,
+    state: State,
+    params: GroupParams,
+    callback: HandlerCallback
+) {
     try {
         const { groupId, groupName } = params;
         if (!groupId || !groupName) {
-            elizaLogger.warn(traceId, `[MANAGE_GROUPS] [UPDATE_GROUP] Group ID and Group Name are required`);
+            elizaLogger.warn(
+                traceId,
+                `[MANAGE_GROUPS] [UPDATE_GROUP] Group ID and Group Name are required`
+            );
             await callback?.({
                 text: `❌ Group ID and Group Name are required. Please try again.`,
                 action: "MANAGE_GROUPS",
@@ -585,7 +837,11 @@ async function handleUpdateGroup(traceId: string, moxieUserId: string, state: St
             return;
         }
 
-        const response = await updateGroup(state.authorizationHeader as string, groupId, groupName) as GroupOutput;
+        const response = (await updateGroup(
+            state.authorizationHeader as string,
+            groupId,
+            groupName
+        )) as GroupOutput;
 
         if (response.success) {
             await callback?.({
@@ -599,7 +855,10 @@ async function handleUpdateGroup(traceId: string, moxieUserId: string, state: St
             });
         }
     } catch (error) {
-        elizaLogger.error(traceId, `[MANAGE_GROUPS] Error updating group: ${error.message}`);
+        elizaLogger.error(
+            traceId,
+            `[MANAGE_GROUPS] Error updating group: ${error.message}`
+        );
         await callback?.({
             text: `❌ Failed to update group | ${getErrorMessageFromCode(error)}`,
             action: "MANAGE_GROUPS",
@@ -607,23 +866,31 @@ async function handleUpdateGroup(traceId: string, moxieUserId: string, state: St
     }
 }
 
-async function createStubAccountsForEthereumAddresses(traceId: string, senpiUserIdsToAdd: string[], callback: HandlerCallback) {
+async function createStubAccountsForEthereumAddresses(
+    traceId: string,
+    senpiUserIdsToAdd: string[],
+    callback: HandlerCallback
+) {
     const MAX_RETRIES = 3;
 
-    await Promise.all(senpiUserIdsToAdd.map(async (userId, index) => {
-        if (/^0x[a-fA-F0-9]{40}$/.test(userId)) { // Check if it's an Ethereum address
-            let attempt = 0;
-            let success = false;
+    await Promise.all(
+        senpiUserIdsToAdd.map(async (userId, index) => {
+            if (/^0x[a-fA-F0-9]{40}$/.test(userId)) {
+                // Check if it's an Ethereum address
+                let attempt = 0;
+                let success = false;
 
-            while (attempt < MAX_RETRIES && !success) {
-                try {
-                    const response = await fetch(process.env.MOXIE_API_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            query: `
+                while (attempt < MAX_RETRIES && !success) {
+                    try {
+                        const response = await fetch(
+                            process.env.MOXIE_API_URL,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    query: `
                                 mutation CreateStubAccount {
                                     CreateStubAccount(
                                         input: {
@@ -635,26 +902,42 @@ async function createStubAccountsForEthereumAddresses(traceId: string, senpiUser
                                         id
                                     }
                                 }
-                            `
-                        })
-                    });
+                            `,
+                                }),
+                            }
+                        );
 
-                    const result = await response.json();
-                    if (result.data && result.data.CreateStubAccount && result.data.CreateStubAccount.id) {
-                        senpiUserIdsToAdd[index] = result.data.CreateStubAccount.id; // Replace with the new ID
-                        elizaLogger.debug(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] [STUB_ACCOUNT_CREATION] Created stub account for Ethereum address: ${userId}, New ID: ${result.data.CreateStubAccount.id}`);
-                        success = true;
-                    } else {
-                        elizaLogger.warn(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] [STUB_ACCOUNT_CREATION] Failed to create stub account for Ethereum address: ${userId}`);
+                        const result = await response.json();
+                        if (
+                            result.data &&
+                            result.data.CreateStubAccount &&
+                            result.data.CreateStubAccount.id
+                        ) {
+                            senpiUserIdsToAdd[index] =
+                                result.data.CreateStubAccount.id; // Replace with the new ID
+                            elizaLogger.debug(
+                                traceId,
+                                `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] [STUB_ACCOUNT_CREATION] Created stub account for Ethereum address: ${userId}, New ID: ${result.data.CreateStubAccount.id}`
+                            );
+                            success = true;
+                        } else {
+                            elizaLogger.warn(
+                                traceId,
+                                `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] [STUB_ACCOUNT_CREATION] Failed to create stub account for Ethereum address: ${userId}`
+                            );
+                        }
+                    } catch (error) {
+                        elizaLogger.error(
+                            traceId,
+                            `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] [STUB_ACCOUNT_CREATION] Error creating stub account for Ethereum address: ${userId}, Error: ${error.message}`
+                        );
+                        if (attempt === MAX_RETRIES - 1) {
+                            throw error;
+                        }
                     }
-                } catch (error) {
-                    elizaLogger.error(traceId, `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] [STUB_ACCOUNT_CREATION] Error creating stub account for Ethereum address: ${userId}, Error: ${error.message}`);
-                    if (attempt === MAX_RETRIES - 1) {
-                        throw error;
-                    }
+                    attempt++;
                 }
-                attempt++;
             }
-        }
-    }));
+        })
+    );
 }
