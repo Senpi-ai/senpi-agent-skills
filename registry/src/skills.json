@@ -903,7 +903,7 @@
         "skillCoinAddress": "",
         "minimumSkillBalance": 0,
         "status": "ACTIVE",
-        "isDefault": false,
+        "isDefault": true,
         "loaders": [],
         "orderIndex": 16
     }
