@@ -881,7 +881,7 @@
         "author": null,
         "description": "Discover top traders to copy trade on Senpi.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-top-traders",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-top-traders/images/logo.png",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/create-top-traders-skill/packages/plugin-top-traders/images/logo.png",
         "settings": {},
         "capabilities": [
             "View the top 25 performing traders in copy trading from the past 1, 7, or 30 days."
