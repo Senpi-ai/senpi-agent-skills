@@ -904,7 +904,11 @@
         "minimumSkillBalance": 0,
         "status": "ACTIVE",
         "isDefault": true,
-        "loaders": [],
+        "loaders": [
+            "Unmasking top trading masters",
+            "Decoding the secret scrolls of profitability",
+            "Sneaking into the market dojo"
+        ],
         "orderIndex": 16
     }
 ]
