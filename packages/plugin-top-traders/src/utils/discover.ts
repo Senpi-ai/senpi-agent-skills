@@ -1,6 +1,6 @@
 import { gql } from "graphql-request";
 import { elizaLogger } from "@moxie-protocol/core";
-import { Timeframe, TopTrader } from "../types";
+import { Timeframe, TopTrader, TopTradersResponse } from "../types";
 
 export const getTopTraders = async (
     timeframe: Timeframe
@@ -43,15 +43,18 @@ export const getTopTraders = async (
                 variables: {
                     timeframe,
                     limit: 25,
+                    orderBy: {
+                        roi: "DESC",
+                    },
                 },
             }),
         });
-        const result: TopGroupTargetsResponse = await response.json();
+        const result: TopTradersResponse = await response.json();
 
-        elizaLogger.debug(`[DISCOVER] result: ${JSON.stringify(result)}`);
-        return result.data?.TopGroupTargets?.targets;
+        elizaLogger.debug(`[getTopTraders] result: ${JSON.stringify(result)}`);
+        return result.data?.TopTraders?.traders;
     } catch (error) {
-        elizaLogger.error(`[DISCOVER] error: ${error}`);
+        elizaLogger.error(`[getTopTraders] error: ${error}`);
         return null;
     }
 };

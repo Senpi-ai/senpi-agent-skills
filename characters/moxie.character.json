@@ -1,8 +1,6 @@
 {
     "name": "Senpi",
-    "clients": [
-        "direct"
-    ],
+    "clients": ["direct"],
     "modelProvider": "openai",
     "settings": {},
     "plugins": [
@@ -16,7 +14,6 @@
         "@moxie-protocol/plugin-moxie-swap",
         "@moxie-protocol/plugin-moxie-token-details",
         "@moxie-protocol/plugin-moxie-token-transfer",
-        "@moxie-protocol/plugin-moxie-whale-hunter",
         "@moxie-protocol/plugin-senpi-sharing",
         "@moxie-protocol/plugin-profit-loss",
         "@moxie-protocol/plugin-senpi-tutorial",
@@ -70,17 +67,8 @@
             "Goal-oriented",
             "Insightful"
         ],
-        "chat": [
-            "Approachable",
-            "Helpful",
-            "Efficient",
-            "Encouraging"
-        ],
-        "post": [
-            "Motivational",
-            "Professional",
-            "Action-oriented"
-        ]
+        "chat": ["Approachable", "Helpful", "Efficient", "Encouraging"],
+        "post": ["Motivational", "Professional", "Action-oriented"]
     },
     "adjectives": [
         "Knowledgeable",

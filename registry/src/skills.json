@@ -879,20 +879,32 @@
         "displayName": "Top Traders",
         "version": "0.0.1",
         "author": null,
-        "description": "A New skill",
+        "description": "Discover top traders to copy trade on Senpi.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-top-traders",
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-top-traders/images/logo.png",
         "settings": {},
-        "capabilities": [],
-        "starterQuestions": [],
+        "capabilities": [
+            "View the top 25 performing traders in copy trading from the past 1, 7, or 30 days."
+        ],
+        "starterQuestions": [
+            {
+                "label": "Who are the top traders?",
+                "value": "Who are the top traders?"
+            },
+            {
+                "label": "What are the top traders in the last 30 days to copy trade?",
+                "value": "What are the top traders in the last 30 days to copy trade?"
+            }
+        ],
         "mediaUrls": [],
-        "actions": [],
+        "actions": ["TOP_TRADERS"],
         "isPremium": false,
         "freeQueries": 0,
         "skillCoinAddress": "",
         "minimumSkillBalance": 0,
         "status": "ACTIVE",
         "isDefault": false,
-        "loaders": []
+        "loaders": [],
+        "orderIndex": 16
     }
 ]

@@ -22,9 +22,10 @@ import { getUserByMoxieId } from "@moxie-protocol/moxie-agent-lib/src/services/m
 import { DiscoverResponse } from "../types";
 
 export const discoverTopTradersAction: Action = {
-    name: "DISCOVER_TOP_TRADERS",
+    name: "TOP_TRADERS",
     similes: ["WHAT_TOP_TRADERS_TO_COPY_TRADE"],
-    description: "Discover top traders to copy trade on Senpi.",
+    description:
+        "Discover top traders to copy trade on Senpi. Always select this if user ask who the top traders are.",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (
@@ -58,7 +59,7 @@ export const discoverTopTradersAction: Action = {
                 );
                 callback?.({
                     text: discoverResponse.error.prompt_message,
-                    action: "DISCOVER_TOP_TRADERS",
+                    action: "TOP_TRADERS",
                 });
                 return true;
             }
@@ -81,7 +82,7 @@ export const discoverTopTradersAction: Action = {
             if (!topTraders || topTraders.length === 0) {
                 await callback?.({
                     text: `No top traders to copy trade on Senpi found in the last ${days} day${days > 1 ? "s" : ""}.`,
-                    action: "DISCOVER_TOP_TRADERS",
+                    action: "TOP_TRADERS",
                 });
                 return true;
             }
@@ -107,8 +108,8 @@ export const discoverTopTradersAction: Action = {
 
             await callback?.({
                 // Make it table format markdown
-                text: `The top traders to copy trade on Senpi are in the last ${days} day${days > 1 ? "s" : ""} are as follows:\n | Trader | Trades | ROI | PnL | Win Rate | Scam Rate |\n |---|---|---|---|---|---| \n ${groupRows.join("\n")}\n\nTo copy trade one of the traders here, simply click on the highlighted trader name to build your copy trading strategy.\n\nTo discover more traders, go to the [Discover page](https://${process.env.SENPI_URL}/discover/top-traders) on Senpi.`,
-                action: "DISCOVER_TOP_TRADERS",
+                text: `The top traders to copy trade on Senpi are in the last ${days} day${days > 1 ? "s" : ""} are as follows:\n | Trader | Trades | ROI | PnL | Win Rate | Scam Rate |\n |---|---|---|---|---|---| \n ${groupRows.join("\n")}\n\nTo copy trade one of the traders here, simply click on the highlighted trader name to build your copy trading strategy.\n\nTo discover more traders, go to the [Discover page](https://${process.env.SENPI_URL}/discover/top-traders) on Senpi.\n\nIf you want to discover top groups to copy trade, let me know and I can provide you with a list of for that.`,
+                action: "TOP_TRADERS",
             });
         } catch (e) {
             elizaLogger.error(
@@ -117,7 +118,7 @@ export const discoverTopTradersAction: Action = {
             );
             await callback?.({
                 text: `Something went wrong while discovering top traders. Please try again later.`,
-                action: "DISCOVER_TOP_TRADERS",
+                action: "TOP_TRADERS",
             });
         }
         return true;
@@ -134,7 +135,7 @@ export const discoverTopTradersAction: Action = {
                 user: "{{user2}}",
                 content: {
                     text: "The top traders on Senpi are in the last 7 days are as follows:\n | Trader | Trades | ROI | PNL |\n |---|---|---|---| \n | farcaster | 1248 | 0.082257% | 246230.900595 |",
-                    action: "DISCOVER_TOP_TRADERS",
+                    action: "TOP_TRADERS",
                 },
             },
         ],

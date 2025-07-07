@@ -1,5 +1,5 @@
 export const discoverTemplate = `
-You are an AI assistant specialized in extracting parameters for discovering top groups to copy trade on Senpi. Your task is to analyze user inputs and determine what timeframe to use for the discovery.
+You are an AI assistant specialized in extracting parameters for discovering top traders to copy trade on Senpi. Your task is to analyze user inputs and determine what timeframe to use for the discovery.
 
 Here is the conversation history containing the user input you need to analyze:
 
