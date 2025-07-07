@@ -43,7 +43,8 @@
         "yargs": "17.7.2",
         "@huggingface/transformers": "3.0.2",
         "@moxie-protocol/plugin-senpi-tutorial": "workspace:*",
-        "@moxie-protocol/plugin-senpi-discover": "workspace:*"
+        "@moxie-protocol/plugin-senpi-discover": "workspace:*",
+        "@moxie-protocol/plugin-top-traders": "workspace:*"
     },
     "devDependencies": {
         "@types/jest": "^29.5.14",
