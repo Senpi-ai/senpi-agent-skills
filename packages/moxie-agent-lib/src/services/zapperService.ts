@@ -209,10 +209,6 @@ export async function getPortfolioV2Data(
                             expires: Date.now() + CACHE_EXPIRATION,
                         }
                     );
-                    elizaLogger.info(
-                        ` [getPortfolioV2Data] [${userId}] Zapper getPortfolioV2Data response:`,
-                        portfolioData
-                    );
 
                     return portfolioData;
                 } catch (error) {
