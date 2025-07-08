@@ -1,19 +1,19 @@
 import { gql } from "graphql-request";
 import { elizaLogger } from "@moxie-protocol/core";
-import { Timeframe, TopGroupTarget, TopGroupTargetsResponse } from "../types";
+import { Timeframe, TopTrader, TopTradersResponse } from "../types";
 
-export const getTopGroupTargets = async (
+export const getTopTraders = async (
     timeframe: Timeframe
-): Promise<TopGroupTarget[] | null> => {
+): Promise<TopTrader[] | null> => {
     try {
         const query = gql`
-            query TopGroupTargets(
+            query TopTraders(
                 $orderBy: TopTargetsOrderBy
                 $skip: Int
                 $limit: Int
                 $timeframe: Timeframe!
             ) {
-                TopGroupTargets(
+                TopTraders(
                     input: {
                         orderBy: $orderBy
                         skip: $skip
@@ -21,25 +21,14 @@ export const getTopGroupTargets = async (
                         timeframe: $timeframe
                     }
                 ) {
-                    targets {
-                        groupId
-                        groupName
-                        groupCreatedBy
-                        groupCreatedAt
-                        groupUpdatedAt
-                        groupStatus
-                        roi
-                        pnl
-                        winRate
+                    traders {
                         rank
-                        totalTrades
-                        groupMembersCount
+                        userId
+                        pnl
+                        roi
+                        winRate
                         scamRate
-                    }
-                    pagination {
-                        totalCount
-                        skip
-                        take
+                        totalTrades
                     }
                 }
             }
@@ -54,15 +43,18 @@ export const getTopGroupTargets = async (
                 variables: {
                     timeframe,
                     limit: 25,
+                    orderBy: {
+                        roi: "DESC",
+                    },
                 },
             }),
         });
-        const result: TopGroupTargetsResponse = await response.json();
+        const result: TopTradersResponse = await response.json();
 
-        elizaLogger.debug(`[DISCOVER] result: ${JSON.stringify(result)}`);
-        return result.data?.TopGroupTargets?.targets;
+        elizaLogger.debug(`[getTopTraders] result: ${JSON.stringify(result)}`);
+        return result.data?.TopTraders?.traders;
     } catch (error) {
-        elizaLogger.error(`[DISCOVER] error: ${error}`);
+        elizaLogger.error(`[getTopTraders] error: ${error}`);
         throw error;
     }
 };
