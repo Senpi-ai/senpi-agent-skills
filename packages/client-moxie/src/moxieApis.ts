@@ -659,7 +659,7 @@ export function createMoxieApiRouter(
             );
 
             // Check the existing memories in the database
-            const currentRoomId = req.query.currentRoomId as string;
+            const currentRoomId = req.params.currentRoomId;
             const recentInteractions: Memory[] =
                 await runtime.messageManager.getMemoriesByRoomIds({
                     // filter out the current room id from rooms
