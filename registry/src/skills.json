@@ -871,7 +871,7 @@
         "pluginId": "f69f6073-50dd-40d6-805c-68ed2e242955",
         "name": "@moxie-protocol/plugin-top-traders",
         "displayName": "Top Traders",
-        "version": "0.0.1",
+        "version": "0.1.8+build.1",
         "author": null,
         "description": "Discover top traders to copy trade on Senpi.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-top-traders",

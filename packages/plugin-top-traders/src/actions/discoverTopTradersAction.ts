@@ -101,7 +101,7 @@ export const discoverTopTradersAction: Action = {
                         const userName =
                             (await getUserByMoxieId(userId))?.userName ??
                             userId;
-                        return `| @[${userName}|${userId}] | ${formatNumber(totalTrades)} | ${formatNumber(roi)}x | ${formatPnl(pnl)} | ${formatNumber(winRate, 2)}% | ${formatNumber(scamRate, 2)}% |`;
+                        return `| @[${userName}|${userId}] | ${formatNumber(totalTrades)} | ${formatNumber(roi * 100)}% | ${formatPnl(pnl)} | ${formatNumber(winRate, 2)}% | ${formatNumber(scamRate, 2)}% |`;
                     }
                 )
             );
