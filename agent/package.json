@@ -35,7 +35,6 @@
         "@moxie-protocol/plugin-moxie-swap": "workspace:*",
         "@moxie-protocol/plugin-moxie-token-details": "workspace:*",
         "@moxie-protocol/plugin-moxie-token-transfer": "workspace:*",
-        "@moxie-protocol/plugin-moxie-whale-hunter": "workspace:*",
         "@moxie-protocol/plugin-senpi-sharing": "workspace:*",
         "@moxie-protocol/plugin-profit-loss": "workspace:*",
         "readline": "1.3.0",
@@ -43,7 +42,8 @@
         "yargs": "17.7.2",
         "@huggingface/transformers": "3.0.2",
         "@moxie-protocol/plugin-senpi-tutorial": "workspace:*",
-        "@moxie-protocol/plugin-senpi-discover": "workspace:*"
+        "@moxie-protocol/plugin-senpi-discover": "workspace:*",
+        "@moxie-protocol/plugin-top-traders": "workspace:*"
     },
     "devDependencies": {
         "@types/jest": "^29.5.14",
