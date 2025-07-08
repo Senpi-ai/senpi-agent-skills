@@ -17,12 +17,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
         pluginId: string,
         totalFreeQueries: number = 10,
         remainingFreeQueries: number = 10
-    ): Promise<{
-        user_id: string;
-        plugin_id: string;
-        total_free_queries: number;
-        remaining_free_queries: number;
-    }> {
+    ): Promise<{ user_id: string; plugin_id: string; total_free_queries: number; remaining_free_queries: number }> {
         return this.pgAdapter
             .query(
                 `SELECT * FROM free_usage_details WHERE user_id = $1 AND plugin_id = $2`,
@@ -34,8 +29,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
                         user_id: userId,
                         plugin_id: pluginId,
                         total_free_queries: result.rows[0].total_free_queries,
-                        remaining_free_queries:
-                            result.rows[0].remaining_free_queries,
+                        remaining_free_queries: result.rows[0].remaining_free_queries
                     };
                 } else {
                     return this.pgAdapter
@@ -52,24 +46,14 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
                         .then((insertResult) => ({
                             user_id: userId,
                             plugin_id: pluginId,
-                            total_free_queries:
-                                insertResult.rows[0].total_free_queries,
-                            remaining_free_queries:
-                                insertResult.rows[0].remaining_free_queries,
+                            total_free_queries: insertResult.rows[0].total_free_queries,
+                            remaining_free_queries: insertResult.rows[0].remaining_free_queries,
                         }));
                 }
             });
     }
 
-    async deductFreeTrail(
-        userId: string,
-        pluginId: string
-    ): Promise<{
-        user_id: string;
-        plugin_id: string;
-        total_free_queries: number;
-        remaining_free_queries: number;
-    }> {
+    async deductFreeTrail(userId: string, pluginId: string): Promise<{ user_id: string; plugin_id: string; total_free_queries: number; remaining_free_queries: number }> {
         return this.pgAdapter
             .query(
                 `UPDATE free_usage_details SET remaining_free_queries = remaining_free_queries - 1 WHERE user_id = $1 AND plugin_id = $2 RETURNING total_free_queries, remaining_free_queries`,
@@ -81,8 +65,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
                         user_id: userId,
                         plugin_id: pluginId,
                         total_free_queries: result.rows[0].total_free_queries,
-                        remaining_free_queries:
-                            result.rows[0].remaining_free_queries,
+                        remaining_free_queries: result.rows[0].remaining_free_queries,
                     };
                 } else {
                     return {
@@ -95,16 +78,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
             });
     }
 
-    async upsertFreeTrialBalance(
-        userId: string,
-        pluginId: string,
-        total_free_queries: number
-    ): Promise<{
-        user_id: string;
-        plugin_id: string;
-        total_free_queries: number;
-        remaining_free_queries: number;
-    }> {
+    async upsertFreeTrialBalance(userId: string, pluginId: string, total_free_queries: number): Promise<{ user_id: string; plugin_id: string; total_free_queries: number; remaining_free_queries: number }> {
         return this.pgAdapter
             .query(
                 `
@@ -143,16 +117,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
             });
     }
 
-    async createUserAgentFeedback(
-        roomId: string,
-        messageId: string,
-        moxieUserId: string,
-        agentId: string,
-        feedback: string,
-        rating: number,
-        feedbackText: string,
-        screenshotUrl: string
-    ): Promise<string> {
+    async createUserAgentFeedback(roomId: string, messageId: string, moxieUserId: string, agentId: string, feedback: string, rating: number, feedbackText: string, screenshotUrl: string): Promise<string> {
         return this.pgAdapter
             .query(
                 `INSERT INTO user_agent_feedback (room_id, message_id, moxie_user_id, agent_id, feedback, rating, feedback_text, screenshot_url)
@@ -163,16 +128,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
                      rating = $6,
                      updated_at = CURRENT_TIMESTAMP
                  RETURNING id`,
-                [
-                    roomId,
-                    messageId,
-                    moxieUserId,
-                    agentId,
-                    feedback,
-                    rating,
-                    feedbackText,
-                    screenshotUrl,
-                ]
+                [roomId, messageId, moxieUserId, agentId, feedback, rating, feedbackText, screenshotUrl]
             )
             .then((result) => {
                 return result.rows[0].id;
@@ -265,8 +221,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
         installed_status: string = ""
     ): Promise<Skill[]> {
         const skillsTableName = process.env.SKILLS_TABLE_NAME || "skills";
-        const userSkillsTableName =
-            process.env.USER_SKILLS_TABLE_NAME || "user_skills";
+        const userSkillsTableName = process.env.USER_SKILLS_TABLE_NAME || "user_skills";
         let selectFields = [
             "DISTINCT ON (s.order_index) s.id",
             "s.name",
@@ -339,8 +294,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
         skillId: string,
         status: string
     ): Promise<void> {
-        const userSkillsTableName =
-            process.env.USER_SKILLS_TABLE_NAME || "user_skills";
+        const userSkillsTableName = process.env.USER_SKILLS_TABLE_NAME || "user_skills";
         // This query inserts a new record into the user_skills table with a generated UUID, user_id, skill_id, status, and timestamps.
         // If a conflict occurs on user_id and skill_id (i.e., the user already has this skill), it updates the status and updated_at fields
         // only if the existing status is different from the new status.
@@ -356,9 +310,7 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
             )
             .then((result) => {
                 if (result.rowCount === 0) {
-                    throw new Error(
-                        `User ${userId} already set this status ${status} for skill ${skillId}`
-                    );
+                    throw new Error(`User ${userId} already set this status ${status} for skill ${skillId}`);
                 }
                 return null;
             })
@@ -368,14 +320,9 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
             });
     }
 
-    async getLimitOrderDetails(
-        orderId: string
-    ): Promise<{ wallet_address: string; order_id: string; status: string }> {
+    async getLimitOrderDetails(orderId: string): Promise<{ wallet_address: string, order_id: string, status: string}> {
         return this.pgAdapter
-            .query(
-                `SELECT wallet_address, order_id, status FROM limit_orders WHERE order_id = $1`,
-                [orderId]
-            )
+            .query(`SELECT wallet_address, order_id, status FROM limit_orders WHERE order_id = $1`, [orderId])
             .then((result) => {
                 if (result.rows.length > 0) {
                     return result.rows[0];
@@ -387,45 +334,29 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
 
     async updateLimitOrder(orderId: string, status: string): Promise<number> {
         return this.pgAdapter
-            .query(
-                `UPDATE limit_orders SET status = $1, updated_at = now() WHERE order_id = $2`,
-                [status, orderId]
-            )
+            .query(`UPDATE limit_orders SET status = $1, updated_at = now() WHERE order_id = $2`, [status, orderId])
             .then((result) => {
-                return result.rowCount || 0;
-            })
-            .catch((error) => {
+                return result.rowCount || 0 ;
+            }).catch((error) => {
                 console.error("Error while updating limit order:", error);
                 throw error;
             });
     }
 
-    async getLimitOrderDetailsMultiple(
-        orderIds: string[]
-    ): Promise<{ wallet_address: string; order_id: string; status: string }[]> {
+    async getLimitOrderDetailsMultiple(orderIds: string[]): Promise<{ wallet_address: string, order_id: string, status: string}[]> {
         return this.pgAdapter
-            .query(
-                `SELECT wallet_address, order_id, status FROM limit_orders WHERE order_id = ANY($1)`,
-                [orderIds]
-            )
+            .query(`SELECT wallet_address, order_id, status FROM limit_orders WHERE order_id = ANY($1)`, [orderIds])
             .then((result) => {
                 return result.rows;
             });
     }
 
-    async updateLimitOrders(
-        orderIds: string[],
-        status: string
-    ): Promise<number> {
+    async updateLimitOrders(orderIds: string[], status: string): Promise<number> {
         return this.pgAdapter
-            .query(
-                `UPDATE limit_orders SET status = $1, updated_at = now() WHERE order_id = ANY($2)`,
-                [status, orderIds]
-            )
+            .query(`UPDATE limit_orders SET status = $1, updated_at = now() WHERE order_id = ANY($2)`, [status, orderIds])
             .then((result) => {
-                return result.rowCount || 0;
-            })
-            .catch((error) => {
+                return result.rowCount || 0 ;
+            }).catch((error) => {
                 console.error("Error while updating limit order:", error);
                 throw error;
             });
@@ -448,31 +379,17 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
             )
             .then((result) => {
                 return result.rows;
-            })
-            .catch((error) => {
-                console.error(
-                    "Error while getting campaign token details:",
-                    error
-                );
+            }).catch((error) => {
+                console.error("Error while getting campaign token details:", error);
                 throw error;
             });
     }
 
-    async saveLimitOrder(
-        orderId: string,
-        walletAddress: string
-    ): Promise<string> {
+    async saveLimitOrder(orderId: string, walletAddress: string): Promise<string> {
         return this.pgAdapter
             .query(
                 `INSERT INTO limit_orders (id, wallet_address, order_id, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)`,
-                [
-                    uuidv4(),
-                    walletAddress,
-                    orderId,
-                    "open",
-                    new Date(),
-                    new Date(),
-                ]
+                [uuidv4(), walletAddress, orderId, 'open', new Date(), new Date()]
             )
             .then((result) => {
                 return "success";
