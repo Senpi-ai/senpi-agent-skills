@@ -898,11 +898,6 @@
         ],
         "mediaUrls": [],
         "actions": ["TOP_TRADERS"],
-        "isPremium": false,
-        "freeQueries": 0,
-        "skillCoinAddress": "",
-        "minimumSkillBalance": 0,
-        "status": "ACTIVE",
         "isDefault": true,
         "loaders": [
             "Unmasking top trading masters",
@@ -910,5 +905,27 @@
             "Sneaking into the market dojo"
         ],
         "orderIndex": 16
+    },
+    {
+        "pluginId": "e0840f53-4663-4e75-8a5e-8311444ad296",
+        "name": "@moxie-protocol/plugin-trending-tokens",
+        "displayName": "Trending Tokens",
+        "version": "0.0.1",
+        "author": null,
+        "description": "A New skill",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-trending-tokens",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-trending-tokens/images/logo.svg",
+        "settings": {},
+        "capabilities": [],
+        "starterQuestions": [],
+        "mediaUrls": [],
+        "actions": [],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": false,
+        "loaders": []
     }
 ]
