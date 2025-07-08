@@ -1,5 +1,5 @@
 export const template = `
-Data: {{data_from_codex}}
+Data: {{trendingTokens}}
 
 **Overall Notes**
 - Looks at the above provided trending crypto token dataset and identify 5 top tokens you think are worth recommending.

@@ -1,43 +1,52 @@
-import request, { gql } from "graphql-request";
+import { GetTrendingTokensResponse } from "../types";
 
 export const getTrendingTokens = async () => {
     try {
-        const query = gql`
-            query TokenBalances($addresses: [Address!]!, $first: Int) {
-                portfolioV2(addresses: $addresses) {
-                    tokenBalances {
-                        totalBalanceUSD
-                        byToken(first: $first) {
-                            totalCount
-                            edges {
-                                node {
-                                    symbol
-                                    tokenAddress
-                                    balance
-                                    balanceUSD
-                                    price
-                                    imgUrlV2
-                                    name
-                                    network {
-                                        name
-                                    }
-                                }
-                            }
-                        }
-                    }
+        const query = /* GraphQL */ `
+            query GetTrendingTokens {
+                GetTrendingTokens {
+                    address
+                    buyVolume24
+                    change1
+                    change12
+                    change24
+                    change4
+                    createdAt
+                    holders
+                    liquidity
+                    marketCap
+                    name
+                    priceUSD
+                    sellVolume24
+                    symbol
+                    uniqueBuys1
+                    uniqueBuys12
+                    uniqueBuys24
+                    uniqueBuys4
+                    uniqueSells1
+                    uniqueSells12
+                    uniqueSells24
+                    uniqueSells4
+                    volumeChange1
+                    volumeChange12
+                    volumeChange24
+                    volumeChange4
+                    volumeChange5m
+                    walletAgeAvg
                 }
             }
         `;
-        const data = await request({
-            url: "https://public.zapper.xyz/graphql",
-            document: query,
-            variables: {},
-            requestHeaders: {
+        const response = await fetch(process.env.MOXIE_API_URL_INTERNAL, {
+            method: "POST",
+            headers: {
                 "Content-Type": "application/json",
-                Authorization: `Basic ${btoa(process.env.ZAPPER_API_KEY)}`,
             },
+            body: JSON.stringify({
+                query,
+            }),
         });
-        return (data as any)?.portfolioV2?.tokenBalances;
+        const { data } = (await response.json()) as GetTrendingTokensResponse;
+        return data.GetTrendingTokens;
     } catch (error) {
         console.error(error);
         return null;
