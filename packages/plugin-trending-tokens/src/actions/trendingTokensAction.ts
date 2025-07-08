@@ -32,7 +32,7 @@ export const trendingTokensAction: Action = {
         const moxieUserInfo = state.moxieUserInfo as MoxieUser;
         const moxieUserId = moxieUserInfo.id;
         try {
-            const trendingTokens = await getTrendingTokens();
+            const trendingTokens = JSON.stringify(await getTrendingTokens());
             if (!trendingTokens || trendingTokens.length === 0) {
                 elizaLogger.error(
                     traceId,
