@@ -413,7 +413,7 @@ const errorMessages: Record<string, string> = {
     AERR106: "A valid group ID is required to delete the group.",
     AERR107: "The user does not have ownership rights to delete the group.",
     AERR108: "Members must be specified to add them to the group.",
-    AERR109: "A maximum of 50 members can be added to the group.",
+    AERR109: "A maximum of 100 members can be added to the group.",
     AERR110: "The provided Senpi user IDs are invalid for adding members to the group.",
     AERR111: "You cannot add yourself to the group.",
     AERR112: "The user does not have ownership rights to add members to the group.",
