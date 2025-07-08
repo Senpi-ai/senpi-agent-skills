@@ -206,7 +206,7 @@ export function createMoxieApiRouter(
                                 address:
                                     edge.node?.accountBalances?.edges[0]?.node
                                         ?.accountAddress,
-                                network: "BASE_MAINNET", // Default network since V2 doesn't provide per-token network
+                                network: "BASE_MAINNET",
                                 token: {
                                     balance: edge.node.balance,
                                     balanceUSD: edge.node.balanceUSD,
