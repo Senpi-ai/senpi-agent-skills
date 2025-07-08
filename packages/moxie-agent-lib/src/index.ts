@@ -8,12 +8,14 @@ export { ftaService };
 
 export { walletService };
 
-
 export { RedisClient } from "./services/RedisClient";
 
 export { MoxieAgentDBAdapter } from "./services/MoxieAgentDBAdapter";
 
-export { getTokenDetails, getTrendingTokenDetails } from "./services/tokenDetails";
+export {
+    getTokenDetails,
+    getTrendingTokenDetails,
+} from "./services/tokenDetails";
 
 export { getERC20TokenSymbol } from "./services/tokenSymbol";
 
@@ -52,7 +54,6 @@ export {
 
 export {
     type Portfolio,
-    getPortfolioData,
     getPortfolioV2Data,
     type PortfolioV2Data,
     getPortfolioV2DataByTokenAddress,
@@ -68,4 +69,9 @@ export {
 
 export { deleteLimitOrders } from "./services/cowService";
 
-export { formatUserMention, formatGroupMention, formatTokenMention, fetchWithRetries } from "./utils";
+export {
+    formatUserMention,
+    formatGroupMention,
+    formatTokenMention,
+    fetchWithRetries,
+} from "./utils";
