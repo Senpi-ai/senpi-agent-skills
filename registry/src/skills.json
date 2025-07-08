@@ -161,12 +161,6 @@
             "FARCASTER_ACTIVITY",
             "FARCASTER_UPDATES",
             "FARCASTER_CASTS",
-            "TRENDING_TOKENS",
-            "TOKEN_PURCHASES",
-            "TOKEN_RECOMMENDATIONS",
-            "BUY_RECOMMENDATIONS",
-            "TRENDING_CRYPTOCURRENCIES",
-            "TOKEN_SWAP_SUMMARIES",
             "SOCIAL_SUMMARY",
             "FARCASTER_AND_TWITTER_SUMMARY",
             "FARCASTER_AND_TWITTER_ACTIVITY",
@@ -912,20 +906,26 @@
         "displayName": "Trending Tokens",
         "version": "0.0.1",
         "author": null,
-        "description": "A New skill",
+        "description": "Enables your agent to fetch trending Base tokens across thousands of wallets indexed by Senpi",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-trending-tokens",
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-trending-tokens/images/logo.svg",
         "settings": {},
-        "capabilities": [],
-        "starterQuestions": [],
+        "capabilities": ["Display trending tokens on Base"],
+        "starterQuestions": [
+            {
+                "label": "What tokens are trending?",
+                "value": "What tokens are trending?"
+            }
+        ],
         "mediaUrls": [],
-        "actions": [],
+        "actions": ["TRENDING_TOKENS"],
         "isPremium": false,
         "freeQueries": 0,
         "skillCoinAddress": "",
         "minimumSkillBalance": 0,
         "status": "ACTIVE",
-        "isDefault": false,
-        "loaders": []
+        "isDefault": true,
+        "loaders": [],
+        "orderIndex": 17
     }
 ]
