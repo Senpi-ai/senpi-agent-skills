@@ -879,12 +879,14 @@
         "displayName": "Top Traders",
         "version": "0.1.8+build.1",
         "author": null,
-        "description": "Discover top traders to copy trade on Senpi.",
+        "description": "Discover the top traders followed by Senpi users. Have Senpi analyze their results, suggest users for you to copy trade, and setup auto-trading strategies.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-top-traders",
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-top-traders/images/logo.png",
         "settings": {},
         "capabilities": [
-            "View the top 25 performing traders in copy trading from the past 1, 7, or 30 days."
+            "View the top 25 traders followed by Senpi users.",
+            "Analyze the top traders’ ROI, PNL, and scam rates.",
+            "Easily setup auto-trading strategies on the top traders."
         ],
         "starterQuestions": [
             {
@@ -892,8 +894,12 @@
                 "value": "Who are the top traders?"
             },
             {
-                "label": "What are the top traders in the last 30 days to copy trade?",
-                "value": "What are the top traders in the last 30 days to copy trade?"
+                "label": "What traders should I copy trade?",
+                "value": "What traders should I copy trade?"
+            },
+            {
+                "label": "Show the top traders of the past 7 days",
+                "value": "Show the top traders of the past 7 days"
             }
         ],
         "mediaUrls": [],
@@ -906,7 +912,8 @@
         "isDefault": true,
         "loaders": [
             "Unmasking top trading masters",
-            "Decoding the secret scrolls of profitability",
+            "Decoding theirs secrets",
+            "Listening for alpha",
             "Sneaking into the market dojo"
         ],
         "orderIndex": 16
