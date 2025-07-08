@@ -22,14 +22,22 @@ import {
     agentWalletNotFound,
     moxieWalletClientNotFound,
     checkUserCommunicationPreferences,
+    createManualOrder,
+    ActionType,
+    SourceType,
+    SwapInput,
+    OpenOrderInput,
+    TriggerType,
+    OpenOrderType,
 } from "../utils/utility";
 import { stopLossTemplate } from "../templates";
+import { IGNORED_TOKENS } from "../constants/constants";
 
 export interface StopLossOrderRequest {
     success: boolean;
     is_followup: boolean;
     params: {
-        stop_loss_type: "percentage" | "absolute_price_drop" | "value_loss" | "tiered_percentage";
+        stop_loss_type: "percentage" | "absolute_price_drop" | "tiered_percentage";
         token_selection?: "all" | "top_N_by_balance" | null;
         top_n?: number; // Used only when token_selection is "top_N_by_balance"
         tokens?: TokenConfig[]; // Used for specifying individual token configurations
@@ -41,8 +49,7 @@ export interface StopLossOrderRequest {
 }
 
 interface TokenConfig {
-    symbol?: string;
-    token_address?: string;
+    token_address: string;
     percentage_drop?: number; // Token-specific flat percentage drop
     absolute_price?: number;  // Token-specific absolute price
     value_loss_usd?: number;  // Token-specific value loss trigger
@@ -72,6 +79,23 @@ export const stopLossAction: Action = {
     similes: [
         "STOP_LOSS_ORDER",
     ],
+    examples: [
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Set a stop loss order for all my tokens if they drop by 10%",
+                },  
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Create a stop loss order to sell my tokens if they lose 15% in value",
+                    action: "STOP_LOSS",    
+                },
+            },
+        ],
+    ] as ActionExample[][],
     description:
         "Handles user intents related to placing stop loss orders on tokens they currently hold to prevent losses from price drops.",
     suppressInitialMessage: true,
@@ -124,16 +148,28 @@ export const stopLossAction: Action = {
             const { tokenBalances }: Portfolio =
                 (state.agentWalletBalance as Portfolio) ?? {
                     tokenBalances: [],
-                };
+            };
 
-            const tokens = tokenBalances.filter(
-                (t) =>
-                    t.token.balance > 0 &&
-                    t.token.baseToken.address.toLowerCase() !==
-                        "0x0000000000000000000000000000000000000000".toLowerCase() &&
-                    t.token.baseToken.address.toLowerCase() !==
-                        ETH_ADDRESS.toLowerCase()
-            );
+            const tokens = tokenBalances
+                .filter(
+                    (t) =>
+                        t.token.balanceUSD > 0 &&
+                        !IGNORED_TOKENS.some(
+                            (ignoredToken) =>
+                                t.token.baseToken.address.toLowerCase() ===
+                                ignoredToken.toLowerCase()
+                        )
+                )
+                .sort((a, b) => b.token.balanceUSD - a.token.balanceUSD);
+
+            if (tokens.length === 0) {
+
+                await callback?.({
+                    text: "You don't have any tokens in your wallet to set a stop loss for. Stop loss on ETH, WETH, and USDC is not supported.",
+                    action: "STOP_LOSS",
+                });
+                return true;
+            }
 
             const stopLossContext = composeContext({
                 state,
@@ -149,6 +185,7 @@ export const stopLossAction: Action = {
                     maxOutputTokens: 8192,
                     modelProvider: ModelProviderName.ANTHROPIC,
                     apiKey: process.env.ANTHROPIC_API_KEY,
+                    modelClass: ModelClass.LARGE,
                 },
             })) as StopLossResponse;
 
@@ -164,15 +201,141 @@ export const stopLossAction: Action = {
                 return true;
             }
 
-            const { params } = stopLossResponse;
+            const { params } = stopLossResponse?.params;
 
-            if (params.stopLossPercentage > 100) {
-                callback?.({
-                    text: `Please specify a stop loss percentage less than 100%. You cannot lose more than you invested.`,
-                    action: "STOP_LOSS",
+            if (params.tokens) {
+                params.tokens.forEach((tokenConfig) => {
+                    if (tokenConfig.tiers) {
+                        const totalSellPercentage = tokenConfig.tiers.reduce((acc, tier) => {
+                            if (typeof tier.sell_percentage === "number") {
+                                return acc + tier.sell_percentage;
+                            }
+                            return acc;
+                        }, 0);
+
+                        if (totalSellPercentage > 100) {
+                            elizaLogger.warn(
+                                traceId,
+                                `[STOP_LOSS] [${moxieUserId}] Total sell percentage for token ${tokenConfig.token_address} exceeds 100%: ${totalSellPercentage}%`
+                            );
+                            callback?.({
+                                text: `The total sell percentage for token ${tokenConfig.token_address} exceeds 100%. Please adjust the tiers.`,
+                                action: "STOP_LOSS",
+                            });
+                            return true;
+                        }
+                    }
                 });
-                return true;
             }
+
+            if (params.tokens) {
+                const userTokenAddresses = new Set(tokens.map(token => token.token.baseToken.address.toLowerCase()));
+
+                params.tokens.forEach((tokenConfig) => {
+                    if (tokenConfig.token_address && !userTokenAddresses.has(tokenConfig.token_address.toLowerCase())) {
+                        elizaLogger.warn(
+                            traceId,
+                            `[STOP_LOSS] [${moxieUserId}] Attempted to set stop loss on token not held: ${tokenConfig.token_address}`
+                        );
+                        callback?.({
+                            text: `You are trying to set a stop loss on a token you do not hold: ${tokenConfig.token_address}. Please check your portfolio.`,
+                            action: "STOP_LOSS",
+                        });
+                        return true;
+                    }
+                });
+            }
+
+            if (params.token_selection === "all") {
+
+                for (const token of tokens) {
+                    const stopLossInput: OpenOrderInput = {
+                        sellAmountInWEI: token.token.balanceInWEI.toString(),
+                        sellAmount: token.token.balance.toString(),
+                        sellTokenAddress: token.token.baseToken.address,
+                        sellTokenSymbol: token.token.baseToken.symbol,
+                        buyAmount: "0", // Assuming stop loss is a sell action
+                        buyAmountInWEI: "0",
+                        buyTokenAddress: "", // No buy token in stop loss
+                        buyTokenSymbol: "",
+                        triggerValue: params.percentage?.toString() || "0",
+                        triggerType: TriggerType.PERCENTAGE,
+                        requestType: OpenOrderType.STOP_LOSS,
+                        chainId: token.token.baseToken.chainId,
+                    };
+
+                    await createManualOrder(
+                        state.authorizationHeader,
+                        ActionType.STOP_LOSS,
+                        SourceType.AGENT,
+                        {} as SwapInput, // No swap input for stop loss
+                        stopLossInput,
+                        {} as OpenOrderInput // No limit order input for stop loss
+                    );
+                }
+                const stopLossParams: TokenConfig[] = tokens.map((token) => ({
+                    token_address: token.token.baseToken.address,
+                    percentage_drop: params.percentage,
+                }));
+            } else if (params.token_selection === "top_N_by_balance" && params.top_n) {
+                const topNTokens = tokens.slice(0, params.top_n);
+                const stopLossParams: TokenConfig[] = topNTokens.map((token) => ({
+                    token_address: token.token.baseToken.address,
+                    percentage_drop: params.percentage,
+            } 
+
+
+
+
+            // export interface StopLossOrderRequest {
+            //     success: boolean;
+            //     is_followup: boolean;
+            //     params: {
+            //         stop_loss_type: "percentage" | "absolute_price_drop" | "value_loss" | "tiered_percentage";
+            //         token_selection?: "all" | "top_N_by_balance" | null;
+            //         top_n?: number; // Used only when token_selection is "top_N_by_balance"
+            //         tokens?: TokenConfig[]; // Used for specifying individual token configurations
+            //         percentage?: number; // For flat percentage-based stop loss
+            //         absolute_price?: number; // For price-based stop loss
+            //         value_loss_usd?: number; // For value-based stop loss
+            //     };
+            //     error: string | null;
+            // }
+            
+            // interface TokenConfig {
+            //     symbol?: string;
+            //     token_address?: string;
+            //     percentage_drop?: number; // Token-specific flat percentage drop
+            //     absolute_price?: number;  // Token-specific absolute price
+            //     value_loss_usd?: number;  // Token-specific value loss trigger
+            //     tiers?: Tier[];           // Token-specific tiered stop loss
+            //     expires_at?: string;
+            // }
+            
+            // interface Tier {
+            //     trigger_type: "percentage_drop" | "absolute_price" | "value_loss_usd";
+            //     trigger_value: number;
+            //     sell_percentage: number | "remaining";
+            // }
+
+
+            if (params.token_selection === "all") {
+                const stopLossParams: TokenConfig[] = tokens.map((token) => ({
+                    token_address: token.token.baseToken.address,
+                    percentage_drop: params.percentage,
+                }));
+            }
+
+            if (params.token_selection === "top_N_by_balance") {
+                const topNTokens = tokens.slice(0, params.top_n);
+                const stopLossParams: TokenConfig[] = topNTokens.map((token) => ({
+                    token_address: token.token.baseToken.address,
+                    percentage_drop: params.percentage,
+                }));
+            }
+
+
+
 
             const stopLossParams: StopLossParams = {
                 sellConditions: {

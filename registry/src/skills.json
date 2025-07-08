@@ -931,5 +931,52 @@
             "Hunting copy trade senseis"
         ],
         "orderIndex": 15
+    },
+    {
+        "pluginId": "c69b2f83-3f64-5c1e-a7ef-378d40a01436",
+        "name": "@moxie-protocol/plugin-senpi-stop-loss",
+        "displayName": "Stop Loss",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Enables your agent to buy or sell tokens for you based on stop loss conditions.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-stop-loss",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-stop-loss/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Set a stop loss on your agent wallet to automatically sell tokens when the price drops below a certain percentage.",
+            "Set a stop loss on your agent wallet to automatically sell tokens when the price drops below a certain price.",
+            "Set a stop loss on your agent wallet to automatically sell tokens when the price drops below a certain value in USD."
+        ],
+        "starterQuestions": [
+            {
+                "label": "Set a stop loss on my agent wallet to sell $VVV if the price dips by 5%",
+                "value": "Set a stop loss on my agent wallet to sell $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 5%"
+            },
+            {
+                "label": "Set a stop loss on my agent wallet to sell $VVV if the price dips by $10",
+                "value": "Set a stop loss on my agent wallet to sell $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by $10"
+            },
+            {
+                "label": "Set a stop loss on my agent wallet to sell 10% of my $BNKR if the price dips by 10%",
+                "value": "Set a stop loss on my agent wallet to sell 10% of my $[BNKR|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-stop-loss/images/logo.svg"
+        ],
+        "actions": ["STOP_LOSS"],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Setting your stop loss like a pro",
+            "Protecting your portfolio with AI",
+            "Stop loss primed",
+            "Executed silently to Base"
+        ],
+        "orderIndex": 16
     }
 ]
