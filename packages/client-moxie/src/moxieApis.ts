@@ -27,8 +27,9 @@ import { ResponseHelper } from "./responseHelper.ts";
 import { traceIdMiddleware } from "./middleware/traceId.ts";
 import {
     ftaService,
-    getPortfolioData,
-    Portfolio,
+    type Portfolio,
+    getPortfolioV2Data,
+    TokenNode,
 } from "@moxie-protocol/moxie-agent-lib";
 import { walletService, MoxieUser } from "@moxie-protocol/moxie-agent-lib";
 import { MoxieWalletClient } from "@moxie-protocol/moxie-agent-lib/src/wallet";
@@ -192,12 +193,31 @@ export function createMoxieApiRouter(
                 // If Zapper API key is set, fetch the current balance of the agent wallet
                 if (process.env.ZAPPER_API_KEY) {
                     // fetch the current balance of the agent wallet
-                    currentWalletBalance = await getPortfolioData(
-                        [agentWallet.address],
-                        ["BASE_MAINNET"],
-                        moxieUserId,
-                        runtime
-                    );
+                    currentWalletBalance = {
+                        tokenBalances: (
+                            await getPortfolioV2Data(
+                                [agentWallet.address],
+                                ["BASE_MAINNET"],
+                                moxieUserId,
+                                runtime
+                            )
+                        ).tokenBalances.byToken.edges // format the portfolioV2Data to the portfolio format
+                            .map((edge: { node: TokenNode }) => ({
+                                address:
+                                    edge.node?.accountBalances?.edges[0]?.node
+                                        ?.accountAddress,
+                                network: "BASE_MAINNET",
+                                token: {
+                                    balance: edge.node.balance,
+                                    balanceUSD: edge.node.balanceUSD,
+                                    baseToken: {
+                                        name: edge.node.name,
+                                        symbol: edge.node.symbol,
+                                        address: edge.node.tokenAddress,
+                                    },
+                                },
+                            })),
+                    };
                     elizaLogger.info(traceId, `currentWalletBalance`, {
                         currentWalletBalance,
                     });

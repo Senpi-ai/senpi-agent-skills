@@ -268,6 +268,15 @@ async function handleAddGroupMember(traceId: string, moxieUserId: string, state:
                 callback
             );
 
+            if (!groupId) {
+                await callback?.({
+                    text: `Would you like to create a new group named ${groupName}?`,
+                    action: "MANAGE_GROUPS",
+                });
+                // Stop if no group is found
+                return true;
+            }
+
             elizaLogger.debug(
                 traceId,
                 `[MANAGE_GROUPS] [ADD_GROUP_MEMBER] Fetch Group ID By Group Name ${groupName}: ${groupId}`
@@ -547,7 +556,7 @@ async function handleGetGroupDetailsByGroupName(
 
         if (response.groups.length === 0) {
             await callback?.({
-                text: `No groups found!`,
+                text: `No groups named ${groupName} found! `,
                 action: "MANAGE_GROUPS",
             });
             return;

@@ -52,7 +52,6 @@ export {
 
 export {
     type Portfolio,
-    getPortfolioData,
     getPortfolioV2Data,
     type PortfolioV2Data,
     getPortfolioV2DataByTokenAddress,
