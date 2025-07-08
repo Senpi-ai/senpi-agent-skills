@@ -15,7 +15,7 @@ Data: {{trendingTokens}}
 
 **Data Presentation**
 - For each token in the summary, always include:
-    - **Token name first & symbol (case-sensitive, formatted as follows: $[token_name]token_symbol])**
+    - **Token name first & symbol (case-sensitive, prefixed with $ and format the symbol with the corresponding token address as follows: $[token_symbol|token_address])**
     - **Full token_address in the format: token_address**
     - **Current price  & % Price Change (last hour, just output the number)**
     - **Fully diluted market cap**
