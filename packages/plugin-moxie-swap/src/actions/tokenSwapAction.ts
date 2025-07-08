@@ -2555,7 +2555,7 @@ export const tokenSwapAction = {
                     }
                 }
                 // delete the cache
-                const cacheKey = `PORTFOLIO-${moxieUserId}`;
+                const cacheKey = `PORTFOLIO-V2-${moxieUserId}`;
                 await runtime.cacheManager.delete(cacheKey);
                 elizaLogger.debug(
                     traceId,
