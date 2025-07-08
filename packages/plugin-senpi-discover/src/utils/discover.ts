@@ -63,7 +63,7 @@ export const getTopGroupTargets = async (
         return result.data?.TopGroupTargets?.targets;
     } catch (error) {
         elizaLogger.error(`[DISCOVER] error: ${error}`);
-        return null;
+        throw error;
     }
 };
 
