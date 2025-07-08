@@ -55,7 +55,7 @@ export const getTopTraders = async (
         return result.data?.TopTraders?.traders;
     } catch (error) {
         elizaLogger.error(`[getTopTraders] error: ${error}`);
-        return null;
+        throw error;
     }
 };
 

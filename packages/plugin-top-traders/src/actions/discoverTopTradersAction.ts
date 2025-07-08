@@ -117,7 +117,7 @@ export const discoverTopTradersAction: Action = {
                 `[DiscoverTopTradersAction] [${moxieUserId}] Error: ${e}`
             );
             await callback?.({
-                text: `Something went wrong while discovering top traders. Please try again later.`,
+                text: `Failed to fetch the top traders to copy trade on Senpi. Please try again later.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏`,
                 action: "TOP_TRADERS",
             });
         }
