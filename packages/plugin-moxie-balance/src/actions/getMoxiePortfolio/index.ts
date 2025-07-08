@@ -16,7 +16,7 @@ import {
 import { portfolioExamples } from "./examples";
 import { mutiplePortfolioSummary, portfolioSummary } from "./template";
 import { portfolioUserIdsExtractionTemplate } from "../../commonTemplate";
-import { MoxieUser, moxieUserService, getPortfolioData, Portfolio, getPortfolioV2Data, PortfolioV2Data, MoxieAgentDBAdapter } from "@moxie-protocol/moxie-agent-lib";
+import { MoxieUser, moxieUserService, Portfolio, getPortfolioV2Data, PortfolioV2Data, MoxieAgentDBAdapter } from "@moxie-protocol/moxie-agent-lib";
 import { getCommonHoldings, getMoxieCache, getMoxieToUSD, getWalletAddresses, setMoxieCache, handleIneligibleMoxieUsers, formatMessages } from "../../util";
 import { PortfolioUserRequested } from "../../types";
 
