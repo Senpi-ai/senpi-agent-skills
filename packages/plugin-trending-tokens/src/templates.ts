@@ -5,6 +5,7 @@ Data: {{trendingTokens}}
 - Looks at the above provided trending crypto token dataset and identify 5 top tokens you think are worth recommending.
 - Be concise in your analysis, no need for long intros or over-explanations. Do mention you are looking at the performance of the tokens over last 24 hours.
 - Pay attention to the volume changes, especially 5 minute.
+- End the response with the something along the lines of: "Select any token from the list to view the PnL of top traders."
 
 **Notes how to identify and skip potentially scam tokens**
 - Pay attention to market caps and liquidity, if the numbers do not make sense:
