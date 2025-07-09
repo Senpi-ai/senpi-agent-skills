@@ -361,10 +361,6 @@ async function processStopLossParams(
             action: "STOP_LOSS",
         });
 
-        callback?.({
-            text: message,
-            action: "STOP_LOSS",
-        });
     }
 }
 
