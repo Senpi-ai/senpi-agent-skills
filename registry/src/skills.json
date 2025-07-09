@@ -161,12 +161,6 @@
             "FARCASTER_ACTIVITY",
             "FARCASTER_UPDATES",
             "FARCASTER_CASTS",
-            "TRENDING_TOKENS",
-            "TOKEN_PURCHASES",
-            "TOKEN_RECOMMENDATIONS",
-            "BUY_RECOMMENDATIONS",
-            "TRENDING_CRYPTOCURRENCIES",
-            "TOKEN_SWAP_SUMMARIES",
             "SOCIAL_SUMMARY",
             "FARCASTER_AND_TWITTER_SUMMARY",
             "FARCASTER_AND_TWITTER_ACTIVITY",
@@ -931,6 +925,39 @@
             "Hunting copy trade senseis"
         ],
         "orderIndex": 15
+    },
+    {
+        "pluginId": "e0840f53-4663-4e75-8a5e-8311444ad296",
+        "name": "@moxie-protocol/plugin-trending-tokens",
+        "displayName": "Trending Tokens",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Senpi analyzes real-time trending cryptocurrency data and identifies 5 top trending tokens on all of Base.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-trending-tokens",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-trending-tokens/images/logo.svg",
+        "settings": {},
+        "capabilities": ["Display top 5 trending tokens on Base with details"],
+        "starterQuestions": [
+            {
+                "label": "What's trending today on Base?",
+                "value": "What's trending today on Base?"
+            }
+        ],
+        "mediaUrls": [],
+        "actions": ["TRENDING_TOKENS"],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Scanning through trending tokens",
+            "Crunching the numbers",
+            "Analyzing performance metrics",
+            "Narrowing down to top 5"
+        ],
+        "orderIndex": 17
     },
     {
         "pluginId": "f69f6073-50dd-40d6-805c-68ed2e242955",
