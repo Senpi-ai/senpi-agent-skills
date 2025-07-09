@@ -303,6 +303,65 @@
         "orderIndex": 8
     },
     {
+        "pluginId": "a8c0c53a-e4e5-0848-b69b-a17af97d64dd",
+        "name": "@moxie-protocol/plugin-moxie-whale-hunter",
+        "displayName": "Base Whale Hunter",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Discover Base whales with Senpi!",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-whale-hunter",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-whale-hunter/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Top traders across all of Base",
+            "Top traders of a specific token",
+            "Top holders of a specific token"
+        ],
+        "starterQuestions": [
+            {
+                "label": "Who are the top traders today on Base?",
+                "value": "Who are the top traders today on Base?"
+            },
+            {
+                "label": "Show today's trending tokens on Base along with the top traders",
+                "value": "Show today's trending tokens on Base along with the top traders"
+            },
+            {
+                "label": "Who are the biggest $BNKR whales?",
+                "value": "Who are the biggest $[BNKR|0x22af33fe49fd1fa80c7149773dde5890d3c76f3b] whales?"
+            },
+            {
+                "label": "Who are the top traders recently of $CLANKER?",
+                "value": "Who are the top traders recently of $[CLANKER|0x1bc0c42215582d5a085795f4badbac3ff36d1bcb]?"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-whale-hunter/images/logo.svg"
+        ],
+        "actions": [
+            "TOP_TRADERS",
+            "TOP_WHALES",
+            "TOP_TRADER_OF_A_TOKEN",
+            "TOP_TOKEN_HOLDERS",
+            "WHALE_HUNTER",
+            "WHALE_TOKEN_HOLDERS"
+        ],
+        "isPremium": false,
+        "freeQueries": 10,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "INACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Searching onchain sources",
+            "Analyzing 🐋 🐋 🐋",
+            "Doing robot things",
+            "Synthesizing results",
+            "Preparing insights"
+        ],
+        "orderIndex": 4
+    },
+    {
         "pluginId": "36c9a919-5a55-4645-9008-cfd32ec4b5a2",
         "name": "@moxie-protocol/plugin-moxie-limit-order",
         "displayName": "Limit Orders",
