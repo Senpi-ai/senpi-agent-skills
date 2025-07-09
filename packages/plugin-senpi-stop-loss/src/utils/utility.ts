@@ -1,7 +1,7 @@
 import { elizaLogger } from "@moxie-protocol/core";
 import { gql } from "graphql-request";
 
-export enum SourceType {
+export enum Source {
     AGENT = "AGENT",
     WIDGET = "WIDGET",
     AUTOMATION = "AUTOMATION",
@@ -15,6 +15,7 @@ export enum ActionType {
     LIMIT_ORDER = "LIMIT_ORDER",
     STOP_LOSS = "STOP_LOSS",
     STOP_LOSS_LO = "STOP_LOSS_LO",
+    SL = "SL"
 }
 
 export enum OpenOrderType {
@@ -36,24 +37,26 @@ export interface SwapInput {
 }
 
 export interface OpenOrderInput {
-    sellAmountInWEI: string;
+    sellAmountInWei: string;
     sellAmount: string;
     sellTokenAddress: string;
     sellTokenSymbol: string;
-    buyAmount: string;
-    buyAmountInWEI: string;
+    sellTokenDecimals: number;
+    buyTokenDecimals: number;
+    buyAmount?: string;
+    buyAmountInWei?: string;
     buyTokenAddress: string;
-    buyTokenSymbol: string;
+    buyTokenSymbol?: string;
     triggerValue: string;
     triggerType: TriggerType;
     requestType?: OpenOrderType;
-    chainId?: number;
+    chainId: number;
     expiresAt?: string;
 }
 
 export interface CreateManualOrderInput {
     actionType: ActionType;
-    sourceType: SourceType;
+    source: Source;
     swapInput: SwapInput;
     stopLossInput: OpenOrderInput;
     limitOrderInput: OpenOrderInput;
@@ -65,18 +68,26 @@ export interface CreateManualOrderOutput {
     metadata: {
         traceId: string;
         orderId: string;
+        ruleId: string;
+        ruleExecutionLogId: string;
+        closedOrderId: string;
+        sellOrderLedgerId: string;
     };
 }
 
 
 const mutation = gql`
-    mutation CreateManualOrder($createManualOrderInput: CreateManualOrderInput!) {
-        CreateManualOrder(input: $createManualOrderInput) {
+    mutation CreateManualOrder($createRuleInput: CreateManualOrderInput!) {
+        CreateManualOrder(input: $createRuleInput) {
             success
             error
             metadata {
                 traceId
                 orderId
+                ruleId
+                ruleExecutionLogId
+                closedOrderId
+                sellOrderLedgerId
             }
         }
     }
@@ -114,7 +125,7 @@ If 2 people in #copytrade buy >$1000 of a token within 30 minutes of each other,
 export async function createManualOrder(
     authorizationHeader: string,
     actionType: ActionType,
-    sourceType: SourceType,
+    source: Source,
     swapInput: SwapInput,
     stopLossInput: OpenOrderInput,
     limitOrderInput: OpenOrderInput
@@ -132,16 +143,16 @@ export async function createManualOrder(
         );
     }
 
-    const createManualOrderInput: CreateManualOrderInput = {
+    const createRuleInput: CreateManualOrderInput = {
         actionType,
-        sourceType,
+        source,
         swapInput,
         stopLossInput,
         limitOrderInput,
     };
 
     try {
-        const response = await fetch(process.env.RULE_API_MOXIE_API_URL, {
+        const response = await fetch(process.env.MOXIE_API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -149,11 +160,15 @@ export async function createManualOrder(
             },
             body: JSON.stringify({
                 query: mutation,
-                variables: { createManualOrderInput },
+                variables: { createRuleInput },
             }),
         });
 
         const result = await response.json();
+
+        elizaLogger.info(
+            `[STOP_LOSS] CreateManualOrder result: ${JSON.stringify(result)}`
+        );
 
         if (result.errors) {
             throw new Error(
@@ -224,3 +239,7 @@ export async function checkUserCommunicationPreferences(
         return null;
     }
 }
+
+export const isValidBaseAddress = (address: string): boolean => {
+    return /^0x[a-fA-F0-9]{40}$/.test(address);
+};
