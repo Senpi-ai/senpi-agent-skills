@@ -288,6 +288,12 @@ async function processStopLossParams(
     state: State
 ) {
     for (const param of params) {
+
+        callback?.({
+            text: `Creating stop loss order for token $[${param.token_symbol ? param.token_symbol : param.token_address}|${param.token_address}]...\n`,
+            action: "STOP_LOSS",
+        });
+
         validateStopLossParam(param, traceId, moxieUserId);
 
         const tokenSymbol = param.token_symbol;
@@ -344,13 +350,17 @@ async function processStopLossParams(
         );
 
         const message = result.success
-            ? `Stop loss order created for token ${tokenSymbol}.`
-            : `Failed to create stop loss order for token ${tokenSymbol}. Error: ${result.error}`;
+            ? `Stop loss order successfully created for token ${tokenSymbol ? tokenSymbol : tokenAddress} with address ${tokenAddress}.\n` +
+              `| Trace ID | Order ID | Rule ID |\n` +
+              `|----------|----------|---------|\n` +
+              `| ${result.metadata.traceId ? result.metadata.traceId : 'N/A'} | ${result.metadata.orderId ? result.metadata.orderId : 'N/A'} | ${result.metadata.ruleId ? result.metadata.ruleId : 'N/A'} |\n \n`
+            : `Failed to create stop loss order for token $[${tokenSymbol ? tokenSymbol : tokenAddress}|${tokenAddress}]. Error: ${result.error}`;
 
         callback?.({
             text: message,
             action: "STOP_LOSS",
         });
+
     }
 }
 
