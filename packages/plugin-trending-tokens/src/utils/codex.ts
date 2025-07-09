@@ -3,6 +3,10 @@ import { GetTrendingTokensResponse } from "../types";
 
 export const getTrendingTokens = async () => {
     try {
+        if (!process.env.MOXIE_API_URL_INTERNAL) {
+            throw new Error("MOXIE_API_URL_INTERNAL is not set");
+        }
+
         const query = /* GraphQL */ `
             query GetTrendingTokens {
                 GetTrendingTokens {
