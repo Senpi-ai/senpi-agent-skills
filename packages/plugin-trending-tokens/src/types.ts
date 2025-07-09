@@ -23,7 +23,6 @@ export interface GetTrendingTokensResponse {
             uniqueSells12: number;
             uniqueSells24: number;
             uniqueSells4: number;
-            volume24: string;
             volumeChange1: string;
             volumeChange12: string;
             volumeChange24: string;

@@ -80,7 +80,7 @@ export const trendingTokensAction: Action = {
                 `[TRENDING_TOKENS] [${moxieUserId}] Error fetching trending tokens: ${e}`
             );
             await callback({
-                text: "Failed to fetch trending tokens. Please try again later.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏",
+                text: `Failed to fetch trending tokens. Please try again later.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏`,
             });
         }
 
