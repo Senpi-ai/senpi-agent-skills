@@ -873,15 +873,15 @@
         "displayName": "Trending Tokens",
         "version": "0.1.8+build.1",
         "author": null,
-        "description": "Enables your agent to fetch trending Base tokens across thousands of wallets indexed by Senpi",
+        "description": "Senpi analyzes real-time trending cryptocurrency data and identifies 5 top trending tokens on all of Base.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-trending-tokens",
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-trending-tokens/images/logo.svg",
         "settings": {},
-        "capabilities": ["Display trending tokens on Base"],
+        "capabilities": ["Display top 5 trending tokens on Base with details"],
         "starterQuestions": [
             {
-                "label": "What tokens are trending?",
-                "value": "What tokens are trending?"
+                "label": "What's trending today on Base?",
+                "value": "What's trending today on Base?"
             }
         ],
         "mediaUrls": [],
@@ -893,12 +893,12 @@
         "status": "ACTIVE",
         "isDefault": true,
         "loaders": [
-            "Unmasking top trading masters",
-            "Decoding theirs secrets",
-            "Listening for alpha",
-            "Sneaking into the market dojo"
+            "Scanning through trending tokens",
+            "Crunching the numbers",
+            "Analyzing performance metrics",
+            "Narrowing down to top 5"
         ],
-        "orderIndex": 16
+        "orderIndex": 17
     },
     {
         "pluginId": "f69f6073-50dd-40d6-805c-68ed2e242955",
@@ -937,7 +937,12 @@
         "minimumSkillBalance": 0,
         "status": "ACTIVE",
         "isDefault": true,
-        "loaders": [],
-        "orderIndex": 17
+        "loaders": [
+            "Unmasking top trading masters",
+            "Decoding theirs secrets",
+            "Listening for alpha",
+            "Sneaking into the market dojo"
+        ],
+        "orderIndex": 16
     }
 ]
