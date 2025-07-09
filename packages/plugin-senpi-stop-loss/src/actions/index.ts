@@ -351,9 +351,9 @@ async function processStopLossParams(
 
         const message = result.success
             ? `Stop loss order successfully created for token ${tokenSymbol ? tokenSymbol : tokenAddress} with address ${tokenAddress}.\n` +
-              `| Trace ID | Order ID | Rule ID |\n` +
-              `|----------|----------|---------|\n` +
-              `| ${result.metadata.traceId ? result.metadata.traceId : 'N/A'} | ${result.metadata.orderId ? result.metadata.orderId : 'N/A'} | ${result.metadata.ruleId ? result.metadata.ruleId : 'N/A'} |\n \n`
+              `| Order ID | Trigger Type | Trigger Value | Order Type | Percentage Sold |\n` +
+              `|----------|--------------|---------------|------------|--------|\n`    +
+              `| ${result.metadata.orderId ? result.metadata.orderId : 'N/A'} | ${param.stop_loss_trigger === "percentage" ? "Percentage" : "Token Price"} | ${param.stop_loss_value} | ${openOrderInput?.requestType === OpenOrderType.STOP_LOSS ? "Stop Loss" : "Limit Order"} | ${param?.quantity_percentage} |\n \n`
             : `Failed to create stop loss order for token $[${tokenSymbol ? tokenSymbol : tokenAddress}|${tokenAddress}]. Error: ${result.error}`;
 
         callback?.({
