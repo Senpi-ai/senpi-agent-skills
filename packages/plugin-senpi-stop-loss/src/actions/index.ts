@@ -292,13 +292,22 @@ async function processStopLossParams(
 
         const tokenSymbol = param.token_symbol;
         const tokenAddress = param.token_address;
-        const quantityPercentageValue = parseFloat(param.quantity_percentage) / 100;
+        const quantityPercentageValue = parseFloat(param.quantity_percentage)/100;
 
         let sellTokenBalanceInWEI = await getSellTokenBalanceInWEI(traceId, tokenAddress, agentWallet, tokenBalanceMap, moxieUserId);
+
+        if (sellTokenBalanceInWEI === "0") {
+            elizaLogger.warn(
+                traceId,
+                `[STOP_LOSS] [${moxieUserId}] No balance found for token ${tokenAddress}`
+            );
+            continue;
+        }
+
         let sellTokenDecimals = await getSellTokenDecimals(traceId, tokenAddress, tokenDecimalMap, moxieUserId);
 
         let sellTokenBalanceInWEIBigInt = BigInt(sellTokenBalanceInWEI);
-        sellTokenBalanceInWEIBigInt = sellTokenBalanceInWEIBigInt * BigInt(Math.round(quantityPercentageValue));
+        sellTokenBalanceInWEIBigInt = applyPercentage(sellTokenBalanceInWEIBigInt, quantityPercentageValue);
         sellTokenBalanceInWEI = sellTokenBalanceInWEIBigInt.toString();
 
         const sellTokenBalance = ethers.formatUnits(sellTokenBalanceInWEI, sellTokenDecimals);
@@ -434,4 +443,22 @@ async function handleUnexpectedError(traceId: string, moxieUserId: string, error
         traceId,
         `[STOP_LOSS] [${moxieUserId}] error occurred while performing stop loss operation: ${JSON.stringify(error)}`
     );
+}
+
+/**
+ * Multiplies a BigInt by a fractional percentage (e.g., 0.032 = 3.2%) with precision handling.
+ * @param amount - The BigInt amount to apply the percentage to.
+ * @param percentage - A fractional percentage (e.g., 0.032 for 3.2%)
+ * @param precision - The number of decimal places to maintain (default: 6)
+ * @returns The resulting BigInt after applying the percentage
+ */
+function applyPercentage(amount: bigint, percentage: number, precision: number = 6): bigint {
+    if (percentage < 0 || percentage > 1) {
+        throw new Error("Percentage must be between 0 and 1");
+    }
+
+    const scale = BigInt(10 ** precision);
+    const scaledPercentage = BigInt(Math.floor(percentage * Number(scale)));
+
+    return (amount * scaledPercentage) / scale;
 }
