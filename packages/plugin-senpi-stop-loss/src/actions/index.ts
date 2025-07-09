@@ -135,6 +135,11 @@ export const stopLossAction: Action = {
                 `[STOP_LOSS] [${moxieUserId}] tokenBalances: ${JSON.stringify(tokens)}`
             );
 
+            if (tokens.length === 0) {
+                await handleNoTokensError(traceId, moxieUserId, callback);
+                return true;
+            }
+
             const newstate = await runtime.composeState(message, {
                 tokenBalances: JSON.stringify(tokens),
             });
@@ -194,6 +199,23 @@ function getTokenBalances(state: State): any[] {
             balanceUSD: t.token.balanceUSD,
             tentativePrice: t.token.balanceUSD / t.token.balance,
         }));
+}
+
+/**
+ * Handles the case where no tokens are found.
+ * @param traceId - The trace ID of the request.
+ * @param moxieUserId - The Moxie user ID.
+ * @param callback - The callback function to handle the error.
+ */
+async function handleNoTokensError(traceId: string, moxieUserId: string, callback: HandlerCallback) {
+    elizaLogger.warn(
+        traceId,
+        `[STOP_LOSS] [${moxieUserId}] No tokens found to setup stop loss on. Can't setup stop loss on ETH, USDC, USDT, etc.`
+    );
+    callback?.({
+        text: "No tokens found to setup stop loss on. Can't setup stop loss on ETH, USDC, USDT, etc.",
+        action: "STOP_LOSS",
+    });
 }
 
 /**
