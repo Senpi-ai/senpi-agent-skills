@@ -1,3 +1,4 @@
+import { elizaLogger } from "@moxie-protocol/core";
 import { GetTrendingTokensResponse } from "../types";
 
 export const getTrendingTokens = async () => {
@@ -48,7 +49,10 @@ export const getTrendingTokens = async () => {
         const { data } = (await response.json()) as GetTrendingTokensResponse;
         return data.GetTrendingTokens;
     } catch (error) {
-        console.error(error);
-        return null;
+        elizaLogger.error(
+            `Error fetching trending tokens: ${error}`,
+            error as Error
+        );
+        throw error;
     }
 };

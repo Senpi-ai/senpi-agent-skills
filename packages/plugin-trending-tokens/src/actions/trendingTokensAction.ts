@@ -32,8 +32,8 @@ export const trendingTokensAction: Action = {
         const moxieUserInfo = state.moxieUserInfo as MoxieUser;
         const moxieUserId = moxieUserInfo.id;
         try {
-            const trendingTokens = JSON.stringify(await getTrendingTokens());
-            if (!trendingTokens || trendingTokens.length === 0) {
+            const trendingTokens = await getTrendingTokens();
+            if (!trendingTokens || trendingTokens?.length === 0) {
                 elizaLogger.error(
                     traceId,
                     `[TRENDING_TOKENS] [${moxieUserId}] No trending tokens found`
@@ -53,7 +53,7 @@ export const trendingTokensAction: Action = {
             const context = composeContext({
                 state: {
                     ...state,
-                    trendingTokens,
+                    trendingTokens: JSON.stringify(trendingTokens),
                 },
                 template,
             });
@@ -61,13 +61,13 @@ export const trendingTokensAction: Action = {
             const summaryStream = streamText({
                 runtime,
                 context,
-                modelClass: ModelClass.LARGE,
+                modelClass: ModelClass.SMALL,
                 modelConfigOptions: {
                     temperature: 0.5,
                     maxOutputTokens: 8192,
                     modelProvider: ModelProviderName.ANTHROPIC,
                     apiKey: process.env.ANTHROPIC_API_KEY,
-                    modelClass: ModelClass.LARGE,
+                    modelClass: ModelClass.SMALL,
                 },
             });
 
@@ -80,7 +80,7 @@ export const trendingTokensAction: Action = {
                 `[TRENDING_TOKENS] [${moxieUserId}] Error fetching trending tokens: ${e}`
             );
             await callback({
-                text: "Failed to fetch trending tokens.",
+                text: "Failed to fetch trending tokens. Please try again later.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏",
             });
         }
 
@@ -91,13 +91,13 @@ export const trendingTokensAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Can you check my token balance on Base?",
+                    text: "What tokens are trending on Base?",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "The balance of your agent wallet is 0.01 ETH",
+                    text: "The top trending tokens on Base are: ...",
                     action: "TRENDING_TOKENS",
                 },
             },
