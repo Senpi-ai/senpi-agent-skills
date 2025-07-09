@@ -44,7 +44,8 @@
         "@moxie-protocol/plugin-senpi-tutorial": "workspace:*",
         "@moxie-protocol/plugin-senpi-discover": "workspace:*",
         "@moxie-protocol/plugin-trending-tokens": "workspace:*",
-        "@moxie-protocol/plugin-top-traders": "workspace:*"
+        "@moxie-protocol/plugin-top-traders": "workspace:*",
+        "@moxie-protocol/plugin-senpi-stop-loss": "workspace:*"
     },
     "devDependencies": {
         "@types/jest": "^29.5.14",
