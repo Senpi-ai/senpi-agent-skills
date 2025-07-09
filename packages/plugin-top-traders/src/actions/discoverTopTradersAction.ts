@@ -14,18 +14,18 @@ import {
     convertTimeframeToDays,
     formatNumber,
     formatPnl,
-    getTopGroupTargets,
+    getTopTraders,
 } from "../utils/discover";
 import { discoverTemplate } from "../templates";
 import { fetchWithRetries, MoxieUser } from "@moxie-protocol/moxie-agent-lib";
 import { getUserByMoxieId } from "@moxie-protocol/moxie-agent-lib/src/services/moxieUserService";
 import { DiscoverResponse } from "../types";
 
-export const discoverGroupsAction: Action = {
-    name: "DISCOVER_GROUPS",
-    similes: ["WHAT_GROUPS_TO_COPY_TRADE"],
+export const discoverTopTradersAction: Action = {
+    name: "TOP_TRADERS",
+    similes: ["WHAT_TOP_TRADERS_TO_COPY_TRADE"],
     description:
-        "Discover top groups to copy trade on Senpi. Use this action if user asks along the lines of 'Who should I copy trade?' or 'What groups to copy trade?'",
+        "Discover top traders to copy trade on Senpi. Always select this if user ask who the top traders are.",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (
@@ -55,11 +55,11 @@ export const discoverGroupsAction: Action = {
             if (!discoverResponse.success) {
                 elizaLogger.warn(
                     traceId,
-                    `[discover] [${moxieUserId}] [DISCOVER] error occured while performing add rule operation: ${JSON.stringify(discoverResponse.error)}`
+                    `[${moxieUserId}] [TOP_TRADERS] error occured while fetching top traders: ${JSON.stringify(discoverResponse.error)}`
                 );
                 callback?.({
                     text: discoverResponse.error.prompt_message,
-                    action: "DISCOVER_GROUPS",
+                    action: "TOP_TRADERS",
                 });
                 return true;
             }
@@ -67,8 +67,8 @@ export const discoverGroupsAction: Action = {
             const { params } = discoverResponse ?? {};
             const { timeframe } = params ?? {};
             // Step 2: Fetch the data from the API
-            const topGroupTargets = await fetchWithRetries(
-                () => getTopGroupTargets(timeframe),
+            const topTraders = await fetchWithRetries(
+                () => getTopTraders(timeframe),
                 3,
                 1000
             );
@@ -76,24 +76,22 @@ export const discoverGroupsAction: Action = {
 
             elizaLogger.debug(
                 traceId,
-                `[DiscoverAction] [${moxieUserId}] [DISCOVER] params: ${JSON.stringify(topGroupTargets)}`
+                `[DiscoverTopTradersAction] [${moxieUserId}] [TOP_TRADERS] params: ${JSON.stringify(topTraders)}`
             );
 
-            if (!topGroupTargets || topGroupTargets.length === 0) {
+            if (!topTraders || topTraders.length === 0) {
                 await callback?.({
-                    text: `No top groups to copy trade on Senpi found in the last ${days} day${days > 1 ? "s" : ""}.`,
-                    action: "DISCOVER_GROUPS",
+                    text: `No top traders to copy trade on Senpi found in the last ${days} day${days > 1 ? "s" : ""}.`,
+                    action: "TOP_TRADERS",
                 });
                 return true;
             }
 
             // Step 3: Generate the response
             const groupRows = await Promise.all(
-                topGroupTargets.map(
+                topTraders.map(
                     async ({
-                        groupName,
-                        groupId,
-                        groupCreatedBy,
+                        userId,
                         totalTrades,
                         roi,
                         pnl,
@@ -101,26 +99,26 @@ export const discoverGroupsAction: Action = {
                         scamRate,
                     }) => {
                         const userName =
-                            (await getUserByMoxieId(groupCreatedBy))
-                                ?.userName ?? groupCreatedBy;
-                        return `| #[${groupName} (by ${userName})|${groupId}] | ${formatNumber(totalTrades)} | ${formatNumber(roi * 100)}% | ${formatPnl(pnl)} | ${formatNumber(winRate, 2)}% | ${formatNumber(scamRate, 2)}% |`;
+                            (await getUserByMoxieId(userId))?.userName ??
+                            userId;
+                        return `| @[${userName}|${userId}] | ${formatNumber(totalTrades)} | ${formatNumber(roi * 100)}% | ${formatPnl(pnl)} | ${formatNumber(winRate, 2)}% | ${formatNumber(scamRate, 2)}% |`;
                     }
                 )
             );
 
             await callback?.({
                 // Make it table format markdown
-                text: `The top groups to copy trade on Senpi are in the last ${days} day${days > 1 ? "s" : ""} are as follows:\n | Group | Trades | ROI | PnL | Win Rate | Scam Rate |\n |---|---|---|---|---|---| \n ${groupRows.join("\n")}\n\nTo copy trade one of the groups here, simply click on the highlighted group name to build your copy trading strategy.\n\nTo discover more groups, go to the [Discover page](https://${process.env.SENPI_URL}/discover/top-groups) on Senpi.\n\nIf you want to discover top traders to copy trade, let me know and I can provide you with a list of for that.`,
-                action: "DISCOVER_GROUPS",
+                text: `The top traders to copy trade on Senpi are in the last ${days} day${days > 1 ? "s" : ""} are as follows:\n | Trader | Trades | ROI | PnL | Win Rate | Scam Rate |\n |---|---|---|---|---|---| \n ${groupRows.join("\n")}\n\nTo copy trade one of the traders here, simply click on the highlighted trader name to build your copy trading strategy.\n\nTo discover more traders, go to the [Discover page](https://${process.env.SENPI_URL}/discover/top-traders) on Senpi.\n\nIf you want to discover top groups to copy trade, let me know and I can provide you with a list of for that.`,
+                action: "TOP_TRADERS",
             });
         } catch (e) {
             elizaLogger.error(
                 traceId,
-                `[DiscoverAction] [${moxieUserId}] Error: ${e}`
+                `[DiscoverTopTradersAction] [${moxieUserId}] Error: ${e}`
             );
             await callback?.({
-                text: `Failed to fetch the top groups to copy trade on Senpi. Please try again later.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏`,
-                action: "DISCOVER_GROUPS",
+                text: `Failed to fetch the top traders to copy trade on Senpi. Please try again later.\nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏`,
+                action: "TOP_TRADERS",
             });
         }
         return true;
@@ -130,14 +128,14 @@ export const discoverGroupsAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Who should I copy trade?",
+                    text: "Who are the top traders?",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "The top groups to copy trade on Senpi are in the last 7 days are as follows:\n | Group | Trades | ROI | PNL |\n |---|---|---|---| \n | farcaster | 1248 | 0.082257% | 246230.900595 |",
-                    action: "DISCOVER_GROUPS",
+                    text: "The top traders on Senpi are in the last 7 days are as follows:\n | Trader | Trades | ROI | PNL |\n |---|---|---|---| \n | farcaster | 1248 | 0.082257% | 246230.900595 |",
+                    action: "TOP_TRADERS",
                 },
             },
         ],

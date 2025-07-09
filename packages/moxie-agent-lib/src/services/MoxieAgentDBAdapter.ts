@@ -255,7 +255,9 @@ export class MoxieAgentDBAdapter extends PostgresDatabaseAdapter {
             query += ` LEFT JOIN ${userSkillsTableName} us ON s.id = us.skill_id AND us.user_id = '${userId}'`;
         }
         if (installed_status !== "") {
-            query += ` WHERE COALESCE(us.status, 'UNINSTALLED') = '${installed_status}' ${installed_status == "INSTALLED" ? "OR s.is_default = true" : "AND s.is_default = false"}`;
+            query += ` WHERE s.status = 'ACTIVE' AND (COALESCE(us.status, 'UNINSTALLED') = '${installed_status}' ${installed_status == "INSTALLED" ? "OR s.is_default = true" : "AND s.is_default = false"})`;
+        } else {
+            query += ` WHERE s.status = 'ACTIVE'`;
         }
         query += ` ORDER BY s.order_index, s.updated_at DESC`;
         elizaLogger.debug(`[getSkills] [${userId}] Query: ${query}`);

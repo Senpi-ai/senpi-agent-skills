@@ -350,7 +350,7 @@
         "freeQueries": 10,
         "skillCoinAddress": "",
         "minimumSkillBalance": 0,
-        "status": "ACTIVE",
+        "status": "INACTIVE",
         "isDefault": true,
         "loaders": [
             "Searching onchain sources",
@@ -931,6 +931,51 @@
             "Hunting copy trade senseis"
         ],
         "orderIndex": 15
+    },
+    {
+        "pluginId": "f69f6073-50dd-40d6-805c-68ed2e242955",
+        "name": "@moxie-protocol/plugin-top-traders",
+        "displayName": "Top Traders",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Discover the top traders followed by Senpi users. Have Senpi analyze their results, suggest users for you to copy trade, and setup auto-trading strategies.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-top-traders",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-top-traders/images/logo.png",
+        "settings": {},
+        "capabilities": [
+            "View the top 25 traders followed by Senpi users.",
+            "Analyze the top traders’ ROI, PNL, and scam rates.",
+            "Easily setup auto-trading strategies on the top traders."
+        ],
+        "starterQuestions": [
+            {
+                "label": "Who are the top traders?",
+                "value": "Who are the top traders?"
+            },
+            {
+                "label": "What traders should I copy trade?",
+                "value": "What traders should I copy trade?"
+            },
+            {
+                "label": "Show the top traders of the past 7 days",
+                "value": "Show the top traders of the past 7 days"
+            }
+        ],
+        "mediaUrls": [],
+        "actions": ["TOP_TRADERS"],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Unmasking top trading masters",
+            "Decoding theirs secrets",
+            "Listening for alpha",
+            "Sneaking into the market dojo"
+        ],
+        "orderIndex": 16
     },
     {
         "pluginId": "c69b2f83-3f64-5c1e-a7ef-378d40a01436",
