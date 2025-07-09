@@ -61,13 +61,13 @@ export const trendingTokensAction: Action = {
             const summaryStream = streamText({
                 runtime,
                 context,
-                modelClass: ModelClass.SMALL,
+                modelClass: ModelClass.MEDIUM,
                 modelConfigOptions: {
                     temperature: 0.5,
                     maxOutputTokens: 8192,
                     modelProvider: ModelProviderName.ANTHROPIC,
                     apiKey: process.env.ANTHROPIC_API_KEY,
-                    modelClass: ModelClass.SMALL,
+                    modelClass: ModelClass.MEDIUM,
                 },
             });
 
