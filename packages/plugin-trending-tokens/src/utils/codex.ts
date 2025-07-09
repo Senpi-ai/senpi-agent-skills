@@ -47,7 +47,7 @@ export const getTrendingTokens = async () => {
             }),
         });
         const { data } = (await response.json()) as GetTrendingTokensResponse;
-        return data.GetTrendingTokens;
+        return data?.GetTrendingTokens ?? [];
     } catch (error) {
         elizaLogger.error(
             `Error fetching trending tokens: ${error}`,
