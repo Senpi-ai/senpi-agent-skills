@@ -124,7 +124,7 @@
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-social-alpha/images/logo.svg",
         "settings": {},
         "capabilities": [
-            "AI Intelligence across onchain activity and social media",
+            "AI Intelligence across social media",
             "Powerful insights into peoples’ portfolios",
             "Get Social Alpha insights on friends, influencers, whales",
             "Aggregated trends",
