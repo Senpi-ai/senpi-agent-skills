@@ -119,25 +119,21 @@
         "displayName": "Social Alpha",
         "version": "0.1.8+build.1",
         "author": null,
-        "description": "In-depth analysis on Base users, including trades, portfolios, and posts on Farcaster and X.",
+        "description": "In-depth analysis on Base users, including portfolios and posts on Farcaster and X.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-social-alpha",
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-social-alpha/images/logo.svg",
         "settings": {},
         "capabilities": [
-            "AI Intelligence across onchain activity and social media",
-            "Powerful insights into peoples’ trades and portfolios",
+            "AI Intelligence across social media",
+            "Powerful insights into peoples’ portfolios",
             "Get Social Alpha insights on friends, influencers, whales",
             "Aggregated trends",
             "Alerts (coming soon)"
         ],
         "starterQuestions": [
             {
-                "label": "Analyze portfolio and trades for @maretus and @betashop",
-                "value": "Analyze portfolio and trades for @[maretus|M7164] and @[betashop.eth|M4]"
-            },
-            {
-                "label": "Show me recent trades for @maretus",
-                "value": "Show me recent trades for @[maretus|M7164]"
+                "label": "Analyze portfolio for @maretus and @betashop",
+                "value": "Analyze portfolio for @[maretus|M7164] and @[betashop.eth|M4]"
             },
             {
                 "label": "Show me social media sentiment from @betashop.eth and @jessepollak",
