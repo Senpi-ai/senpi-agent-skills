@@ -132,8 +132,8 @@
         ],
         "starterQuestions": [
             {
-                "label": "Analyze portfolio and trades for @maretus and @betashop",
-                "value": "Analyze portfolio and trades for @[maretus|M7164] and @[betashop.eth|M4]"
+                "label": "Analyze portfolio for @maretus and @betashop",
+                "value": "Analyze portfolio for @[maretus|M7164] and @[betashop.eth|M4]"
             },
             {
                 "label": "Show me social media sentiment from @betashop.eth and @jessepollak",
