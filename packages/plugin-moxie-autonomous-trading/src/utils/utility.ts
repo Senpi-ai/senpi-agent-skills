@@ -267,6 +267,10 @@ const errorMessages: Record<string, string> = {
     AERR062:
         "Something went wrong while activating the rule. Please try again.",
     AERR063: "Something went wrong while adding the target group. Please try again.",
+    AERR064: "Invalid input: stop loss priceChangePercentage must be less than 100%",
+    AERR065: "Invalid input: stop loss sellPercentage must be less than 100%",
+    AERR066: "Invalid input: duration is required and must be greater than 0 for multiple users",
+    AERR067: "Invalid input: duration is required and must be greater than 0 for multiple users",
     AERR201:
         "Please try again with a valid group. Make sure to use '#' to select from your available groups. You can also ask me to create a new group by typing: create the group [groupname]",
     AERR202:
