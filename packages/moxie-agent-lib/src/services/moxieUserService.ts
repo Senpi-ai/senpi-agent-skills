@@ -20,6 +20,8 @@ import {
     MoxieUserMinimal,
     PublishPostInput,
     PublishPostResponse,
+    CreateRuleInput,
+    AddRuleExecutionLogInput,
 } from "./types";
 import { fetchWithRetries } from "../utils";
 
@@ -925,4 +927,95 @@ export async function publishPost(
         elizaLogger.error("Error in publishPost:", error);
         throw error;
     }
+}
+
+export async function createRule(
+    input: CreateRuleInput,
+    bearerToken: string
+): Promise<{ ruleId: string }> {
+    const mutation = `
+        mutation CreateRule($input: CreateRuleInput!) {
+            CreateRule(input: $input) {
+                ruleId
+            }
+        }
+    `;
+
+    const response = await fetchWithRetries(
+        async () => {
+            const res = await fetch(process.env.MOXIE_API_URL_INTERNAL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: bearerToken,
+                },
+                body: JSON.stringify({
+                    query: mutation,
+                    variables: { input },
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error(`Failed to create rule: ${res.statusText}`);
+            }
+
+            const { data, errors } = await res.json();
+
+            if (errors) {
+                throw new Error(errors[0]?.message || 'GraphQL error occurred');
+            }
+
+            return data?.CreateRule;
+        },
+        3, // maxRetries
+        1000 // retryDelay
+    );
+
+    return response;
+}
+
+export async function addRuleExecutionLog(
+    input: AddRuleExecutionLogInput,
+    bearerToken: string
+): Promise<void> {
+    const mutation = `
+        mutation AddRuleExecutionLog($input: AddRuleExecutionLogInput!) {
+            AddRuleExecutionLog(input: $input) {
+                success
+                logId
+            }
+        }
+    `;
+
+    await fetchWithRetries(
+        async () => {
+            const res = await fetch(process.env.MOXIE_API_URL_INTERNAL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: bearerToken,
+                },
+                body: JSON.stringify({
+                    query: mutation,
+                    variables: { input },
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error(`Failed to add rule execution log: ${res.statusText}`);
+            }
+
+            const { data, errors } = await res.json();
+
+            if (errors) {
+                throw new Error(errors[0]?.message || 'GraphQL error occurred');
+            }
+
+            if (!data?.AddRuleExecutionLog?.success) {
+                throw new Error('Failed to add rule execution log');
+            }
+        },
+        3, // maxRetries
+        1000 // retryDelay
+    );
 }

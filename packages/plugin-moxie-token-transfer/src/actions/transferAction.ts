@@ -691,11 +691,6 @@ async function processSingleTransfer(
             );
         }
 
-        elizaLogger.debug(
-            context.traceId,
-            `[tokenTransfer] [${context.moxieUserId}] [processTransfer] [transferAmountInWEI]: ${transferAmountInWEI}`
-        );
-
         // check if the agent wallet has enough balance to cover the transfer amount
         const currentBalanceInWEI =
             resolvedTokenAddress.toLowerCase() == ETH_ADDRESS.toLowerCase()
@@ -737,6 +732,7 @@ async function processSingleTransfer(
                 context.traceId,
                 `[tokenTransfer] [${context.moxieUserId}] [processTransfer] [EXECUTE_TRANSFER] [ERROR] Error: ${transferResult.callBackTemplate}`
             );
+
             return {
                 callBackTemplate: transferResult.callBackTemplate,
             };
@@ -756,6 +752,7 @@ async function processSingleTransfer(
                 context.traceId,
                 `[tokenTransfer] [${context.moxieUserId}] [processTransfer] [HANDLE_TRANSACTION_STATUS] [ERROR] Transaction failed`
             );
+
             return {
                 callBackTemplate: txnReceipt.callBackTemplate,
             };
@@ -766,6 +763,7 @@ async function processSingleTransfer(
                 context.traceId,
                 `[tokenTransfer] [${context.moxieUserId}] [processTransfer] [HANDLE_TRANSACTION_STATUS] [SUCCESS] Transaction successful: ${txnReceipt.data}`
             );
+
             return {
                 data: callBackTemplate.TRANSACTION_SUCCESSFUL(
                     txnReceipt.data,
