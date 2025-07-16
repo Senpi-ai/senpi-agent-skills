@@ -178,62 +178,6 @@
         "orderIndex": 10
     },
     {
-        "pluginId": "b5622f90-987e-51d1-bea9-5b1471bb9379",
-        "name": "@moxie-protocol/plugin-moxie-swap",
-        "displayName": "Trade",
-        "version": "0.1.8+build.1",
-        "author": null,
-        "description": "Enables your agent to trade and swap for you onchain using your Agent Wallet",
-        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-swap",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-swap/images/logo.svg",
-        "settings": {},
-        "capabilities": [
-            "Swap any token on Base. 💡Pro Tip: use “$” to auto-complete token names",
-            "Spend a % of your wallet to buy coins"
-        ],
-        "starterQuestions": [
-            {
-                "label": "Buy me $25 worth of  $ [replace with token name]",
-                "value": "Buy me $25 worth of  $ [replace with token name]"
-            },
-            {
-                "label": "Swap 100 $DEGEN for  $ [replace with token name]",
-                "value": "Swap 100 $[DEGEN|0x4ed4e862860bed51a9570b96d89af5e1b0efefed] for  $ [replace with token name]"
-            },
-            {
-                "label": "Use 40% of my $eth to buy  $ [replace with token name] and 20% to buy $DEGEN",
-                "value": "Use 40% of my $eth to buy  $ [replace with token name] and 20% to buy $[DEGEN|0x4ed4e862860bed51a9570b96d89af5e1b0efefed]"
-            }
-        ],
-        "mediaUrls": [
-            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-swap/images/logo.svg"
-        ],
-        "actions": [
-            "SWAP_TOKENS",
-            "CREATOR_TOKEN_SWAP",
-            "CREATOR_COIN_SWAP",
-            "EXCHANGE_CREATOR_COINS",
-            "TRADE_CREATOR_TOKENS",
-            "BUY_CREATOR_TOKENS",
-            "BUY_CREATOR_COINS",
-            "PURCHASE_CREATOR_COINS",
-            "PURCHASE_ERC20_TOKENS",
-            "SWAP_ERC20_TOKENS"
-        ],
-        "isPremium": false,
-        "freeQueries": 0,
-        "skillCoinAddress": "",
-        "minimumSkillBalance": 0,
-        "status": "ACTIVE",
-        "isDefault": true,
-        "loaders": [
-            "Sensing your intent",
-            "Preparing the strike",
-            "Executing on Base — clean and silent"
-        ],
-        "orderIndex": 9
-    },
-    {
         "pluginId": "0ad0731e-698b-04bf-abeb-5d29cc36759f",
         "name": "@moxie-protocol/plugin-moxie-balance",
         "displayName": "Portfolios",
@@ -291,53 +235,6 @@
             "Delivering precision insights"
         ],
         "orderIndex": 8
-    },
-    {
-        "pluginId": "36c9a919-5a55-4645-9008-cfd32ec4b5a2",
-        "name": "@moxie-protocol/plugin-moxie-limit-order",
-        "displayName": "Limit Orders",
-        "version": "0.1.8+build.1",
-        "author": null,
-        "description": "Enables your agent to buy or sell tokens for you based on limit conditions.",
-        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-limit-order",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-limit-order/images/logo.svg",
-        "settings": {},
-        "capabilities": [
-            "Buy on dip — buy a token when the price drops",
-            "Buy at target price — buy at target price",
-            "Sell at target price — sell at target price (all or some)"
-        ],
-        "starterQuestions": [
-            {
-                "label": "Buy me $25 worth of $VVV if the price dips by 5%",
-                "value": "Buy me $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 5%"
-            },
-            {
-                "label": "Buy $25 worth of $VVV if the price dips by 10%",
-                "value": "Buy $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
-            },
-            {
-                "label": "Sell 10% of my $BNKR if the price dips by 10%",
-                "value": "Sell 10% of my $[BNKR|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
-            }
-        ],
-        "mediaUrls": [
-            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-limit-order/images/logo.svg"
-        ],
-        "actions": ["LIMIT_ORDERS"],
-        "isPremium": false,
-        "freeQueries": 0,
-        "skillCoinAddress": "",
-        "minimumSkillBalance": 0,
-        "status": "ACTIVE",
-        "isDefault": true,
-        "loaders": [
-            "Reading the chart’s stance",
-            "Placing your order like a trap",
-            "Trigger primed",
-            "Executed silently to Base"
-        ],
-        "orderIndex": 2
     },
     {
         "pluginId": "0ad0731e-698b-04bf-abeb-5d29cc36759d",
@@ -942,38 +839,71 @@
         "orderIndex": 16
     },
     {
-        "pluginId": "c69b2f83-3f64-5c1e-a7ef-378d40a01436",
-        "name": "@moxie-protocol/plugin-senpi-stop-loss",
-        "displayName": "Stop Loss",
+        "pluginId": "b5622f90-987e-51d1-bea9-5b1471bb9379",
+        "name": "@moxie-protocol/plugin-senpi-orders",
+        "displayName": "Senpi Orders",
         "version": "0.1.8+build.1",
         "author": null,
-        "description": "Enables your agent to buy or sell tokens for you based on stop loss conditions.",
-        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-stop-loss",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-stop-loss/images/logo.svg",
+        "description": "Handles all order-related operations for Senpi, including swapping (buying or selling) ERC20 tokens, setting up limit orders for profit-taking, and configuring stop-loss orders for minimising loss. It does not support copy trading or automated trading strategies.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-orders",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg",
         "settings": {},
         "capabilities": [
-            "Set a stop loss on your agent wallet to automatically sell tokens when the price drops below a certain percentage.",
-            "Set a stop loss on your agent wallet to automatically sell tokens when the price drops below a certain price.",
-            "Set a stop loss on your agent wallet to automatically sell tokens when the price drops below a certain value in USD."
+            "Swap any token on Base. 💡Pro Tip: use “$” to auto-complete token names",
+            "Spend a % of your wallet to buy coins",
+            "Buy on dip — buy a token when the price drops",
+            "Buy at target price — buy at target price",
+            "Sell at target price — sell at target price (all or some)",
+            "Set a stop loss on your agent wallet to automatically sell tokens when the price drops below a certain percentage."
         ],
         "starterQuestions": [
+            {
+                "label": "Buy me $25 worth of  $ [replace with token name]",
+                "value": "Buy me $25 worth of  $ [replace with token name]"
+            },
+            {
+                "label": "Swap 100 $DEGEN for  $ [replace with token name]",
+                "value": "Swap 100 $[DEGEN|0x4ed4e862860bed51a9570b96d89af5e1b0efefed] for  $ [replace with token name]"
+            },
+            {
+                "label": "Use 40% of my $eth to buy  $ [replace with token name] and 20% to buy $DEGEN",
+                "value": "Use 40% of my $eth to buy  $ [replace with token name] and 20% to buy $[DEGEN|0x4ed4e862860bed51a9570b96d89af5e1b0efefed]"
+            },
             {
                 "label": "Set a stop loss on my agent wallet to sell $VVV if the price dips by 5%",
                 "value": "Set a stop loss on my agent wallet to sell $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 5%"
             },
             {
-                "label": "Set a stop loss on my agent wallet to sell $VVV if the price dips by $10",
-                "value": "Set a stop loss on my agent wallet to sell $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by $10"
+                "label": "Buy me $25 worth of $VVV if the price dips by 5%",
+                "value": "Buy me $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 5%"
             },
             {
-                "label": "Set a stop loss on my agent wallet to sell 10% of my $BNKR if the price dips by 10%",
-                "value": "Set a stop loss on my agent wallet to sell 10% of my $[BNKR|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
+                "label": "Buy $25 worth of $VVV if the price dips by 10%",
+                "value": "Buy $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
+            },
+            {
+                "label": "Sell 10% of my $BNKR if the price dips by 10%",
+                "value": "Sell 10% of my $[BNKR|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
             }
+
         ],
         "mediaUrls": [
-            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-stop-loss/images/logo.svg"
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg"
         ],
-        "actions": ["STOP_LOSS"],
+        "actions": [
+            "SENPI_ORDERS",
+            "TRADE_TOKENS",
+            "SWAP_TOKENS",
+            "BUY_TOKENS",
+            "SELL_TOKENS",
+            "PURCHASE_TOKENS",
+            "STOP_LOSS",
+            "LIMIT_ORDER",
+            "SWAP_STOP_LOSS",
+            "SWAP_LIMIT_ORDER",
+            "LIMIT_ORDER",
+            "STOP_LOSS_LIMIT_ORDER"
+        ],
         "isPremium": false,
         "freeQueries": 0,
         "skillCoinAddress": "",
@@ -981,11 +911,10 @@
         "status": "ACTIVE",
         "isDefault": true,
         "loaders": [
-            "Setting your stop loss like a pro",
-            "Protecting your portfolio with AI",
-            "Stop loss primed",
-            "Executed silently to Base"
+            "Sensing your intent",
+            "Preparing the strike",
+            "Executing on Base — clean and silent"
         ],
-        "orderIndex": 18
+        "orderIndex": 9
     }
 ]
