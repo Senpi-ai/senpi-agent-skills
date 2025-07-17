@@ -90,7 +90,7 @@ For successful interpretation:
       "orderType": "BUY" | "SELL" | "STOP_LOSS" | "LIMIT_ORDER_BUY" | "LIMIT_ORDER_SELL",
       "orderScope": "GLOBAL" | "RELATED" | null, # in case of limit order or stop loss check if the scope is related to swap or is on global level
       "executionType": "IMMEDIATE" | "FUTURE",
-      "triggerType": "PERCENTAGE" | "ABSOLUTE_VALUE" | "PRICE_INCREASE" | "PRICE_DROP" | null, # only in case of limit order and stop loss
+      "triggerType": "PERCENTAGE" | "ABSOLUTE_VALUE" | "VALUE_PRICE_INCREASE" | "VALUE_PRICE_DROP" | null,
       "triggerPrice": "<number or null>",
       "expiration_time": "<timestamp or null>",
       "balance": {
@@ -114,5 +114,23 @@ For missing or invalid details:
   }
 }
 \`\`\`
+
+Note:
+For triggerType, the following are the possible values:
+
+- PERCENTAGE: Trigger based on % price change.
+  Example: "Sell if price drops by 20%"
+
+- ABSOLUTE_VALUE: Trigger at a specific token price in USD.
+  Example: "Sell if price hits $0.50"
+
+- VALUE_PRICE_INCREASE: Trigger when total holding value increases by a fixed USD amount.
+  Example: "Sell if token gains by $10"
+
+- VALUE_PRICE_DROP: Trigger when total holding value drops by a fixed USD amount.
+  Example: "Sell if token drops by $10"
+
+- null: No trigger condition (e.g., for swaps).
+
 
 Begin your response with a detailed analysis of the user's request wrapped in <request_analysis> tags, followed by the appropriate JSON output.`;

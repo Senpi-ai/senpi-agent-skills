@@ -40,8 +40,8 @@ import {
 } from "../utils/callbackTemplates";
 import Decimal from "decimal.js";
 import { getPrice, getUSDPrice } from "../utils/codexApis";
-import { ActionType, CreateManualOrderInput, OpenOrderInput, OrderTriggerType, OrderType, RequestType, SenpiOrdersResponse, Source, SwapInput } from "../types";
-import { DEFAULT_CIPHERS } from "tls";
+import { ActionType, OpenOrderInput, OrderTriggerType, OrderType, RequestType, SenpiOrdersResponse, Source, SwapInput } from "../types";
+
 
 export const senpiOrdersAction = {
     suppressInitialMessage: true,
@@ -124,6 +124,51 @@ export const senpiOrdersAction = {
                     modelClass: ModelClass.LARGE,
                 },
             })) as SenpiOrdersResponse;
+
+            // const senpiOrders = {
+            //     "success": true,
+            //     "action": ActionType.SL,
+            //     "is_followup": false,
+            //     "transactions": [
+            //       {
+            //         "sellToken": "0x3babf2a1946689f0c1cc84073638facc2f6712b1",
+            //         "buyToken": "$[ETH|0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE]",
+            //         "sellQuantity": null,
+            //         "buyQuantity": null,
+            //         "valueType": null,
+            //         "orderType": OrderType.STOP_LOSS,
+            //         "orderScope": OrderScope.GLOBAL,
+            //         "executionType": ExecutionType.FUTURE,
+            //         "triggerType": TriggerType.PERCENTAGE,
+            //         "triggerPrice": 10,
+            //         "expiration_time": null,
+            //         "balance": {
+            //           "sourceToken": "0x3babf2a1946689f0c1cc84073638facc2f6712b1",
+            //           "type": BalanceType.PERCENTAGE,
+            //           "value": 10
+            //         }
+            //       },
+            //       {
+            //         "sellToken": "0x3babf2a1946689f0c1cc84073638facc2f6712b1",
+            //         "buyToken": "$[ETH|0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE]",
+            //         "sellQuantity": null,
+            //         "buyQuantity": null,
+            //         "valueType": null,
+            //         "orderType": OrderType.STOP_LOSS,
+            //         "orderScope": OrderScope.GLOBAL,
+            //         "executionType": ExecutionType.FUTURE,
+            //         "triggerType": TriggerType.PERCENTAGE,
+            //         "triggerPrice": 25,
+            //         "expiration_time": null,
+            //         "balance": {
+            //           "sourceToken": "0x3babf2a1946689f0c1cc84073638facc2f6712b1",
+            //           "type": BalanceType.PERCENTAGE,
+            //           "value": 90
+            //         }
+            //       }
+            //     ],
+            //     "error": null
+            // }
 
             elizaLogger.debug(
                 traceId,
@@ -427,7 +472,7 @@ export const senpiOrdersAction = {
                                     ) {
                                         elizaLogger.error(
                                             traceId,
-                                            `[tokenSwap] [${moxieUserId}] [tokenSwapAction] [SWAP] [TOKEN_TO_TOKEN] [BUY_QUANTITY] insufficient balance: ${currentSellTokenBalanceInWEI} < ${Number(price)}`
+                                            `[tokenSwap] [${moxieUserId}] [senpiOrdersAction] [SWAP] [TOKEN_TO_TOKEN] [BUY_QUANTITY] insufficient balance: ${currentSellTokenBalanceInWEI} < ${Number(price)}`
                                         );
 
                                         await handleInsufficientBalance(
@@ -660,36 +705,48 @@ export const senpiOrdersAction = {
                         }
 
                         // fetch the current price of the token
-                        const sellTokenPriceInUSD = tokenAddressToPrice.get(extractedSellTokenAddress);
+                        let sellTokenPriceInUSD = tokenAddressToPrice.get(extractedSellTokenAddress);
                         if (!sellTokenPriceInUSD) {
-                            const price = await getUSDPrice(traceId, moxieUserId, extractedSellTokenAddress);
-                            tokenAddressToPrice.set(extractedSellTokenAddress, Number(price));
+                            sellTokenPriceInUSD = Number(await getUSDPrice(traceId, moxieUserId, extractedSellTokenAddress));
+                            tokenAddressToPrice.set(extractedSellTokenAddress, sellTokenPriceInUSD);
                         }
 
                         // fetch the agent wallet balance of the token
                         const key = `${agentWallet.address}-${extractedSellTokenAddress}`;
-                        const tokenBalance = walletAddressToTokenAddressToBalance.get(key);
+                        let tokenBalance: bigint;
+
+                        tokenBalance = walletAddressToTokenAddressToBalance.get(key);
                         if (!tokenBalance) {
                             if (extractedSellTokenSymbol && extractedSellTokenSymbol === "ETH") {
-                                const tokenBalance = await getNativeTokenBalance(traceId, agentWallet.address);
-                                walletAddressToTokenAddressToBalance.set(key, BigInt(tokenBalance));
+                                tokenBalance = BigInt(await getNativeTokenBalance(traceId, agentWallet.address));
+                                walletAddressToTokenAddressToBalance.set(key, tokenBalance);
                             } else {
-                                const tokenBalance = await getERC20Balance(traceId, agentWallet.address, extractedSellTokenAddress);
-                                walletAddressToTokenAddressToBalance.set(key, BigInt(tokenBalance));
+                                tokenBalance = BigInt(await getERC20Balance(traceId, extractedSellTokenAddress, agentWallet.address));
+                                walletAddressToTokenAddressToBalance.set(key, tokenBalance);
                             }
                         }
+
+                        elizaLogger.debug(
+                            traceId,
+                            `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SELL_ORDER] [tokenBalance]: ${tokenBalance}`
+                        );
 
                         // some validations on price. i.e. if absolute price is more than sellTokenPriceInUSD, then it is not a valid stop loss order.
                         // Also, if the price drop brings the stop loss price below 0, then it is not a valid stop loss order. These are the cases where triggerType is "ABSOLUTE" and triggerPrice is more than sellTokenPriceInUSD.
                         if (triggerType == "ABSOLUTE") {
 
+                            elizaLogger.debug(
+                                traceId,
+                                `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SELL_ORDER] [ABSOLUTE] triggerPrice: ${triggerPrice} | sellTokenPriceInUSD: ${sellTokenPriceInUSD} | transaction.orderType: ${transaction.orderType}`
+                            );
+
                             let errorMessage = "";
                             if (transaction.orderType == "STOP_LOSS" && triggerPrice > sellTokenPriceInUSD) {
-                                errorMessage = "Stop loss price is not valid. Current price is less than the stop loss price.";
+                                errorMessage = "\n🔒 Stop-loss rejected! Current price is already below the safety net. 🪂 Try a lower value. \n";
                             }
 
                             if (transaction.orderType == "LIMIT_ORDER_SELL" && triggerPrice < sellTokenPriceInUSD) {
-                                errorMessage = "Limit order price is not valid. Current price is more than the limit order price.";
+                                errorMessage = "\n🛑 Limit order denied! Market's flying higher than your set price. 🚀 Try updating the limit.\n";
                             }
 
                             if (errorMessage) {
@@ -704,7 +761,12 @@ export const senpiOrdersAction = {
                             return true;
                         }
 
-                        if (triggerType === "PRICE_DROP" || triggerType === "PRICE_INCREASE") {
+                        if (triggerType === "VALUE_PRICE_DROP" || triggerType === "VALUE_PRICE_INCREASE") {
+
+                            elizaLogger.debug(
+                                traceId,
+                                `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SELL_ORDER] [VALUE_PRICE_DROP] [VALUE_PRICE_INCREASE] triggerPrice: ${triggerPrice} | sellTokenPriceInUSD: ${sellTokenPriceInUSD} | transaction.orderType: ${transaction.orderType} | triggerType: ${triggerType}`
+                            );
 
                             let errorMessage = "";
 
@@ -712,11 +774,11 @@ export const senpiOrdersAction = {
                             let limitOrderPrice = sellTokenPriceInUSD + triggerPrice;
 
                             if (transaction.orderType == "STOP_LOSS" && stopLossPrice <= 0) {
-                                errorMessage = "Stop loss price is not valid. Price drop is bringing the stop loss price below 0.";
+                                errorMessage = "\n🔒 Stop-loss error! The price drop is so steep it crashes below zero. 🕳️ Please adjust your settings\n";
                             }
 
                             if (transaction.orderType == "LIMIT_ORDER_SELL" && limitOrderPrice < sellTokenPriceInUSD) {
-                                errorMessage = "Limit order price is not valid. Limit order price is below the current price.";
+                                errorMessage = "\n🛑 Limit order rejected! Your price is already in the past. 🕰️ Set it higher than the current value!\n";
                             }
 
                             if (errorMessage) {
@@ -734,32 +796,53 @@ export const senpiOrdersAction = {
                         let orderTriggerType: OrderTriggerType;
                         let orderTriggerValue: string;
 
-                        if (triggerType === "ABSOLUTE" || triggerType === "PRICE_DROP" || triggerType === "PRICE_INCREASE") {
+                        if (triggerType === "ABSOLUTE" || triggerType === "VALUE_PRICE_DROP" || triggerType === "VALUE_PRICE_INCREASE") {
                             orderTriggerType = OrderTriggerType.TOKEN_PRICE;
                             if (triggerType === "ABSOLUTE") {
                                 orderTriggerValue = triggerPrice.toString();
-                            } else if (triggerType === "PRICE_DROP") {
+                            } else if (triggerType === "VALUE_PRICE_DROP") {
                                 orderTriggerValue = (sellTokenPriceInUSD - triggerPrice).toString();
-                            } else if (triggerType === "PRICE_INCREASE") {
+                            } else if (triggerType === "VALUE_PRICE_INCREASE") {
                                 orderTriggerValue = (sellTokenPriceInUSD + triggerPrice).toString();
                             }
+
+                            elizaLogger.debug(
+                                traceId,
+                                `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SELL_ORDER] [orderTriggerType: ${orderTriggerType} | orderTriggerValue: ${orderTriggerValue} | balance: ${JSON.stringify(balance)} | transaction.orderType: ${transaction.orderType} | action: ${action}`
+                            );
                         } else if (triggerType === "PERCENTAGE") {
                             orderTriggerType = OrderTriggerType.PERCENTAGE;
                             orderTriggerValue = triggerPrice.toString();
+
+                            elizaLogger.debug(
+                                traceId,
+                                `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SELL_ORDER] [orderTriggerType: ${orderTriggerType} | orderTriggerValue: ${orderTriggerValue} | balance: ${JSON.stringify(balance)} | transaction.orderType: ${transaction.orderType} | action: ${action}`
+                            );
                         } else {
                             elizaLogger.error(
                                 traceId,
                                 `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] Invalid trigger type: ${triggerType}`
                             );
                             await callback?.({
-                                text: "Invalid trigger type for stop loss order. Please try again.",
+                                text: "\n🚫 Invalid trigger type for stop loss order. Please try again. \n",
                             });
+                            return true;
                         }
 
                         if (action == ActionType.SL || action == ActionType.SL_LO || action == ActionType.LO) {
                             // create a stop loss order
 
+                            elizaLogger.debug(
+                                traceId,
+                                `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [STOP_LOSS] [LIMIT_ORDER_SELL] [orderTriggerType: ${orderTriggerType} | orderTriggerValue: ${orderTriggerValue} | balance: ${JSON.stringify(balance)} | transaction.orderType: ${transaction.orderType} | action: ${action}`
+                            );
+
                             if (balance && (balance.type == "FULL" || balance.type == "PERCENTAGE")) {
+
+                                elizaLogger.debug(
+                                    traceId,
+                                    `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SELL_ORDER] [balance.type: ${balance.type} | balance.value: ${balance.value} | transaction.orderType: ${transaction.orderType} | action: ${action}`
+                                );
 
                                 if (balance.type == "FULL") {
                                     balance.value = 100;
@@ -773,10 +856,10 @@ export const senpiOrdersAction = {
                                         buyAmount: balance.value.toString(),
                                         sellTokenAddress: extractedSellTokenAddress,
                                         sellTokenSymbol: extractedSellTokenSymbol,
-                                        sellTokenDecimals: extractedSellTokenDecimals,
+                                        sellTokenDecimals: Number(extractedSellTokenDecimals),
                                         buyTokenAddress: extractedBuyTokenAddress,
                                         buyTokenSymbol: extractedBuyTokenSymbol,
-                                        buyTokenDecimals: extractedBuyTokenDecimals,
+                                        buyTokenDecimals: Number(extractedBuyTokenDecimals),
                                         triggerValue: orderTriggerValue,
                                         triggerType: orderTriggerType,
                                         requestType: RequestType.LIMIT_ORDER,
@@ -787,26 +870,35 @@ export const senpiOrdersAction = {
 
                                     // buy token balance
                                 } else {
-                                    let sellTokenBalanceInWEIBigInt = BigInt(tokenBalance);
-                                    const quantityPercentageValue = parseFloat(balance.value)/100;
-                                    sellTokenBalanceInWEIBigInt = applyPercentage(sellTokenBalanceInWEIBigInt, quantityPercentageValue);
-                                    const sellTokenBalanceInWEI = sellTokenBalanceInWEIBigInt.toString();
+
+                                    elizaLogger.debug(
+                                        traceId,
+                                        `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SELL_ORDER] executing stop loss order or limit order sell order`
+                                    );
+
+                                    const sellTokenBalanceInWEI = applyPercentage(BigInt(tokenBalance), parseFloat(balance.value) / 100).toString();
                                     const sellTokenBalance = ethers.formatUnits(sellTokenBalanceInWEI, extractedSellTokenDecimals);
+
+                                    elizaLogger.debug(
+                                        traceId,
+                                        `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [STOP_LOSS] [LIMIT_ORDER_SELL] [SELL_TOKEN_BALANCE] sellTokenBalanceInWEI: ${sellTokenBalanceInWEI} | sellTokenBalance: ${sellTokenBalance} | extractedSellTokenDecimals: ${extractedSellTokenDecimals} | balance.value: ${balance.value} | quantityPercentageValue: ${parseFloat(balance.value) / 100}`
+                                    );
 
                                     const openOrderInput: OpenOrderInput = {
                                         sellAmountInWei: sellTokenBalanceInWEI.toString(),
                                         sellAmount: sellTokenBalance.toString(),
                                         sellTokenAddress: extractedSellTokenAddress,
                                         sellTokenSymbol: extractedSellTokenSymbol,
-                                        sellTokenDecimals: extractedSellTokenDecimals,
+                                        sellTokenDecimals: Number(extractedSellTokenDecimals),
                                         buyTokenAddress: extractedBuyTokenAddress,
                                         buyTokenSymbol: extractedBuyTokenSymbol,
-                                        buyTokenDecimals: extractedBuyTokenDecimals,
+                                        buyTokenDecimals: Number(extractedBuyTokenDecimals),
                                         triggerValue: orderTriggerValue,
                                         triggerType: orderTriggerType,
                                         requestType: transaction.orderType == "STOP_LOSS" ? RequestType.STOP_LOSS : RequestType.LIMIT_ORDER,
                                         chainId: 8453,
                                     }
+
                                     if (transaction.orderType == "STOP_LOSS") {
                                         stopLossInput.push(openOrderInput);
                                     } else {
@@ -825,10 +917,10 @@ export const senpiOrdersAction = {
                                         buyAmount: balance.value.toString(),
                                         sellTokenAddress: extractedSellTokenAddress,
                                         sellTokenSymbol: extractedSellTokenSymbol,
-                                        sellTokenDecimals: extractedSellTokenDecimals,
+                                        sellTokenDecimals: Number(extractedSellTokenDecimals),
                                         buyTokenAddress: extractedBuyTokenAddress,
                                         buyTokenSymbol: extractedBuyTokenSymbol,
-                                        buyTokenDecimals: extractedBuyTokenDecimals,
+                                        buyTokenDecimals: Number(extractedBuyTokenDecimals),
                                         triggerValue: orderTriggerValue,
                                         triggerType: orderTriggerType,
                                         requestType: RequestType.LIMIT_ORDER,
@@ -850,10 +942,10 @@ export const senpiOrdersAction = {
                                         sellAmount: sellTokenBalance.toString(),
                                         sellTokenAddress: extractedSellTokenAddress,
                                         sellTokenSymbol: extractedSellTokenSymbol,
-                                        sellTokenDecimals: extractedSellTokenDecimals,
+                                        sellTokenDecimals: Number(extractedSellTokenDecimals),
                                         buyTokenAddress: extractedBuyTokenAddress,
                                         buyTokenSymbol: extractedBuyTokenSymbol,
-                                        buyTokenDecimals: extractedBuyTokenDecimals,
+                                        buyTokenDecimals: Number(extractedBuyTokenDecimals),
                                         triggerValue: orderTriggerValue,
                                         triggerType: orderTriggerType,
                                         requestType: transaction.orderType == "STOP_LOSS" ? RequestType.STOP_LOSS : RequestType.LIMIT_ORDER,
@@ -872,7 +964,7 @@ export const senpiOrdersAction = {
                                     `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] Balance type is not valid: ${balance.type}`
                                 );
                                 await callback?.({
-                                    text: "Invalid balance type for stop loss order. Please try again.",
+                                    text: "\n🚫 Invalid balance type for stop loss order. Please try again. \n",
                                     content: {
                                         action: "SENPI_ORDERS",
                                         inReplyTo: _message.id,
@@ -885,10 +977,10 @@ export const senpiOrdersAction = {
                             const openOrderInput: OpenOrderInput = {
                                 sellTokenAddress: extractedSellTokenAddress,
                                 sellTokenSymbol: extractedSellTokenSymbol,
-                                sellTokenDecimals: extractedSellTokenDecimals,
+                                sellTokenDecimals: Number(extractedSellTokenDecimals),
                                 buyTokenAddress: extractedBuyTokenAddress,
                                 buyTokenSymbol: extractedBuyTokenSymbol,
-                                buyTokenDecimals: extractedBuyTokenDecimals,
+                                buyTokenDecimals: Number(extractedBuyTokenDecimals),
                                 triggerValue: orderTriggerValue,
                                 triggerType: orderTriggerType,
                                 requestType: transaction.orderType == "STOP_LOSS" ? RequestType.STOP_LOSS : RequestType.LIMIT_ORDER,
@@ -901,7 +993,11 @@ export const senpiOrdersAction = {
                                 openOrderInput.sellAmount = orderTriggerValue;
                             }
 
-                            stopLossInput.push(openOrderInput);
+                            if (transaction.orderType == "STOP_LOSS") {
+                                stopLossInput.push(openOrderInput);
+                            } else {
+                                limitOrderInput.push(openOrderInput);
+                            }
                         }
 
                     } else {
@@ -920,6 +1016,11 @@ export const senpiOrdersAction = {
                         return true;
                     }
                 }
+
+                elizaLogger.debug(
+                    traceId,
+                    `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [STOP_LOSS] [LIMIT_ORDER_SELL] [Number of Stop Loss Orders: ${stopLossInput.length} | Number of Limit Orders: ${limitOrderInput.length}]`
+                );
 
                 if (swapInput || stopLossInput.length > 0 || limitOrderInput.length > 0) {
                     await callback?.({
@@ -946,7 +1047,7 @@ export const senpiOrdersAction = {
                     if (result.success && result.metadata?.swapOutput) {
                         const swapOutput = result.metadata.swapOutput;
                         const message =
-                        `✅ Swap order successfully created for token: ${tokenAddress}\n\n` +
+                        `\n\n✅ Swap order successfully created for token: ${tokenAddress}\n\n` +
                         `🔗 Transaction Details:\n` +
                         `| TxHash | 💵 Buy Amount (USD) | 💸 Sell Amount (USD) |\n` +
                         `|--------|---------------------|----------------------|\n` +
@@ -965,7 +1066,7 @@ export const senpiOrdersAction = {
                     if (result.success && result.metadata?.stopLossOutputs) {
                         const stopLossOutputs = result.metadata.stopLossOutputs;
                         let message =
-                        `🛡️ Stop-loss order successfully created for token: ${tokenAddress}\n\n` +
+                        `\n\n🛡️ Stop-loss order successfully created for token: ${tokenAddress}\n\n` +
                         `📄 Order Details:\n` +
                         `| 🆔 Order ID | 💰 Stop Loss Price | 💸 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
                         `|-------------|--------------------|----------------|------------------|------------------|\n`;
@@ -986,7 +1087,7 @@ export const senpiOrdersAction = {
                     if (result.success && result.metadata?.limitOrderOutputs) {
                         const limitOrderOutputs = result.metadata.limitOrderOutputs;
                         let message =
-                        `🎯 Limit order successfully created for token: ${tokenAddress}\n\n` +
+                        `\n\n🎯 Limit order successfully created for token: ${tokenAddress}\n\n` +
                         `� Order Details:\n` +
                         `| 🆔 Order ID | 💵 Limit Price | 🛒 Buy Amount | 💰 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
                         `|-------------|----------------|----------------|----------------|------------------|------------------|\n`;
@@ -1014,10 +1115,17 @@ export const senpiOrdersAction = {
             );
 
         } catch (error) {
-            elizaLogger.error(
-                traceId,
-                `[tokenSwap] [${moxieUserId}] [tokenSwapAction] [SWAP] error occured while performing swap operation: ${JSON.stringify(error)}`
-            );
+            if (error instanceof Error) {
+                elizaLogger.error(
+                    traceId,
+                    `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SWAP] error stacktrace: ${error.stack}`
+                );
+            } else {
+                elizaLogger.error(
+                    traceId,
+                    `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] [SWAP] error occured while placing orders: ${error}`
+                );
+            }
             if (
                 error.message ==
                 "Wallet has insufficient funds to execute the transaction (transaction amount + fees)"
@@ -1183,7 +1291,7 @@ async function handleInsufficientBalance(
 ) {
     elizaLogger.debug(
         traceId,
-        `[tokenSwap] [${moxieUserId}] [handleInsufficientBalance] [currentWalletBalance]: ${JSON.stringify(currentWalletBalance)}`
+        `[senpiOrders] [${moxieUserId}] [handleInsufficientBalance] [currentWalletBalance]: ${JSON.stringify(currentWalletBalance)}`
     );
     // Get indicative price of buy token in USD
     let indicativePriceOfBuyTokenInUSD: string;
@@ -1223,7 +1331,7 @@ async function handleInsufficientBalance(
         );
     elizaLogger.debug(
         traceId,
-        `[tokenSwap] [${moxieUserId}] [handleInsufficientBalance] [otherTokensWithSufficientBalance]: ${JSON.stringify(otherTokensWithSufficientBalance)}`
+        `[senpiOrders] [${moxieUserId}] [handleInsufficientBalance] [otherTokensWithSufficientBalance]: ${JSON.stringify(otherTokensWithSufficientBalance)}`
     );
 
     // extract the symbols from otherTokensWithSufficientBalance
@@ -1235,7 +1343,7 @@ async function handleInsufficientBalance(
         .map((token) => token.token.baseToken.symbol);
     elizaLogger.debug(
         traceId,
-        `[tokenSwap] [${moxieUserId}] [handleInsufficientBalance] [otherTokenSymbols]: ${JSON.stringify(otherTokenSymbols)}`
+        `[senpiOrders] [${moxieUserId}] [handleInsufficientBalance] [otherTokenSymbols]: ${JSON.stringify(otherTokenSymbols)}`
     );
 
     // extract a map with symbol as key and token as value
