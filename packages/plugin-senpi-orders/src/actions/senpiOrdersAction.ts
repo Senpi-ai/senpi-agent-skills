@@ -41,6 +41,7 @@ import {
 import Decimal from "decimal.js";
 import { getPrice, getUSDPrice } from "../utils/codexApis";
 import { ActionType, CreateManualOrderInput, OpenOrderInput, OrderTriggerType, OrderType, RequestType, SenpiOrdersResponse, Source, SwapInput } from "../types";
+import { DEFAULT_CIPHERS } from "tls";
 
 export const senpiOrdersAction = {
     suppressInitialMessage: true,
@@ -225,7 +226,7 @@ export const senpiOrdersAction = {
                 );
 
                 await callback?.({
-                    text: `Preparing order parameters for token: $[${extractedTokenSymbol}|${extractedTokenAddress}]`,
+                    text: `\n🛠️  Preparing order parameters for token: 💠 $[${extractedTokenSymbol}|${extractedTokenAddress}]\n`,
                     content: {
                         action: "SENPI_ORDERS",
                         inReplyTo: _message.id,
@@ -329,7 +330,7 @@ export const senpiOrdersAction = {
                             );
 
                             if (valueType && valueType == "USD") {
-                                buyQuantityInWEI = ethers.parseUnits(buyQuantity.toString(), extractedBuyTokenDecimals);
+                                buyQuantityInWEI = ethers.parseUnits(buyQuantity.toString(), USDC_TOKEN_DECIMALS);
                             }
 
                             elizaLogger.debug(
@@ -435,7 +436,7 @@ export const senpiOrdersAction = {
                                             moxieUserId,
                                             extractedSellTokenAddress,
                                             extractedSellTokenSymbol,
-                                            BigInt(price),
+                                            buyQuantityInWEI,
                                             BigInt(currentSellTokenBalanceInWEI),
                                             extractedSellTokenDecimals,
                                             agentWallet.address,
@@ -452,8 +453,8 @@ export const senpiOrdersAction = {
                                         chainId: 8453,
                                         sellTokenSymbol: extractedSellTokenSymbol,
                                         buyTokenSymbol: extractedBuyTokenSymbol,
-                                        sellTokenDecimal: extractedSellTokenDecimals,
-                                        buyTokenDecimal: extractedBuyTokenDecimals,
+                                        sellTokenDecimal: Number(extractedSellTokenDecimals),
+                                        buyTokenDecimal: Number(extractedBuyTokenDecimals),
                                     }
                                 }
                             } catch (error) {
@@ -470,11 +471,6 @@ export const senpiOrdersAction = {
                                     }
                                 }
                         } else if (sellQuantity) {
-
-                            let sellQuantityInWEI = ethers.parseUnits(
-                                sellQuantity.toString(),
-                                extractedSellTokenDecimals
-                            );
 
                             if (valueType && valueType == "USD" && extractedSellTokenAddress != USDC_ADDRESS) {
                                 const sellQuantityInUSDWEI = ethers.parseUnits(sellQuantity.toString(), USDC_TOKEN_DECIMALS);
@@ -533,10 +529,41 @@ export const senpiOrdersAction = {
                                     chainId: 8453,
                                     sellTokenSymbol: extractedSellTokenSymbol,
                                     buyTokenSymbol: extractedBuyTokenSymbol,
-                                    sellTokenDecimal: extractedSellTokenDecimals,
-                                    buyTokenDecimal: extractedBuyTokenDecimals,
+                                    sellTokenDecimal: Number(extractedSellTokenDecimals),
+                                    buyTokenDecimal: Number(extractedBuyTokenDecimals),
                                 }
                             } else {
+
+                                const sellQuantityInWEI = ethers.parseUnits(
+                                    sellQuantity.toString(),
+                                    extractedSellTokenDecimals
+                                );
+
+                                const currentSellTokenBalanceInWEI =
+                                    extractedSellTokenSymbol === "ETH"
+                                        ? await getNativeTokenBalance(
+                                              traceId,
+                                              agentWallet.address
+                                          )
+                                        : await getERC20Balance(
+                                              traceId,
+                                              extractedSellTokenAddress,
+                                              agentWallet.address
+                                          );
+                                if (
+                                    BigInt(currentSellTokenBalanceInWEI) <
+                                    sellQuantityInWEI
+                                ) {
+                                    elizaLogger.error(
+                                        traceId,
+                                        `[senpiOrder] [${moxieUserId}] [senpiOrdersAction] [SWAP] [TOKEN_TO_TOKEN] [SELL_QUANTITY] insufficient balance: ${currentSellTokenBalanceInWEI} < ${Number(sellQuantityInWEI)}`
+                                    );
+                                    await callback({
+                                        text: `\nInsufficient ${extractedSellTokenSymbol} balance to complete this transaction.\n\nCurrent balance: ${ethers.formatUnits(currentSellTokenBalanceInWEI, extractedSellTokenDecimals)} ${extractedSellTokenSymbol}\nRequired amount: ${ethers.formatUnits(sellQuantityInWEI, extractedSellTokenDecimals)} ${extractedSellTokenSymbol}\n\nPlease add ${ethers.formatUnits(sellQuantityInWEI - BigInt(currentSellTokenBalanceInWEI), extractedSellTokenDecimals)} ${extractedSellTokenSymbol} and try again.`,
+                                    });
+                                    return true;
+                                }
+
                                 swapInput = {
                                     sellTokenAddress: extractedSellTokenAddress,
                                     buyTokenAddress: extractedBuyTokenAddress,
@@ -544,8 +571,8 @@ export const senpiOrdersAction = {
                                     chainId: 8453,
                                     sellTokenSymbol: extractedSellTokenSymbol,
                                     buyTokenSymbol: extractedBuyTokenSymbol,
-                                    sellTokenDecimal: extractedSellTokenDecimals,
-                                    buyTokenDecimal: extractedBuyTokenDecimals,
+                                    sellTokenDecimal: Number(extractedSellTokenDecimals),
+                                    buyTokenDecimal: Number(extractedBuyTokenDecimals),
                                 }
                             }
 
@@ -582,8 +609,8 @@ export const senpiOrdersAction = {
                                     chainId: 8453,
                                     sellTokenSymbol: extractedSellTokenSymbol,
                                     buyTokenSymbol: extractedBuyTokenSymbol,
-                                    sellTokenDecimal: extractedSellTokenDecimals,
-                                    buyTokenDecimal: extractedBuyTokenDecimals,
+                                    sellTokenDecimal: Number(extractedSellTokenDecimals),
+                                    buyTokenDecimal: Number(extractedBuyTokenDecimals),
                                 }
                             } catch (error) {
                                 elizaLogger.error(
@@ -896,7 +923,7 @@ export const senpiOrdersAction = {
 
                 if (swapInput || stopLossInput.length > 0 || limitOrderInput.length > 0) {
                     await callback?.({
-                        text: "\nI'm creating the orders for you. Please wait for a moment.\n",
+                        text: "\n✨ I'm creating the orders for you! 🚀 Just a moment... ⏳ \n",
                         content: {
                             action: "SENPI_ORDERS",
                             inReplyTo: _message.id,
@@ -918,10 +945,13 @@ export const senpiOrdersAction = {
                     // check if swapOutput is not empty and use it to send a response
                     if (result.success && result.metadata?.swapOutput) {
                         const swapOutput = result.metadata.swapOutput;
-                        const message = `Swap order successfully created for token ${tokenAddress}\n` +
-                                        `| TxHash | Buy Amount | Sell Amount \n` +
-                                        `|----------|--------------|---------------|\n` +
-                                        `| ${swapOutput.txHash} | ${swapOutput.buyAmountInUSD} | ${swapOutput.sellAmountInUSD} |\n`;
+                        const message =
+                        `✅ Swap order successfully created for token: ${tokenAddress}\n\n` +
+                        `🔗 Transaction Details:\n` +
+                        `| TxHash | 💵 Buy Amount (USD) | 💸 Sell Amount (USD) |\n` +
+                        `|--------|---------------------|----------------------|\n` +
+                        `| [View Tx](https://basescan.org/tx/${swapOutput.txHash}) | ${swapOutput.buyAmountInUSD} | ${swapOutput.sellAmountInUSD} |\n`;
+
 
                         await callback?.({
                             text: message,
@@ -934,12 +964,16 @@ export const senpiOrdersAction = {
 
                     if (result.success && result.metadata?.stopLossOutputs) {
                         const stopLossOutputs = result.metadata.stopLossOutputs;
-                        let message = `Stop loss order successfully created for token ${tokenAddress}\n` +
-                                      `| Order ID | Stop Loss Price | Sell Amount | Trigger Type | Trigger Value   |\n` +
-                                      `|----------|----------------|-------------|--------------|-----------------|\n`;
+                        let message =
+                        `🛡️ Stop-loss order successfully created for token: ${tokenAddress}\n\n` +
+                        `📄 Order Details:\n` +
+                        `| 🆔 Order ID | 💰 Stop Loss Price | 💸 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
+                        `|-------------|--------------------|----------------|------------------|------------------|\n`;
+
                         stopLossOutputs.forEach(output => {
-                            message += `| ${output.subscriptionId} | ${output.stopLossPrice} | ${output.sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
+                        message += `| ${output.subscriptionId} | ${output.stopLossPrice} | ${output.sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
                         });
+
                         await callback?.({
                             text: message,
                             content: {
@@ -951,9 +985,12 @@ export const senpiOrdersAction = {
 
                     if (result.success && result.metadata?.limitOrderOutputs) {
                         const limitOrderOutputs = result.metadata.limitOrderOutputs;
-                        let message = `Limit order successfully created for token ${tokenAddress}\n` +
-                                      `| Order ID | Limit Price | Buy Amount | Sell Amount | Trigger Type | Trigger Value   |\n` +
-                                      `|----------|-------------|------------|-------------|--------------|-----------------|\n`;
+                        let message =
+                        `🎯 Limit order successfully created for token: ${tokenAddress}\n\n` +
+                        `� Order Details:\n` +
+                        `| 🆔 Order ID | 💵 Limit Price | 🛒 Buy Amount | 💰 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
+                        `|-------------|----------------|----------------|----------------|------------------|------------------|\n`;
+
                         limitOrderOutputs.forEach(output => {
                             message += `| ${output.limitOrderId} | ${output.limitPrice} | ${output.buyAmount} | ${output.sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
                         });
@@ -1031,7 +1068,7 @@ async function validateSenpiOrders(
             `[senpiOrders] [${moxieUserId}] [validateSenpiOrders] Invalid content structure: ${JSON.stringify(content)}`
         );
         await callback?.({
-            text: "\nAn error occurred while processing your request. Please try again.",
+            text: "\n ❌ Oops! Something went wrong while validating your request. 😓 Please try again. 🔄 \n",
             content: {
                 error: "INVALID_CONTENT",
                 details:
@@ -1048,7 +1085,6 @@ async function validateSenpiOrders(
         if (!transaction.sellToken) missingFields.push("sellToken");
         if (!transaction.buyToken) missingFields.push("buyToken");
         if (!transaction.orderType) missingFields.push("orderType");
-        if (!transaction.balance) missingFields.push("balance");
 
         if (transaction.orderType === OrderType.STOP_LOSS || transaction.orderType === OrderType.LIMIT_ORDER_BUY || transaction.orderType === OrderType.LIMIT_ORDER_SELL) {
             if (!transaction.triggerType) missingFields.push("triggerType");
@@ -1063,7 +1099,7 @@ async function validateSenpiOrders(
                 `[senpiOrders] [${moxieUserId}] [validateSenpiOrders] Missing required fields in transaction: ${JSON.stringify(transaction)}`
             );
             await callback?.({
-                text: "\nAn error occurred while processing your request. Please try again.",
+                text: "\n 🚫 Looks like some data is missing from your request! 🧐 Please double-check and try again. 🔄 \n",
                 content: {
                     error: "MISSING_FIELDS",
                     details: `Missing fields: ${missingFields.join(", ")}`,
@@ -1082,7 +1118,7 @@ async function validateSenpiOrders(
                 `[senpiOrders] [${moxieUserId}] [validateSenpiOrders] Invalid quantity: sellQuantity=${transaction.sellQuantity}, buyQuantity=${transaction.buyQuantity}`
             );
             await callback?.({
-                text: "\nTransaction quantities must be greater than 0.",
+                text: "\n ⚠️ Transaction quantities must be greater than 0. ➕ Please update your input \n",
                 content: {
                     error: "INVALID_QUANTITY",
                     details: "Quantities must be positive",
@@ -1105,7 +1141,7 @@ async function validateSenpiOrders(
                     `[senpiOrders] [${moxieUserId}] [validateSenpiOrders] Invalid balance configuration: ${JSON.stringify(transaction.balance)}`
                 );
                 await callback?.({
-                    text: "\nAn error occurred while processing your request. Please try again.",
+                    text: "\n 🚫 Uh-oh! Those percentage settings don’t look right. 🧮 Please double-check and try again. \n",
                     content: {
                         error: "INVALID_BALANCE",
                         details:
