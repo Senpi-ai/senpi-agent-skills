@@ -10,7 +10,7 @@ Please analyze the user's request and provide a detailed breakdown of the transa
 
 1. Request Classification: Determine if this is a new request or a follow-up to a previous conversation. Check if the request involves multiple operation types.
 
-2. Message Analysis: 
+2. Message Analysis:
    - Summarize the user's request in a single sentence
    - List all mentioned tokens and their roles (buy/sell)
    - Identify the primary action(s) requested
@@ -82,11 +82,11 @@ For successful interpretation:
   "is_followup": true | false,
   "transactions": [
     {
-      "sellToken": "<$[SYMBOL|ADDRESS]>",
-      "buyToken": "<$[SYMBOL|ADDRESS]>",
+      "sellToken": "<$[SYMBOL|ADDRESS]>", # if symbol is not provided, use the address
+      "buyToken": "<$[SYMBOL|ADDRESS]>", # if symbol is not provided, use the address
       "sellQuantity": "<number or null>", # dollar value of token to be sold
       "buyQuantity": "<number or null>", # dollar value of token to be bought
-      "valueType": "USD",
+      "valueType": "USD", # if quantity is provided instead of dollar value, make it null
       "orderType": "BUY" | "SELL" | "STOP_LOSS" | "LIMIT_ORDER_BUY" | "LIMIT_ORDER_SELL",
       "orderScope": "GLOBAL" | "RELATED" | null, # in case of limit order or stop loss check if the scope is related to swap or is on global level
       "executionType": "IMMEDIATE" | "FUTURE",
