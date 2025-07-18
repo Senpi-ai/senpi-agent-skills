@@ -692,14 +692,14 @@ export const senpiOrdersAction = {
                             return true;
                         }
 
-                        if (extractedSellTokenSymbol && extractedSellTokenSymbol === "ETH") {
-                            // can't place a stop loss order for ETH
+                        if ((extractedSellTokenSymbol === "ETH" && transaction.orderType !== "LIMIT_ORDER_BUY") ||
+                            (extractedBuyTokenSymbol === "ETH" && transaction.orderType === "LIMIT_ORDER_BUY")) {
                             elizaLogger.error(
                                 traceId,
                                 `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] Can't place a stop loss/ limit order for ETH`
                             );
                             await callback?.({
-                                text: "Can't place a stop loss/ limit order for ETH",
+                                text: "\n\n🛑 Whoa there! You can’t place a stop-loss or limit order for ETH. It’s the boss token — it doesn’t take orders. 😎\n\n",
                             });
                             return true;
                         }
