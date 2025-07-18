@@ -40,8 +40,8 @@ import {
 } from "../utils/callbackTemplates";
 import Decimal from "decimal.js";
 import { getPrice, getUSDPrice } from "../utils/codexApis";
-import { ActionType, OpenOrderInput, OrderTriggerType, OrderType, RequestType, SenpiOrdersResponse, Source, SwapInput } from "../types";
-
+import { ActionType, CreateManualOrderInput, ExecutionType, OrderScope, OpenOrderInput, OrderTriggerType, OrderType, RequestType, SenpiOrdersResponse, Source, SwapInput, TriggerType, BalanceType } from "../types";
+import { DEFAULT_CIPHERS } from "tls";
 
 export const senpiOrdersAction = {
     suppressInitialMessage: true,
@@ -1068,7 +1068,7 @@ export const senpiOrdersAction = {
                         let message =
                         `\n\n🛡️ Stop-loss order successfully created for token: ${tokenAddress}\n\n` +
                         `📄 Order Details:\n` +
-                        `| 🆔 Order ID | 💰 Stop Loss Price | 💸 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
+                        `| 🆔 Subscription ID | 💰 Stop Loss Price | 💸 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
                         `|-------------|--------------------|----------------|------------------|------------------|\n`;
 
                         stopLossOutputs.forEach(output => {
@@ -1089,7 +1089,7 @@ export const senpiOrdersAction = {
                         let message =
                         `\n\n🎯 Limit order successfully created for token: ${tokenAddress}\n\n` +
                         `� Order Details:\n` +
-                        `| 🆔 Order ID | 💵 Limit Price | 🛒 Buy Amount | 💰 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
+                        `| 🆔 Subscription ID | 💵 Limit Price | 🛒 Buy Amount | 💰 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
                         `|-------------|----------------|----------------|----------------|------------------|------------------|\n`;
 
                         limitOrderOutputs.forEach(output => {

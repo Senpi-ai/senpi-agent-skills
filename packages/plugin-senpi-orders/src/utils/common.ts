@@ -211,10 +211,17 @@ const mutation = gql`
                 stopLossOutputs {
                     subscriptionId
                     stopLossPrice
+                    sellAmount
+                    triggerType
+                    triggerValue
                 }
                 limitOrderOutputs {
                     limitOrderId
                     limitPrice
+                    buyAmount
+                    sellAmount
+                    triggerType
+                    triggerValue
                 }
             }
         }
@@ -223,7 +230,7 @@ const mutation = gql`
 
 /**
  * Creates a manual order by sending a GraphQL mutation request.
- * 
+ *
  * @param authorizationHeader - The authorization token for the request.
  * @param actionType - The type of action to be performed.
  * @param source - The source of the order.
@@ -242,7 +249,7 @@ export async function createManualOrder(
     limitOrderInput: OpenOrderInput[] | undefined
 ): Promise<CreateManualOrderOutput> {
     // Validate input: Ensure at least one of the inputs is provided
-    
+
     elizaLogger.debug(`[CREATE_MANUAL_ORDER] [${source}] [${actionType}] [${JSON.stringify(swapInput)}] [${JSON.stringify(stopLossInput)}] [${JSON.stringify(limitOrderInput)}]`);
     if (!stopLossInput && !limitOrderInput && !swapInput) {
         throw new Error(
