@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { MOXIE_TOKEN_ADDRESS, MOXIE_TOKEN_DECIMALS } from "./constants";
 import { formatTokenMention } from "@moxie-protocol/moxie-agent-lib";
 
 export const insufficientEthBalanceTemplate = {
@@ -7,25 +6,11 @@ export const insufficientEthBalanceTemplate = {
 };
 
 export const swapOperationFailedTemplate = (error: Error) => ({
-    text: `\nAn error occurred while performing the swap operation. Please try again.`,
+    text: `\n💣 Boom! That wasn't supposed to happen. Hit retry and let's pretend it didn't. 😅 \n`,
     content: {
         error: "SWAP_OPERATION_FAILED",
         details: `An error occurred while performing the swap operation: ${error.message}.`,
     },
-});
-
-export const insufficientMoxieBalanceTemplate = (
-    currentBalance: bigint,
-    requiredAmount: bigint
-) => ({
-    text: `\nInsufficient ${formatTokenMention("MOXIE", MOXIE_TOKEN_ADDRESS)} balance to complete this purchase.\nCurrent ${formatTokenMention("MOXIE", MOXIE_TOKEN_ADDRESS)}: ${ethers.formatEther(currentBalance)} ${formatTokenMention("MOXIE", MOXIE_TOKEN_ADDRESS)}\nRequired ${formatTokenMention("MOXIE", MOXIE_TOKEN_ADDRESS)}: ${ethers.formatEther(requiredAmount)} ${formatTokenMention("MOXIE", MOXIE_TOKEN_ADDRESS)}\n\nPlease specify if you would like to proceed with other token?`,
-});
-
-export const initiatePurchaseTemplate = (
-    buyTokenCreatorUsername: string,
-    moxieInWEI: bigint
-) => ({
-    text: `\nInitiating purchase of ${buyTokenCreatorUsername} creator coins for ${ethers.formatUnits(moxieInWEI.toString(), MOXIE_TOKEN_DECIMALS)} ${formatTokenMention("MOXIE", MOXIE_TOKEN_ADDRESS)}.`,
 });
 
 export const swapInProgressTemplate = (
@@ -122,8 +107,8 @@ export const approvalTransactionFailed = (approvalTxHash: string) => ({
     text: `\nApproval transaction is failed!`,
 });
 
-export const moxieWalletClientNotFound = {
-    text: `\nUnable to access moxie wallet details. Please ensure your moxie wallet is properly setup and try again.`,
+export const senpiWalletClientNotFound = {
+    text: `\nUnable to access Senpi wallet details. Please ensure your Senpi wallet is properly setup and try again.`,
 };
 
 export const approvalTransactionTimedOut = (approvalTxHash: string) => ({
@@ -136,3 +121,7 @@ export const approvalTransactionTimedOut = (approvalTxHash: string) => ({
 export const approvalTransactionSubmissionFailed = () => ({
     text: `\nApproval transaction submission failed. Please try again.`,
 });
+
+export const senpiInvalidOrderType = {
+    text: `\nInvalid order type. Please review the order and try again.`,
+};
