@@ -6,7 +6,7 @@ export const insufficientEthBalanceTemplate = {
 };
 
 export const swapOperationFailedTemplate = (error: Error) => ({
-    text: `\nAn error occurred while performing the swap operation. Please try again.`,
+    text: `\n💣 Boom! That wasn't supposed to happen. Hit retry and let's pretend it didn't. 😅 \n`,
     content: {
         error: "SWAP_OPERATION_FAILED",
         details: `An error occurred while performing the swap operation: ${error.message}.`,

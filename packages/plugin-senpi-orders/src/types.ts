@@ -53,8 +53,8 @@ export enum ActionType {
 export enum TriggerType {
     PERCENTAGE = "PERCENTAGE",
     ABSOLUTE_VALUE = "ABSOLUTE_VALUE",
-    PRICE_INCREASE = "PRICE_INCREASE",
-    PRICE_DROP = "PRICE_DROP",
+    VALUE_PRICE_INCREASE = "VALUE_PRICE_INCREASE",
+    VALUE_PRICE_DROP = "VALUE_PRICE_DROP",
 }
 
 // Use interface for complex object shapes
@@ -100,7 +100,7 @@ export enum OrderTriggerType {
     PERCENTAGE = "PERCENTAGE",
     TOKEN_PRICE = "TOKEN_PRICE",
 }
-  
+
 export enum RequestType {
     STOP_LOSS = "STOP_LOSS",
     LIMIT_ORDER = "LIMIT_ORDER",

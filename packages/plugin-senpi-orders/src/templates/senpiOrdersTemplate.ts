@@ -61,6 +61,8 @@ Please analyze the user's request and provide a detailed breakdown of the transa
       * Stop-loss trigger percentage cannot exceed 100%
       * Limit order trigger percentage can exceed 100%
       * Stop losses and sell limit orders can only be set up with buy swaps, not sell swaps
+      * Buy limit orders can not be setup with stop loss or swaps.
+      * LIMIT_ORDER_SELL are always for profit making.
 
 12. Edge Case Handling: If the request mixes immediate actions (buy/sell) with order setups, provide a breakdown of sequential steps and note that user confirmation is needed.
 
