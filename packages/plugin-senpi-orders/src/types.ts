@@ -88,11 +88,8 @@ export interface SenpiOrdersResponse {
 
 // Use interface for error shapes
 export interface SenpiOrdersError {
-    success: false;
-    error: {
-        missing_fields: string[];
-        prompt_message: string;
-    };
+    missing_fields: string[];
+    prompt_message: string;
 }
 
 // Keep enums for complex values or when you need reverse mapping
@@ -104,6 +101,11 @@ export enum OrderTriggerType {
 export enum RequestType {
     STOP_LOSS = "STOP_LOSS",
     LIMIT_ORDER = "LIMIT_ORDER",
+}
+
+export enum LimitOrderType {
+    LIMIT_BUY = "LIMIT_BUY",
+    LIMIT_SELL = "LIMIT_SELL",
 }
 
 // Use interface for input contracts
@@ -135,6 +137,7 @@ export interface OpenOrderInput {
     triggerValue: string;
     triggerType: OrderTriggerType;
     requestType?: RequestType;
+    limitOrderType?: LimitOrderType;
     chainId?: number;
     expiresAt?: string;
 }

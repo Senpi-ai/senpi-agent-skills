@@ -43,7 +43,7 @@ import {
 } from "../utils/callbackTemplates";
 import Decimal from "decimal.js";
 import { getPrice, getUSDPrice } from "../utils/codexApis";
-import { ActionType, CreateManualOrderInput, ExecutionType, OrderScope, OpenOrderInput, OrderTriggerType, OrderType, RequestType, SenpiOrdersResponse, Source, SwapInput, TriggerType, BalanceType } from "../types";
+import { ActionType, CreateManualOrderInput, ExecutionType, OrderScope, OpenOrderInput, OrderTriggerType, OrderType, RequestType, SenpiOrdersResponse, Source, SwapInput, TriggerType, BalanceType, LimitOrderType } from "../types";
 import { DEFAULT_CIPHERS } from "tls";
 
 export const senpiOrdersAction = {
@@ -381,7 +381,7 @@ async function generateSenpiOrders(runtime: IAgentRuntime, context: any, traceId
             `[senpiOrders] [${moxieUserId}] [generateSenpiOrders] senpiOrders has error: ${JSON.stringify(senpiOrders)}`
         );
         await callback?.({
-            text: senpiOrders.error?.error?.prompt_message || "Something went wrong. Please try again.",
+            text: senpiOrders.error?.prompt_message || "😕 Oops! Something didn’t work quite right. Mind trying again?",
             content: {
                 action: "SENPI_ORDERS",
                 inReplyTo: messageId,
@@ -1615,6 +1615,7 @@ async function handleSellOrder(
                 if (transaction.orderType == OrderType.STOP_LOSS) {
                     stopLossInput.push(openOrderInput);
                 } else if (transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
+                    openOrderInput.limitOrderType = LimitOrderType.LIMIT_SELL;
                     limitOrderInput.push(openOrderInput);
                 }
             } else {
@@ -1696,6 +1697,7 @@ async function handleSellOrder(
                 if (transaction.orderType == OrderType.STOP_LOSS) {
                     stopLossInput.push(openOrderInput);
                 } else if (transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
+                    openOrderInput.limitOrderType = LimitOrderType.LIMIT_SELL;
                     limitOrderInput.push(openOrderInput);
                 }
 
@@ -1799,6 +1801,7 @@ async function handleSellOrder(
                 triggerValue: triggerPriceOrPercentage.toString(),
                 triggerType: transaction.triggerType == TriggerType.PERCENTAGE ? OrderTriggerType.PERCENTAGE : OrderTriggerType.TOKEN_PRICE,
                 requestType: transaction.orderType == OrderType.STOP_LOSS ? RequestType.STOP_LOSS : RequestType.LIMIT_ORDER,
+                limitOrderType: LimitOrderType.LIMIT_BUY,
             };
 
             limitOrderInput.push(openOrderInput);
