@@ -179,6 +179,7 @@ export const senpiOrdersAction = {
                         tokenAddress,
                         traceId,
                         moxieUserId,
+                        swapInput,
                         callback);
                 }
                 await clearCache(runtime, moxieUserId, traceId);
@@ -546,7 +547,14 @@ function groupTransactionsByTokenAddress(transactions: any[], traceId: string, m
     return groupedTransactions;
 }
 
-async function handleOrderCreationResult(result: any, tokenAddress: string, traceId: string, moxieUserId: string, callback?: any) {
+async function handleOrderCreationResult(
+    result: any, 
+    tokenAddress: string, 
+    traceId: string, 
+    moxieUserId: string, 
+    swapInput: SwapInput,
+    callback?: any
+) {
     elizaLogger.debug(
         traceId,
         `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] result: ${JSON.stringify(result)}`
@@ -564,11 +572,15 @@ async function handleOrderCreationResult(result: any, tokenAddress: string, trac
     }
 
     if (result.success && result.metadata?.swapOutput) {
+
+        let sellTokenSymbol = swapInput.sellTokenSymbol;
+        let buyTokenSymbol = swapInput.buyTokenSymbol;
+
         const swapOutput = result.metadata.swapOutput;
         const message =
             `\n\n✅ Swap order successfully created for token: ${tokenAddress}\n\n` +
             `🔗 Transaction Details:\n` +
-            `| TxHash | 💵 Buy Amount (USD) | 💸 Sell Amount (USD) |\n` +
+            `| TxHash | 💵 Buy Amount in USD [${buyTokenSymbol}] | 💸 Sell Amount in USD [${sellTokenSymbol}] |\n` +
             `|--------|---------------------|----------------------|\n` +
             `| [View Tx](https://basescan.org/tx/${swapOutput.txHash}) | ${swapOutput.buyAmountInUSD} | ${swapOutput.sellAmountInUSD} |\n`;
 
@@ -586,11 +598,10 @@ async function handleOrderCreationResult(result: any, tokenAddress: string, trac
         let message =
             `\n\n🛡️ Stop-loss order successfully created for token: ${tokenAddress}\n\n` +
             `📄 Order Details:\n` +
-            `| 🆔 Subscription ID | 💰 Stop Loss Price | 💸 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
-            `|-------------|--------------------|----------------|------------------|------------------|\n`;
-
+            `| 💰 Stop Loss Price | 💸 Sell Amount [Quantity] | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
+            `|--------------------|----------------|------------------|------------------|\n`;
         stopLossOutputs.forEach(output => {
-            message += `| ${output.subscriptionId} | ${output.stopLossPrice} | ${output.sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
+            message += `| ${output.stopLossPrice} | ${output.sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
         });
 
         await callback?.({
@@ -607,11 +618,11 @@ async function handleOrderCreationResult(result: any, tokenAddress: string, trac
         let message =
             `\n\n🎯 Limit order successfully created for token: ${tokenAddress}\n\n` +
             `📄 Order Details:\n` +
-            `| 🆔 Subscription ID | 💵 Limit Price | 🛒 Buy Amount | 💰 Sell Amount | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
-            `|-------------|----------------|----------------|----------------|------------------|------------------|\n`;
+            `| 💵 Limit Price | 🛒 Buy Amount [Quantity] | 💰 Sell Amount [Quantity] | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
+            `|----------------|----------------|----------------|------------------|------------------|\n`;
 
         limitOrderOutputs.forEach(output => {
-            message += `| ${output.limitOrderId} | ${output.limitPrice} | ${output.buyAmount} | ${output.sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
+            message += `| ${output.limitPrice} | ${output.buyAmount ? output.buyAmount : "-"} | ${output.sellAmount ? output.sellAmount :"-"} | ${output.triggerType} | ${output.triggerValue} |\n`;
         });
         await callback?.({
             text: message,
