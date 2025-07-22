@@ -185,6 +185,8 @@ export const senpiOrdersAction = {
                 await clearCache(runtime, moxieUserId, traceId);
             }
 
+            return true;
+
         } catch (error) {
             await handleError(error, traceId, moxieUserId, callback);
             return true;
@@ -593,7 +595,7 @@ async function handleOrderCreationResult(
         });
     }
 
-    if (result.success && result.metadata?.stopLossOutputs.length > 0) {
+    if (result.success && result.metadata?.stopLossOutputs) {
         const stopLossOutputs = result.metadata.stopLossOutputs;
         let message =
             `\n \n🛡️ Stop-loss order successfully created.\n \n ` +
@@ -615,7 +617,7 @@ async function handleOrderCreationResult(
         });
     }
 
-    if (result.success && result.metadata?.limitOrderOutputs.length > 0) {
+    if (result.success && result.metadata?.limitOrderOutputs) {
         const limitOrderOutputs = result.metadata.limitOrderOutputs;
         let message =
             `\n \n🎯 Limit order successfully created.\n \n` +
