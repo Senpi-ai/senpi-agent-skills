@@ -640,14 +640,14 @@ async function handleOrderCreationResult(
 
         limitOrderOutputs.forEach(output => {
             const limitPrice = Number(output.limitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
-            const buyAmount = output.buyAmount ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : "-";
-            const sellAmount = output.sellAmount ? Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : "-";
+            const buyAmount = output.buyAmount && Number(output.buyAmount) > 0 ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : "-";
+            const sellAmount = output.sellAmount && Number(output.sellAmount) > 0 ? Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : "-";
             
             // Create the data row based on available columns
             const rowData = [
                 limitPrice,
-                ...(output.buyAmount ? [buyAmount] : []),
-                ...(output.sellAmount ? [sellAmount] : []),
+                ...(output.buyAmount && Number(output.buyAmount) > 0 ? [buyAmount] : []),
+                ...(output.sellAmount && Number(output.sellAmount) > 0 ? [sellAmount] : []),
                 output.triggerType,
                 output.triggerValue
             ];
