@@ -172,7 +172,7 @@ export const senpiOrdersAction = {
                             inReplyTo: _message.id,
                         },
                     });
-
+                    
                     const result = await createManualOrder(state.authorizationHeader as string, action, Source.AGENT, swapInput, stopLossInput, limitOrderInput);
                     await handleOrderCreationResult(
                         result,
@@ -626,8 +626,8 @@ async function handleOrderCreationResult(
         // Determine the columns to display based on availability
         const columns = [
             "💵 Limit Price",
-            ...(limitOrderOutputs.some(output => output.buyAmount) ? ["🛒 Buy Amount [Quantity]"] : []),
-            ...(limitOrderOutputs.some(output => output.sellAmount) ? ["💰 Sell Amount [Quantity]"] : []),
+            ...(limitOrderOutputs.some(output => output.buyAmount && Number(output.buyAmount) > 0) ? ["🛒 Buy Amount [Quantity]"] : []),
+            ...(limitOrderOutputs.some(output => output.sellAmount && Number(output.sellAmount) > 0) ? ["💰 Sell Amount [Quantity]"] : []),
             "🎯 Trigger Type",
             "⚙️ Trigger Value"
         ];
