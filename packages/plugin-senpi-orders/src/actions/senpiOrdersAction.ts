@@ -548,10 +548,10 @@ function groupTransactionsByTokenAddress(transactions: any[], traceId: string, m
 }
 
 async function handleOrderCreationResult(
-    result: any, 
-    tokenAddress: string, 
-    traceId: string, 
-    moxieUserId: string, 
+    result: any,
+    tokenAddress: string,
+    traceId: string,
+    moxieUserId: string,
     swapInput: SwapInput,
     callback?: any
 ) {
@@ -578,7 +578,7 @@ async function handleOrderCreationResult(
 
         const swapOutput = result.metadata.swapOutput;
         const message =
-            `\n\n✅ Swap order successfully created for token: ${tokenAddress}\n\n` +
+            `\n \n✅ Swap order successfully created.\n \n` +
             `🔗 Transaction Details:\n` +
             `| TxHash | 💵 Buy Amount in USD [${buyTokenSymbol}] | 💸 Sell Amount in USD [${sellTokenSymbol}] |\n` +
             `|--------|---------------------|----------------------|\n` +
@@ -596,12 +596,14 @@ async function handleOrderCreationResult(
     if (result.success && result.metadata?.stopLossOutputs) {
         const stopLossOutputs = result.metadata.stopLossOutputs;
         let message =
-            `\n\n🛡️ Stop-loss order successfully created for token: ${tokenAddress}\n\n` +
+            `\n \n🛡️ Stop-loss order successfully created.\n \n ` +
             `📄 Order Details:\n` +
             `| 💰 Stop Loss Price | 💸 Sell Amount [Quantity] | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
             `|--------------------|----------------|------------------|------------------|\n`;
         stopLossOutputs.forEach(output => {
-            message += `| ${output.stopLossPrice} | ${output.sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
+            const stopLossPrice = Number(output.stopLossPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
+            const sellAmount = Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
+            message += `| ${stopLossPrice} | ${sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
         });
 
         await callback?.({
@@ -616,13 +618,16 @@ async function handleOrderCreationResult(
     if (result.success && result.metadata?.limitOrderOutputs) {
         const limitOrderOutputs = result.metadata.limitOrderOutputs;
         let message =
-            `\n\n🎯 Limit order successfully created for token: ${tokenAddress}\n\n` +
+            `\n \n🎯 Limit order successfully created.\n \n` +
             `📄 Order Details:\n` +
             `| 💵 Limit Price | 🛒 Buy Amount [Quantity] | 💰 Sell Amount [Quantity] | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
             `|----------------|----------------|----------------|------------------|------------------|\n`;
 
         limitOrderOutputs.forEach(output => {
-            message += `| ${output.limitPrice} | ${output.buyAmount ? output.buyAmount : "-"} | ${output.sellAmount ? output.sellAmount :"-"} | ${output.triggerType} | ${output.triggerValue} |\n`;
+            const limitPrice = Number(output.limitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
+            const buyAmount = output.buyAmount ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : "-";
+            const sellAmount = output.sellAmount ? Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : "-";
+            message += `| ${limitPrice} | ${buyAmount} | ${sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
         });
         await callback?.({
             text: message,
@@ -637,6 +642,7 @@ async function handleOrderCreationResult(
         traceId,
         `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] Order creation result handled successfully`
     );
+
 }
 
 async function handleError(error: any, traceId: string, moxieUserId: string, callback?: any) {

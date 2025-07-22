@@ -65,7 +65,7 @@ Please analyze the user's request and provide a detailed breakdown of the transa
       * LIMIT_ORDER_SELL is used to sell a token when it reaches a target profit margin, such as a 10% increase in price.
       * LIMIT_ORDER_BUY is used to buy a token when its price drops by a certain percentage, like 10%, or when it increases by a specific percentage, such as 15%.
       * STOP_LOSS is used to sell a token when its price drops by a certain percentage, for example, 10%, to prevent further losses.
-      * To choose the appropriate model, consider the desired outcome: 
+      * To choose the appropriate model, consider the desired outcome:
         - Use LIMIT_ORDER_SELL for profit-taking strategies.
         - Use LIMIT_ORDER_BUY for acquiring tokens at a lower price or when anticipating a price surge.
         - Use STOP_LOSS to mitigate potential losses by selling before the price drops further.
