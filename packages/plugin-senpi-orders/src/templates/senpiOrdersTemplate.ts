@@ -22,6 +22,7 @@ Please analyze the user's request and provide a detailed breakdown of the transa
 4. Action Type Classification: Categorize the main action(s) into one or more of the following:
    - SWAP: Immediate buy or sell of token(s)
    - SWAP_SL: Execute a swap and set a stop-loss simultaneously (only for buy operations)
+   - SWAP_LO: Execute a swap and set a sell limit order (only for buy operations)
    - SWAP_SL_LO: Execute a swap, set a stop-loss, and a limit order (only for buy operations)
    - LO: Limit Order (buy/sell at a target price)
    - SL: Stop-Loss (sell if price drops below a threshold)
@@ -86,7 +87,7 @@ For successful interpretation:
 \`\`\`json
 {
   "success": true,
-  "action": "SWAP" | "SWAP_SL" | "SWAP_SL_LO" | "LO" | "SL" | "SL_LO",
+  "action": "SWAP" | "SWAP_SL" | "SWAP_LO" | "SWAP_SL_LO" | "LO" | "SL" | "SL_LO",
   "is_followup": true | false,
   "transactions": [
     {

@@ -1510,7 +1510,7 @@ async function handleSellOrder(
     }
 
     let doBalanceCheck = true;
-    if (action == ActionType.SWAP_SL || action == ActionType.SWAP_SL_LO) {
+    if (action == ActionType.SWAP_SL || action == ActionType.SWAP_SL_LO || action == ActionType.SWAP_LO) {
         doBalanceCheck = false;
     }
 

@@ -45,6 +45,7 @@ export enum ActionType {
     SWAP = "SWAP",
     SWAP_SL = "SWAP_SL",
     SWAP_SL_LO = "SWAP_SL_LO",
+    SWAP_LO = "SWAP_LO",
     LO = "LO",
     SL = "SL",
     SL_LO = "SL_LO",
