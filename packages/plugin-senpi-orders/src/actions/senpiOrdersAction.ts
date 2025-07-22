@@ -593,7 +593,7 @@ async function handleOrderCreationResult(
         });
     }
 
-    if (result.success && result.metadata?.stopLossOutputs) {
+    if (result.success && result.metadata?.stopLossOutputs.length > 0) {
         const stopLossOutputs = result.metadata.stopLossOutputs;
         let message =
             `\n \n🛡️ Stop-loss order successfully created.\n \n ` +
@@ -615,20 +615,44 @@ async function handleOrderCreationResult(
         });
     }
 
-    if (result.success && result.metadata?.limitOrderOutputs) {
+    if (result.success && result.metadata?.limitOrderOutputs.length > 0) {
         const limitOrderOutputs = result.metadata.limitOrderOutputs;
         let message =
             `\n \n🎯 Limit order successfully created.\n \n` +
-            `📄 Order Details:\n` +
-            `| 💵 Limit Price | 🛒 Buy Amount [Quantity] | 💰 Sell Amount [Quantity] | 🎯 Trigger Type | ⚙️ Trigger Value |\n` +
-            `|----------------|----------------|----------------|------------------|------------------|\n`;
+            `📄 Order Details:\n`;
+
+        // Determine the columns to display based on availability
+        const columns = [
+            "💵 Limit Price",
+            ...(limitOrderOutputs.some(output => output.buyAmount) ? ["🛒 Buy Amount [Quantity]"] : []),
+            ...(limitOrderOutputs.some(output => output.sellAmount) ? ["💰 Sell Amount [Quantity]"] : []),
+            "🎯 Trigger Type",
+            "⚙️ Trigger Value"
+        ];
+
+        // Create the header row
+        message += `| ${columns.join(" | ")} |\n`;
+
+        // Create the separator row
+        message += `|${columns.map(() => "----------------").join("|")}|\n`;
 
         limitOrderOutputs.forEach(output => {
             const limitPrice = Number(output.limitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             const buyAmount = output.buyAmount ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : "-";
             const sellAmount = output.sellAmount ? Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : "-";
-            message += `| ${limitPrice} | ${buyAmount} | ${sellAmount} | ${output.triggerType} | ${output.triggerValue} |\n`;
+            
+            // Create the data row based on available columns
+            const rowData = [
+                limitPrice,
+                ...(output.buyAmount ? [buyAmount] : []),
+                ...(output.sellAmount ? [sellAmount] : []),
+                output.triggerType,
+                output.triggerValue
+            ];
+
+            message += `| ${rowData.join(" | ")} |\n`;
         });
+
         await callback?.({
             text: message,
             content: {
