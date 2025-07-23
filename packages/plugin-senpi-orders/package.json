@@ -1,5 +1,5 @@
 {
-    "name": "@moxie-protocol/plugin-moxie-swap",
+    "name": "@moxie-protocol/plugin-senpi-orders",
     "version": "0.1.8+build.1",
     "type": "module",
     "main": "dist/index.js",
@@ -20,12 +20,9 @@
     ],
     "dependencies": {
         "@moxie-protocol/moxie-agent-lib": "workspace:*",
-        "@0x/swap-ts-sdk": "2.1.1",
         "@moxie-protocol/core": "workspace:*",
         "tsup": "8.3.5",
-        "ethers":"^6.13.5",
-        "@privy-io/server-auth": "^1.16.6"
-
+        "ethers":"^6.13.5"
     },
     "scripts": {
         "build": "tsup --format esm --dts",
