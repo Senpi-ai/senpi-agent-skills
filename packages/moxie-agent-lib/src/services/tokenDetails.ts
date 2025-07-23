@@ -154,7 +154,7 @@ export async function getTokenDetails(
         const result = await response.json();
 
         const tokens = await Promise.all(
-            result.data.GetTokenDetails.map(async (token) => {
+            result?.data?.GetTokenDetails?.map(async (token) => {
                 if (!token?.address) {
                     throw new Error("Token address missing in response");
                 }
@@ -212,23 +212,24 @@ export async function getTokenDetails(
                 const { pairs, totalLiquiditySum } =
                     await listPairsWithMetadataForToken(
                         client,
-                        token.token.info.address,
+                        token.address,
                         Number(token?.priceUSD ?? 0)
                     );
                 details.liquidityTop3PoolsUSD = totalLiquiditySum.toString();
                 details.liquidityPools = pairs;
                 return details;
-            })
+            }) ?? []
         );
 
-        return tokenAddresses.map((tokenAddress) => {
-            const token = tokens.find(
-                (token) =>
-                    token.tokenAddress?.toLowerCase() ===
-                    tokenAddress.toLowerCase()
+        return tokenAddresses
+          .map((tokenAddress) => {
+            const token = tokens?.find(
+              (token) =>
+                token.tokenAddress?.toLowerCase() === tokenAddress.toLowerCase()
             );
             return token;
-        });
+          })
+          ?.filter(Boolean);
     } catch (error) {
         elizaLogger.error(`Error in getTokenDetailsFromCodex:  ${error}`);
         throw error;
