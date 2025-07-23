@@ -2,6 +2,7 @@ import { Codex } from "@codex-data/sdk";
 import { TokenDetails, LiquidityPool } from "./types";
 import { elizaLogger } from "@moxie-protocol/core";
 
+
 const codexApiKey = process.env.CODEX_API_KEY;
 
 // Constants
@@ -14,11 +15,7 @@ const isValidBaseAddress = (address: string): boolean => {
     return /^0x[a-fA-F0-9]{40}$/.test(address);
 };
 
-async function listPairsWithMetadataForToken(
-    client: Codex,
-    tokenAddress: string,
-    priceUSD: number
-): Promise<{ pairs: LiquidityPool[]; totalLiquiditySum: number }> {
+async function listPairsWithMetadataForToken(client: Codex, tokenAddress: string, priceUSD: number): Promise<{ pairs: LiquidityPool[], totalLiquiditySum: number }> {
     if (!isValidBaseAddress(tokenAddress)) {
         throw new Error(`Invalid Base address: ${tokenAddress}`);
     }
@@ -35,35 +32,26 @@ async function listPairsWithMetadataForToken(
         }
 
         const filteredPairs = pairs.listPairsWithMetadataForToken.results
-            .filter((pair) => {
+            .filter(pair => {
                 const pairAddress = pair.pair?.address;
                 const liquidity = Number(pair.liquidity || 0);
-                return (
-                    pairAddress &&
-                    isValidBaseAddress(pairAddress) &&
-                    liquidity > MIN_LIQUIDITY
-                );
+                return pairAddress &&
+                    isValidBaseAddress(pairAddress) && liquidity > MIN_LIQUIDITY;
             })
-            .map((pair) => {
-                const isToken0 =
-                    pair.pair?.token0?.toLowerCase() ===
-                    tokenAddress.toLowerCase();
-                const pooledAmount = isToken0
-                    ? pair.pair?.pooled?.token0
-                    : pair.pair?.pooled?.token1;
+            .map(pair => {
+                const isToken0 = pair.pair?.token0?.toLowerCase() === tokenAddress.toLowerCase();
+                const pooledAmount = isToken0 ?
+                    pair.pair?.pooled?.token0 :
+                    pair.pair?.pooled?.token1;
 
-                const tokenAmount = Number(
-                    (Number(pooledAmount || 0) * priceUSD).toFixed(2)
-                );
+                const tokenAmount = Number((Number(pooledAmount || 0) * priceUSD).toFixed(2));
 
                 // Find the exchange info for this pool
-                const exchange =
-                    pair.pair?.token0Data?.exchanges?.find(
-                        (ex) => ex.address === pair.pair?.exchangeHash
-                    ) ||
-                    pair.pair?.token1Data?.exchanges?.find(
-                        (ex) => ex.address === pair.pair?.exchangeHash
-                    );
+                const exchange = pair.pair?.token0Data?.exchanges?.find(
+                    ex => ex.address === pair.pair?.exchangeHash
+                ) || pair.pair?.token1Data?.exchanges?.find(
+                    ex => ex.address === pair.pair?.exchangeHash
+                );
 
                 return {
                     poolName: exchange?.name,
@@ -74,16 +62,11 @@ async function listPairsWithMetadataForToken(
             .sort((a, b) => b.liquidityUSD - a.liquidityUSD)
             .slice(0, TOP_PAIRS_LIMIT);
 
-        const totalLiquiditySum = filteredPairs.reduce(
-            (sum, item) => sum + item.liquidityUSD,
-            0
-        );
+        const totalLiquiditySum = filteredPairs.reduce((sum, item) => sum + item.liquidityUSD, 0);
 
         return { pairs: filteredPairs, totalLiquiditySum };
     } catch (error) {
-        elizaLogger.error(
-            `Error fetching pairs for token ${tokenAddress}: ${error}`
-        );
+        elizaLogger.error(`Error fetching pairs for token ${tokenAddress}: ${error}`);
         throw error;
     }
 }
