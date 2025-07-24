@@ -132,6 +132,7 @@ export interface OpenOrderInput {
     buyTokenDecimals: number;
     buyAmount?: string;
     buyAmountInWei?: string;
+    buyAmountUSD?: string;
     buyTokenAddress: string;
     buyTokenSymbol: string;
     sellPercentage?: string;
