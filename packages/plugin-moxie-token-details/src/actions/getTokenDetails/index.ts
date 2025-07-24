@@ -55,7 +55,6 @@ export default {
         callback?: HandlerCallback
     ): Promise<boolean> => {
         elizaLogger.log("[TOKEN_DETAILS] Starting portfolio fetch");
-
         const memoryObj = await runtime.messageManager.getMemories({
             roomId: message.roomId,
             count: TOP_MEMORY_CONVERSATIONS,
@@ -71,7 +70,8 @@ export default {
         elizaLogger.success(`Memory contents: ${JSON.stringify(memoryContents)}`);
 
         // Extract Ethereum/Base addresses from message
-        const addresses = message.content.text.match(/0x[a-fA-F0-9]{40}/g) || [];
+        const addresses =
+            message.content.text.match(/0x[a-fA-F0-9]{40}/g) || [];
 
         if (addresses.length === 0 && memoryContents.length <= 1) {
             await callback({
@@ -81,44 +81,17 @@ export default {
         }
 
         // Convert addresses to lowercase and append chain ID
-        const formattedAddresses = addresses.map(addr =>
-            `${addr.toLowerCase()}:${BASE_NETWORK_ID}`
-        );
+        const formattedAddresses = addresses.map((addr) => addr.toLowerCase());
 
         elizaLogger.log("[TOKEN_DETAILS] Checking cache for token details");
 
-        let tokenDetails: string[] = [];
+        let tokenDetails: TokenDetails[] = [];
         let tokenDetailsToFetch = [];
-        let cachedTokenDetails = [];
-
-        // Check cache for each address individually
-        for (const address of formattedAddresses) {
-            const cachedDetail = await getMoxieCache(address, runtime);
-
-            if (cachedDetail) {
-                elizaLogger.log(`[TOKEN_DETAILS] Using cached details for ${address}`);
-                cachedTokenDetails.push(JSON.parse(cachedDetail as string));
-            } else {
-                elizaLogger.log(`[TOKEN_DETAILS] Will fetch details for ${address}`);
-                tokenDetailsToFetch.push(address);
-            }
-        }
 
         // Only fetch details for addresses not in cache
-        if (tokenDetailsToFetch.length > 0) {
+        if (formattedAddresses.length > 0) {
             elizaLogger.log("[TOKEN_DETAILS] Fetching fresh token details");
-            const freshTokenDetails = await getTokenDetails(tokenDetailsToFetch);
-
-            // Cache the new details individually
-            for (let i = 0; i < tokenDetailsToFetch.length; i++) {
-                const address = `${tokenDetailsToFetch[i].toLowerCase()}:8453`;
-                const addressCacheKey = `TOKEN_DETAILS-${address}`;
-                await setMoxieUserIdCache(JSON.stringify(freshTokenDetails[i]), addressCacheKey, runtime);
-            }
-
-            tokenDetails = [...cachedTokenDetails, ...freshTokenDetails];
-        } else {
-            tokenDetails = cachedTokenDetails;
+            tokenDetails = await getTokenDetails(formattedAddresses);
         }
 
         if ((!tokenDetails || tokenDetails.length === 0) && memoryContents.length <= 1) {
