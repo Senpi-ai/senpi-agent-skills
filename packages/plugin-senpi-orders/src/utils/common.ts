@@ -225,6 +225,7 @@ const mutation = gql`
                     sellAmount
                     triggerType
                     triggerValue
+                    buyAmountUSD
                 }
             }
         }
