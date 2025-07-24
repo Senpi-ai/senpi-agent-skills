@@ -627,7 +627,7 @@ async function handleOrderCreationResult(
         }
 
         const message = [
-            `\n&nbsp;\n✅ Swap order completed:\n&nbsp;\n`,
+            `\n&nbsp;\n✅ Swap order completed:\n`,
             `\n&nbsp;\nAmount: **${amount}** of $[${tokenSymbol}|${tokenAddress}] ${swapOrderType == OrderType.BUY ? "received" : "sold"}`,
             `\n&nbsp;\nPrice: ${price}`,
             `\n&nbsp;\nView tx: [BaseScan](https://basescan.org/tx/${swapOutput.txHash})`
@@ -650,9 +650,9 @@ async function handleOrderCreationResult(
             const stopLossPrice = Number(output.stopLossPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             const sellAmount = Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             if (output.triggerType === OrderTriggerType.PERCENTAGE) {
-                message += `\n&nbsp;\n🛑 [-${output.triggerValue}%] Stop Loss created: \n&nbsp;\nSL Price: $${stopLossPrice}\nSell Quantity: ${sellAmount}`;
+                message += `\n&nbsp;\n🛑 [-${output.triggerValue}%] Stop Loss created: \n\nSL Price: $${stopLossPrice}\nSell Quantity: ${sellAmount}`;
             } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
-                message += `\n&nbsp;\n🛑 [$${stopLossPrice}] Stop Loss created: \n&nbsp;\nSell Quantity: ${sellAmount}`;
+                message += `\n&nbsp;\n🛑 [$${stopLossPrice}] Stop Loss created: \n\nSell Quantity: ${sellAmount}`;
             }
         });
 
@@ -674,19 +674,22 @@ async function handleOrderCreationResult(
             const limitPrice = Number(output.limitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             const buyAmount = output.buyAmount && Number(output.buyAmount) > 0 ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
             const sellAmount = output.sellAmount && Number(output.sellAmount) > 0 ? Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
+            const buyAmountUSD = output.buyAmountUSD && Number(output.buyAmountUSD) > 0 ? Number(output.buyAmountUSD).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
             const triggerValue = output.triggerValue;
 
             if (output.triggerType === OrderTriggerType.PERCENTAGE) {
                 if (output.sellAmount && Number(output.sellAmount) > 0) {
-                    message += `\n&nbsp;\n📈 [+${triggerValue}%] Limit Sell created:\n&nbsp;\nLMT Price: $${limitPrice}\nSell Quantity: ${sellAmount}`;
+                    message += `\n&nbsp;\n📈 [+${triggerValue}%] Limit Sell created:\n\nLMT Price: $${limitPrice}\nSell Quantity: ${sellAmount}`;
                 } else if (output.buyAmount && Number(output.buyAmount) > 0) {
-                    message += `\n&nbsp;\n📉 [-${triggerValue}%] Limit Buy created:\n&nbsp;\nLMT Price: $${limitPrice}\nBuy Quantity: ${buyAmount}`;
+                    message += `\n&nbsp;\n📉 [-${triggerValue}%] Limit Buy created:\n\nLMT Price: $${limitPrice}\nBuy Quantity: ${buyAmount}`;
                 }
             } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
                 if (output.sellAmount && Number(output.sellAmount) > 0) {
-                    message += `\n&nbsp;\n📈 [LMT Price: $${limitPrice}] Limit Sell created:\n&nbsp;\nSell Quantity: ${sellAmount}`;
+                    message += `\n&nbsp;\n📈 [LMT Price: $${limitPrice}] Limit Sell created:\n\nSell Quantity: ${sellAmount}`;
                 } else if (output.buyAmount && Number(output.buyAmount) > 0) {
-                    message += `\n&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\n&nbsp;\nBuy Quantity: ${buyAmount}`;
+                    message += `\n&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\n\nBuy Quantity: ${buyAmount}`;
+                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
+                    message += `\n&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\n\nBuy Amount: $${buyAmountUSD}`;
                 }
             }
         });
@@ -716,7 +719,7 @@ async function handleOrderCreationResult(
             metadata: {
                 cta: {
                     label: "Open Orders",
-                    path: ActiveViewType.OPEN_ORDERS,
+                    path: ActiveViewType.ORDERS,
                     message: "View Orders",
                     type: "NAVIGATE",
                 }

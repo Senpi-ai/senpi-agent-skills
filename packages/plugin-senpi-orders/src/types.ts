@@ -200,6 +200,7 @@ export type LimitOrderOutput = {
     triggerType: string;
     triggerValue: string;
     openOrderId?: string;
+    buyAmountUSD?: string;
 };
 
 // Use type for complex nested shapes
