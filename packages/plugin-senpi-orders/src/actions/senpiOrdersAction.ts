@@ -682,6 +682,8 @@ async function handleOrderCreationResult(
                     message += `\n&nbsp;\n📈 [+${triggerValue}%] Limit Sell created:\n\nLMT Price: $${limitPrice}\nSell Quantity: ${sellAmount}`;
                 } else if (output.buyAmount && Number(output.buyAmount) > 0) {
                     message += `\n&nbsp;\n📉 [-${triggerValue}%] Limit Buy created:\n\nLMT Price: $${limitPrice}\nBuy Quantity: ${buyAmount}`;
+                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
+                    message += `\n&nbsp;\n📉 [-${triggerValue}%] Limit Buy created:\n\nLMT Price: $${limitPrice}\nBuy Amount: $${buyAmountUSD}`;
                 }
             } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
                 if (output.sellAmount && Number(output.sellAmount) > 0) {
