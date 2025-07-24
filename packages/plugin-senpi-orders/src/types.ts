@@ -171,6 +171,7 @@ export type SwapOutput = {
     sellAmountInUSD?: string;
     closedOrderId?: string;
     sellTriggerLedgerId?: string;
+    buyPrice?: string;
 };
 
 // Use type for simple object shapes
@@ -214,3 +215,16 @@ export type CreateManualOrderOutput = {
         limitOrderOutputs?: LimitOrderOutput[];
     };
 };
+
+export enum ActiveViewType {
+    CHAT = "chat",
+    SKILL = "skill",
+    CHAT_HISTORY = "chat-history",
+    OPEN_ORDERS = "open-orders",
+    YOUR_GROUPS = "your-groups",
+    AUTO_TRADING = "auto-trading",
+    REFERRALS = "referrals",
+    WALLET = "wallet",
+    DISCOVER = "discover",
+    ORDERS = "orders",
+}
