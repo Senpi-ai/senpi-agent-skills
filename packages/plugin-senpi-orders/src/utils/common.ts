@@ -205,8 +205,11 @@ const mutation = gql`
                 ruleExecutionLogId
                 swapOutput {
                     txHash
+                    buyAmount
+                    sellAmount
                     buyAmountInUSD
                     sellAmountInUSD
+                    buyPrice
                 }
                 stopLossOutputs {
                     subscriptionId
