@@ -707,13 +707,19 @@ async function handleOrderCreationResult(
 
     if (ordersViewAvailable) {
         await callback?.({
-            text: `\n \n View open orders`,
+            text: `\n \n`,
             content: {
                 action: "SENPI_ORDERS",
                 inReplyTo: traceId,
             },
-            cta: {
-
+            cta: "DYNAMIC_CTA",
+            metadata: {
+                cta: {
+                    label: "Open Orders",
+                    path: ActiveViewType.OPEN_ORDERS,
+                    message: "View Orders",
+                    type: "NAVIGATE",
+                }
             }
         });
     }
