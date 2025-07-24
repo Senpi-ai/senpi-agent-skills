@@ -10,9 +10,10 @@ import {
     type Action,
 } from "@moxie-protocol/core";
 import { tokenDetailsExamples } from "./examples";
-import { getTokenDetails, TokenDetails } from "@moxie-protocol/moxie-agent-lib";
+import { getTokenDetails } from "@moxie-protocol/moxie-agent-lib";
 import { tokenDetailsSummary } from "./template";
-import { TOP_MEMORY_CONVERSATIONS } from "../../config";
+import { getMoxieCache, setMoxieUserIdCache } from "../../util";
+import { TOP_MEMORY_CONVERSATIONS, BASE_NETWORK_ID } from "../../config";
 
 export default {
     name: "TOKEN_DETAILS",
@@ -45,8 +46,7 @@ export default {
         }
         return true;
     },
-    description:
-        "Fetches detailed insights on ERC20 tokens (excluding creator coins), including price, market cap, liquidity, trading activity, and volume fluctuations.",
+    description: "Fetches detailed insights on ERC20 tokens (excluding creator coins), including price, market cap, liquidity, trading activity, and volume fluctuations.",
     handler: async (
         runtime: IAgentRuntime,
         message: Memory,
@@ -55,23 +55,19 @@ export default {
         callback?: HandlerCallback
     ): Promise<boolean> => {
         elizaLogger.log("[TOKEN_DETAILS] Starting portfolio fetch");
-
         const memoryObj = await runtime.messageManager.getMemories({
             roomId: message.roomId,
             count: TOP_MEMORY_CONVERSATIONS,
             unique: true,
         });
 
-        const formattedHistory = memoryObj.map((memory) => {
-            const role =
-                memory.userId === runtime.agentId ? "Assistant" : "User";
+        const formattedHistory = memoryObj.map(memory => {
+            const role = memory.userId === runtime.agentId ? "Assistant" : "User";
             return `${role}: ${memory.content.text}`;
         });
         const memoryContents = formattedHistory.reverse().slice(-12);
 
-        elizaLogger.success(
-            `Memory contents: ${JSON.stringify(memoryContents)}`
-        );
+        elizaLogger.success(`Memory contents: ${JSON.stringify(memoryContents)}`);
 
         // Extract Ethereum/Base addresses from message
         const addresses =
@@ -98,10 +94,7 @@ export default {
             tokenDetails = await getTokenDetails(formattedAddresses);
         }
 
-        if (
-            (!tokenDetails || tokenDetails.length === 0) &&
-            memoryContents.length <= 1
-        ) {
+        if ((!tokenDetails || tokenDetails.length === 0) && memoryContents.length <= 1) {
             await callback({
                 text: "I couldn't find any token details for the provided addresses",
                 action: "TOKEN_DETAILS_ERROR",
@@ -109,9 +102,7 @@ export default {
             return false;
         }
 
-        elizaLogger.success(
-            "[TOKEN_DETAILS] Successfully fetched token details"
-        );
+        elizaLogger.success("[TOKEN_DETAILS] Successfully fetched token details");
 
         const newstate = await runtime.composeState(message, {
             tokenDetails: JSON.stringify(tokenDetails),
@@ -134,9 +125,7 @@ export default {
             callback({ text: textPart, action: "TOKEN_DETAILS" });
         }
 
-        elizaLogger.success(
-            "[TOKEN_DETAILS] Successfully generated token details summary"
-        );
+        elizaLogger.success("[TOKEN_DETAILS] Successfully generated token details summary");
 
         return true;
     },
