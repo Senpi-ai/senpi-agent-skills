@@ -139,7 +139,7 @@ export const senpiOrdersAction = {
                 );
 
                 await callback?.({
-                    text: `\n🛠️  Preparing order parameters for token: 💠 $[${extractedTokenSymbol}|${extractedTokenAddress}]\n`,
+                    text: `\nPreparing your order for $[${extractedTokenSymbol}|${extractedTokenAddress}]\n`,
                     content: {
                         action: "SENPI_ORDERS",
                         inReplyTo: traceId,
@@ -187,13 +187,6 @@ export const senpiOrdersAction = {
                 }
 
                 if (swapInput || stopLossInput.length > 0 || limitOrderInput.length > 0) {
-                    await callback?.({
-                        text: "\n✨ I'm creating the orders for you! 🚀 Just a moment... ⏳ \n",
-                        content: {
-                            action: "SENPI_ORDERS",
-                            inReplyTo: _message.id,
-                        },
-                    });
 
                     const result = await createManualOrder(state.authorizationHeader as string, action, Source.AGENT, swapInput, stopLossInput, limitOrderInput);
 
@@ -351,7 +344,7 @@ async function processTransaction(
         );
 
         await callback?.({
-            text: "\n&nbsp;\n Hmm… I couldn't quite catch that. Mind trying again?\n&nbsp;\n",
+            text: "\n⚠️ Hmm… I couldn't quite catch that. Mind trying again?\n",
             content: {
                 action: "SENPI_ORDERS",
                 inReplyTo: messageId,
@@ -410,7 +403,7 @@ async function generateSenpiOrders(runtime: IAgentRuntime, context: any, traceId
             `[senpiOrders] [${moxieUserId}] [generateSenpiOrders] senpiOrders has error: ${JSON.stringify(senpiOrders)}`
         );
         await callback?.({
-            text: "\n&nbsp;\nSomething didn’t go through. Mind giving it another shot?\n&nbsp;\n",
+            text: senpiOrders.error?.prompt_message || "⚠️ Hmm, something didn’t go through. Mind giving it another shot?",
             content: {
                 action: "SENPI_ORDERS",
                 inReplyTo: messageId,
@@ -447,7 +440,7 @@ async function validateSenpiOrders(
             `[senpiOrders] [${moxieUserId}] [validateSenpiOrders] Invalid content structure: ${JSON.stringify(content)}`
         );
         await callback?.({
-            text: "\n&nbsp;\n Hmm, something didn’t go through. Mind giving it another shot? \n&nbsp;\n",
+            text: "⚠️ No orders were detected in your request. Please specify the swap, limit order, or stop loss orders you wish to create.",
             content: {
                 error: "INVALID_CONTENT",
                 details:
@@ -478,7 +471,7 @@ async function validateSenpiOrders(
                 `[senpiOrders] [${moxieUserId}] [validateSenpiOrders] Missing required fields in transaction: ${JSON.stringify(transaction)}`
             );
             await callback?.({
-                text: "\n&nbsp;\n🚫 We need a bit more info to proceed. Please take a quick look and try again! \n&nbsp;\n",
+                text: "⚠️ Your Order request is missing some required details. Please take a quick look and try again!",
                 content: {
                     error: "MISSING_FIELDS",
                     details: `Missing fields: ${missingFields.join(", ")}`,
@@ -497,7 +490,7 @@ async function validateSenpiOrders(
                 `[senpiOrders] [${moxieUserId}] [validateSenpiOrders] Invalid quantity: sellQuantity=${transaction.sellQuantity}, buyQuantity=${transaction.buyQuantity}`
             );
             await callback?.({
-                text: "\n&nbsp;\n⚠️ You'll need to enter an amount greater than 0. Please update your prompt and retry \n&nbsp;\n",
+                text: "⚠️ You'll need to enter an amount greater than 0. Please update your prompt and retry",
                 content: {
                     error: "INVALID_QUANTITY",
                     details: "Quantities must be positive",
@@ -520,7 +513,7 @@ async function validateSenpiOrders(
                     `[senpiOrders] [${moxieUserId}] [validateSenpiOrders] Invalid balance configuration: ${JSON.stringify(transaction.balance)}`
                 );
                 await callback?.({
-                    text: "\n&nbsp;\n🚫 Uh-oh! Those percentage settings seem a bit off. Could you take another look and try again? \n&nbsp;\n",
+                    text: "⚠️ Those percentage settings seem a bit off. Could you take another look and try again?",
                     content: {
                         error: "INVALID_BALANCE",
                         details:
@@ -628,9 +621,9 @@ async function handleOrderCreationResult(
 
         const message = [
             `\n&nbsp;\n✅ Swap order completed:\n`,
-            `\n&nbsp;\nAmount: **${amount}** of $[${tokenSymbol}|${tokenAddress}] ${swapOrderType == OrderType.BUY ? "received" : "sold"}`,
-            `\n&nbsp;\nPrice: ${price}`,
-            `\n&nbsp;\nView tx: [BaseScan](https://basescan.org/tx/${swapOutput.txHash})`
+            `\nAmount: **${amount}** of $[${tokenSymbol}|${tokenAddress}] ${swapOrderType == OrderType.BUY ? "received" : "sold"}\n`,
+            `\nPrice: ${price}\n`,
+            `\nView tx: [BaseScan](https://basescan.org/tx/${swapOutput.txHash})\n`
         ].join('');
 
         await callback?.({
@@ -650,9 +643,9 @@ async function handleOrderCreationResult(
             const stopLossPrice = Number(output.stopLossPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             const sellAmount = Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             if (output.triggerType === OrderTriggerType.PERCENTAGE) {
-                message += `\n&nbsp;\n🛑 [-${output.triggerValue}%] Stop Loss created: \n\nSL Price: $${stopLossPrice}\nSell Quantity: ${sellAmount}`;
+                message += `\n&nbsp;\n🛑 [-${output.triggerValue}%] Stop Loss created: \nSL Price: $${stopLossPrice}\nSell Quantity: ${sellAmount}`;
             } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
-                message += `\n&nbsp;\n🛑 [$${stopLossPrice}] Stop Loss created: \n\nSell Quantity: ${sellAmount}`;
+                message += `\n&nbsp;\n🛑 [$${stopLossPrice}] Stop Loss created: \nSell Quantity: ${sellAmount}`;
             }
         });
 
@@ -842,7 +835,7 @@ async function handleBuyQuantity(
                         `[senpiOrders] [${moxieUserId}] [handleBuyQuantity] Error in processing swap input: ${error}`
                     );
                     callback?.({
-                        text: `\n&nbsp;\n⚠️ Unfortunately, the Swap failed. Please try again. \n&nbsp;\n`,
+                        text: `\n⚠️ Unfortunately, the Swap failed. Please try again.\n`,
                         content: {
                             action: "SENPI_ORDERS",
                             inReplyTo: traceId,
@@ -857,7 +850,7 @@ async function handleBuyQuantity(
                 `[senpiOrders] [${moxieUserId}] [handleBuyQuantity] error: ${error}`
             );
             callback?.({
-                text: `\n&nbsp;\n⚠️ Unfortunately, the Swap failed. Please try again. \n&nbsp;\n`,
+                text: `\n⚠️ Unfortunately, the Swap failed. Please try again. \n`,
                 content: {
                     action: "SENPI_ORDERS",
                     inReplyTo: traceId,
@@ -1325,7 +1318,7 @@ async function handleBalanceBasedSwap(
             `[senpiOrders] [${moxieUserId}] [handleBalanceBasedSwap] error: ${error}`
         );
         await callback?.({
-            text: `\n&nbsp;\n⚠️ Unfortunately, the Swap failed. Please try again. \n&nbsp;\n`,
+            text: `\n⚠️ Unfortunately, the Swap failed. Please try again. \n`,
             content: {
                 action: "SENPI_ORDERS",
                 inReplyTo: traceId,
@@ -1443,7 +1436,7 @@ async function handleSwapOrder(
             `[senpiOrders] [${moxieUserId}] [handleSwapOrder] Invalid swap inputs for the token: ${extractedBuyTokenAddress}`
         );
         await callback?.({
-            text: `\n&nbsp;\nInvalid swap inputs for the token $[${extractedBuyTokenSymbol}|${extractedBuyTokenAddress}]. Please try again.\n&nbsp;\n`,
+            text: `\n⚠️ Please check the swap inputs for the token: ${extractedBuyTokenSymbol} (${extractedBuyTokenAddress}). Ensure all amounts and details are correct, then try again.\n`,
         });
         return {swapInput: undefined, error: true};
     }
@@ -1544,7 +1537,7 @@ async function handleSellOrder(
             `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing trigger type or trigger price or balance for stop loss order: ${JSON.stringify(transaction)}`
         );
         await callback?.({
-            text: "\n&nbsp;\n🚫 Missing trigger parameters for Sell Order. Please review and try again. \n&nbsp;\n",
+            text: "\n⚠️ Missing trigger parameters for Sell Order. Please review and try again. \n",
             content: {
                 action: "SENPI_ORDERS",
                 inReplyTo: traceId,
@@ -1563,7 +1556,7 @@ async function handleSellOrder(
                 `[senpiOrders] [${moxieUserId}] [handleSellOrder] Can't place a stop loss/ limit order for ETH`
             );
             await callback?.({
-                text: "\n&nbsp;\n🛑 Stop-loss and limit orders are not supported for ETH. You can wrap it to WETH and try again.\n&nbsp;\n",
+                text: "\n🛑 Stop-loss and limit orders are not supported for ETH. You can wrap it to WETH and try again.\n",
             });
             return {stopLossInput: [], limitOrderInput: [], error: true};
     }
@@ -1690,7 +1683,7 @@ async function handleSellOrder(
                         `[senpiOrders] [${moxieUserId}] [handleSellOrder] Could not calculate trigger price or percentage`
                     );
                     await callback?.({
-                        text: `\n&nbsp;\n⚠️ Something's off — couldn’t calculate the trigger for your ${transaction.orderType} order. Please give it another shot!\n&nbsp;\n`,
+                        text: `\n⚠️ Something's off — couldn’t calculate the trigger for your ${transaction.orderType} order. Please give it another shot!\n`,
                     });
                     return {stopLossInput: [], limitOrderInput: [], error: true};
                 }
@@ -1735,7 +1728,7 @@ async function handleSellOrder(
                         `[senpiOrders] [${moxieUserId}] [handleSellOrder] Do not know how much to sell`
                     );
                     await callback?.({
-                        text: `\n&nbsp;\n⚠️ Sell percentage is missing for ${transaction.orderType} order. Please make sure to add it to your prompt and try again.\n&nbsp;\n`,
+                        text: `\n⚠️ Sell percentage is missing for ${transaction.orderType} order. Please make sure to add it to your prompt and try again.\n`,
                     });
                     return {stopLossInput: [], limitOrderInput: [], error: true};
                 }
@@ -1751,7 +1744,7 @@ async function handleSellOrder(
                         `[senpiOrders] [${moxieUserId}] [handleSellOrder] Quantity is not supported when setting up ${transaction.orderType} order with swaps`
                     );
                     await callback?.({
-                        text: `\n&nbsp;\n⚠️ Quantity input is not supported for ${transaction.orderType} orders with swaps. Please make sure update your prompt and try again.\n&nbsp;\n`,
+                        text: `\n⚠️ Quantity input is not supported for ${transaction.orderType} orders with swaps. Please make sure update your prompt and try again.\n`,
                     });
                     return {stopLossInput: [], limitOrderInput: [], error: true};
                 }
@@ -1762,7 +1755,7 @@ async function handleSellOrder(
                         `[senpiOrders] [${moxieUserId}] [handleSellOrder] Do not know how much to sell`
                     );
                     await callback?.({
-                        text: `\n&nbsp;\n⚠️ Sell percentage missing for ${transaction.orderType} order. Please make sure to add it to your prompt and try again.\n&nbsp;\n`,
+                        text: `\n⚠️ Sell percentage missing for ${transaction.orderType} order. Please make sure to add it to your prompt and try again.\n`,
                     });
                     return {stopLossInput: [], limitOrderInput: [], error: true};
                 }
@@ -1823,7 +1816,7 @@ async function handleSellOrder(
                     `[senpiOrders] [${moxieUserId}] [handleSellOrder] Do not know how much to buy`
                 );
                 await callback?.({
-                    text: `\n&nbsp;\n⚠️ Buy amount not specified for ${transaction.orderType} order. Please make sure to add it to your prompt as either amount or USD value, and try again.\n&nbsp;\n`,
+                    text: `\n⚠️ Buy amount not specified for ${transaction.orderType} order. Please make sure to add it to your prompt as either amount or USD value, and try again.\n`,
                 });
                 return {stopLossInput: [], limitOrderInput: [], error: true};
             }
@@ -1841,7 +1834,7 @@ async function handleSellOrder(
                     `[senpiOrders] [${moxieUserId}] [handleSellOrder] Could not fetch price for buy token: ${extractedBuyTokenAddress}`
                 );
                 await callback?.({
-                    text: `\n&nbsp;\n⚠️ Could not retrieve price for ${extractedBuyTokenAddress}. Unfortunately,  ${transaction.orderType} order setup failed. Please try again!\n&nbsp;\n`,
+                    text: `\n⚠️ Could not retrieve price for ${extractedBuyTokenAddress}. Unfortunately,  ${transaction.orderType} order setup failed. Please try again!\n`,
                 });
                 return {stopLossInput: [], limitOrderInput: [], error: true};
             }
@@ -1861,7 +1854,7 @@ async function handleSellOrder(
                     `[senpiOrders] [${moxieUserId}] [handleSellOrder] Buy quantity is not specified`
                 );
                 await callback?.({
-                    text: `\n&nbsp;\n⚠️ Buy quantity missing for ${transaction.orderType} order. Please make sure to add it to your prompt and try again.\n&nbsp;\n`,
+                    text: `\n⚠️ Buy quantity missing for ${transaction.orderType} order. Please make sure to add it to your prompt and try again.\n`,
                 });
                 return {stopLossInput: [], limitOrderInput: [], error: true};
             }
@@ -1888,7 +1881,7 @@ async function handleSellOrder(
                     `[senpiOrders] [${moxieUserId}] [handleSellOrder] Could not calculate trigger price or percentage`
                 );
                 await callback?.({
-                    text: `\n&nbsp;\n⚠️ Could not calculate trigger price or percentage for ${extractedBuyTokenAddress}. Unfortunately,  ${transaction.orderType} order setup failed. Please try again!\n&nbsp;\n`,
+                    text: `\n⚠️ Could not calculate trigger price or percentage for ${extractedBuyTokenAddress}. Unfortunately,  ${transaction.orderType} order setup failed. Please try again!\n`,
                 });
                 return {stopLossInput: [], limitOrderInput: [], error: true};
             }
@@ -1933,7 +1926,7 @@ async function handleSellOrder(
                 `[senpiOrders] [${moxieUserId}] [handleSellOrder] unknown order type: ${transaction.orderType}`
             );
             await callback?.({
-                text: `\n&nbsp;\n⚠️ Unfortunately, an error occurred while processing your Sell Order (limit/stop loss). Please try again.\n&nbsp;\n`,
+                text: `\n⚠️ Unfortunately, an error occurred while processing your Sell Order (limit/stop loss). Please try again.\n`,
             });
             return {stopLossInput: [], limitOrderInput: [], error: true};
         }
@@ -2035,7 +2028,7 @@ function handleSellOrderError(
         `[senpiOrders] [${moxieUserId}] [handleSellOrder] error: ${error}`
     );
     callback?.({
-        text: `\n&nbsp;\n⚠️ Something went wrong while setting up your Sell Order (limit/stop loss). Please try again.\n&nbsp;\n`,
+        text: `\n⚠️ Something went wrong while setting up your Sell Order (limit/stop loss). Please try again.\n`,
     });
 }
 
@@ -2044,30 +2037,30 @@ function validatePriceConditions(transaction: any, triggerPrice: number, sellTok
 
     if (transaction.triggerType == TriggerType.ABSOLUTE_VALUE) {
         if (triggerPrice > sellTokenPriceInUSD && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "\n&nbsp;\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n&nbsp;\n";
+            errorMessage = "\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n";
         }
 
         if (triggerPrice < sellTokenPriceInUSD && transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
-            errorMessage = "\n&nbsp;\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again. \n&nbsp;\n";
+            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again. \n";
         }
     } else if (transaction.triggerType == TriggerType.PERCENTAGE) {
         if (triggerPrice > 100 && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "\n&nbsp;\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n&nbsp;\n";
+            errorMessage = "\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n";
         }
 
         if (triggerPrice < 0 && (transaction.orderType == OrderType.LIMIT_ORDER_SELL || transaction.orderType == OrderType.LIMIT_ORDER_BUY)) {
-            errorMessage = "\n&nbsp;\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again.\n&nbsp;\n";
+            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again.\n";
         }
     } else if (transaction.triggerType == TriggerType.VALUE_PRICE_DROP || transaction.triggerType == TriggerType.VALUE_PRICE_INCREASE) {
         let stopLossPrice = sellTokenPriceInUSD - Number(transaction.triggerPrice);
         let limitOrderPrice = sellTokenPriceInUSD + Number(transaction.triggerPrice);
 
         if (stopLossPrice <= 0 && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "\n&nbsp;\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n&nbsp;\n";
+            errorMessage = "\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n";
         }
 
         if (limitOrderPrice < sellTokenPriceInUSD && transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
-            errorMessage = "\n&nbsp;\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again. \n&nbsp;\n";
+            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again. \n";
         }
     }
 
