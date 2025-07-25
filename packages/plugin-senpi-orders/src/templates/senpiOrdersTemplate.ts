@@ -93,9 +93,9 @@ For successful interpretation:
     {
       "sellToken": "<$[SYMBOL|ADDRESS]>", # if symbol is not provided, use the address
       "buyToken": "<$[SYMBOL|ADDRESS]>", # if symbol is not provided, use the address
-      "sellQuantity": "<number or null>", # dollar value of token to be sold
-      "buyQuantity": "<number or null>", # dollar value of token to be bought
-      "valueType": "USD", # if quantity is provided instead of dollar value, make it null
+      "sellQuantity": "<number or null>", # dollar value/quantity of token to be sold
+      "buyQuantity": "<number or null>", # dollar value/quantity of token to be bought
+      "valueType": "USD", # USD if quantity is provided in dollar, otherwise null
       "orderType": "BUY" | "SELL" | "STOP_LOSS" | "LIMIT_ORDER_BUY" | "LIMIT_ORDER_SELL",
       "orderScope": "GLOBAL" | "RELATED" | null, # in case of limit order or stop loss check if the scope is related to swap or is on global level
       "executionType": "IMMEDIATE" | "FUTURE",
