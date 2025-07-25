@@ -1512,6 +1512,72 @@ async function fetchAndCacheTokenDecimals(tokenAddress: string, traceId: string,
     return tokenAddressToDecimals.get(tokenAddress)!;
 }
 
+async function validateSellOrder(transaction: any, traceId: string, moxieUserId: string, callback?: any): Promise<boolean> {
+
+    let valid = true;
+    if (!transaction.triggerType) {
+        elizaLogger.error(
+            traceId,
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing trigger type for stop loss order: ${JSON.stringify(transaction)}`
+        );
+        await callback?.({
+            text: "\n⚠️ Missing Sell Order trigger condition. For instance, you can set a trigger price or percentage. Please review and try again. \n",
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+        valid = false;
+    }
+
+    if (!transaction.triggerPrice) {
+        elizaLogger.error(
+            traceId,
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing trigger price for stop loss order: ${JSON.stringify(transaction)}`
+        );
+        await callback?.({
+            text: "\n⚠️ Missing Sell Order trigger price. For instance, you can set a trigger price or percentage. Please review and try again. \n",
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+        valid = false;
+    }
+
+    if (!transaction.balance || !transaction.balance.type ) {
+        elizaLogger.error(
+            traceId,
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing balance or balance type for stop loss order: ${JSON.stringify(transaction)}`
+        );
+        await callback?.({
+            text: "\n⚠️ Sell Order parameters are incomplete. Specify the quantity or percentage to sell and try again. \n",
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+        valid = false;
+    }
+
+    if (!transaction.balance.value) {
+        elizaLogger.error(
+            traceId,
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing balance value for stop loss order: ${JSON.stringify(transaction)}`
+        );
+        await callback?.({
+            text: "\n⚠️ Incomplete Sell Order details. Please specify the quantity or percentage for the stop loss or limit order and try again. \n",
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+        valid = false;
+    }
+
+    return valid;
+}
+
 async function handleSellOrder(
     transaction: any,
     extractedSellTokenSymbol: string,
@@ -1533,18 +1599,12 @@ async function handleSellOrder(
     let limitOrderInput: OpenOrderInput[] = [];
     let error = false;
 
-    if (!transaction.triggerType || !transaction.triggerPrice || !transaction.balance || !transaction.balance.type || !transaction.balance.value) {
+    const valid = await validateSellOrder(transaction, traceId, moxieUserId, callback);
+    if (!valid) {
         elizaLogger.error(
             traceId,
-            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing trigger type or trigger price or balance for stop loss order: ${JSON.stringify(transaction)}`
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Invalid sell order: ${JSON.stringify(transaction)}`
         );
-        await callback?.({
-            text: "\n⚠️ Missing trigger parameters for Sell Order. Please review and try again. \n",
-            content: {
-                action: "SENPI_ORDERS",
-                inReplyTo: traceId,
-            },
-        });
         return {stopLossInput: [], limitOrderInput: [], error: true};
     }
 
