@@ -622,7 +622,7 @@ async function handleOrderCreationResult(
         }
 
         const message = [
-            `\n✅ Swap order completed:\n`,
+            `\n&nbsp;\n✅ Swap order completed:\n`,
             `\nAmount: **${amount}** of $[${tokenSymbol}|${tokenAddress}] ${swapOrderType == OrderType.BUY ? "received" : "sold"}\n`,
             `\nPrice: ${price}\n`,
             `\nView tx: [BaseScan](https://basescan.org/tx/${swapOutput.txHash})\n`
@@ -674,19 +674,19 @@ async function handleOrderCreationResult(
 
             if (output.triggerType === OrderTriggerType.PERCENTAGE) {
                 if (output.sellAmount && Number(output.sellAmount) > 0) {
-                    message += `\n📈 [+${triggerValue}%] Limit Sell created:\nLMT Price: $${limitPrice}\nSell Quantity: ${sellAmount}\n`;
-                } else if (output.buyAmount && Number(output.buyAmount) > 0 && limitOrderInput[index]?.buyAmount) {
-                    message += `\n📉 [-${triggerValue}%] Limit Buy created:\nLMT Price: $${limitPrice}\nBuy Quantity: ${buyAmount}\n`;
-                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0 && limitOrderInput[index]?.buyAmountUSD) {
-                    message += `\n📉 [-${triggerValue}%] Limit Buy created:\nLMT Price: $${limitPrice}\nBuy Amount: $${buyAmountUSD}\n`;
+                    message += `\n&nbsp;\n📈 [+${triggerValue}%] Limit Sell created:\nLMT Price: $${limitPrice}\nSell Quantity: ${sellAmount}\n`;
+                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
+                    message += `\n&nbsp;\n📉 [-${triggerValue}%] Limit Buy created:\nLMT Price: $${limitPrice}\nBuy Amount: $${buyAmountUSD}\n`;
+                } else if (output.buyAmount && Number(output.buyAmount) > 0) {
+                    message += `\n&nbsp;\n📉 [-${triggerValue}%] Limit Buy created:\nLMT Price: $${limitPrice}\nBuy Quantity: ${buyAmount}\n`;
                 }
             } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
                 if (output.sellAmount && Number(output.sellAmount) > 0) {
-                    message += `\n📈 [LMT Price: $${limitPrice}] Limit Sell created:\nSell Quantity: ${sellAmount}\n`;
-                } else if (output.buyAmount && Number(output.buyAmount) > 0 && limitOrderInput[index]?.buyAmount) {
-                    message += `\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\nBuy Quantity: ${buyAmount}\n`;
-                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0 && limitOrderInput[index]?.buyAmountUSD) {
-                    message += `\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\nBuy Amount: $${buyAmountUSD}\n`;
+                    message += `\n&nbsp;\n📈 [LMT Price: $${limitPrice}] Limit Sell created:\nSell Quantity: ${sellAmount}\n`;
+                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
+                    message += `\n&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\nBuy Amount: $${buyAmountUSD}\n`;
+                } else if (output.buyAmount && Number(output.buyAmount) > 0) {
+                    message += `\n&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\nBuy Quantity: ${buyAmount}\n`;
                 }
             }
         });
@@ -2099,15 +2099,15 @@ function validatePriceConditions(transaction: any, triggerPrice: number, sellTok
 
     if (transaction.triggerType == TriggerType.ABSOLUTE_VALUE) {
         if (triggerPrice > sellTokenPriceInUSD && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n";
+            errorMessage = "\n⚠️ Stop Loss higher than the current price. Did you mean setting up limit order instead ? If not, please set a lower sell value and try again. \n";
         }
 
         if (triggerPrice < sellTokenPriceInUSD && transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
-            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again. \n";
+            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Did you mean setting up stop loss instead ? If not, please set a higher sell value and try again. \n";
         }
     } else if (transaction.triggerType == TriggerType.PERCENTAGE) {
         if (triggerPrice > 100 && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n";
+            errorMessage = "\n⚠️ Stop Loss higher than the current price. Did you mean setting up limit order instead? If not, please set a lower sell value and try again. \n";
         }
 
         if (triggerPrice < 0 && (transaction.orderType == OrderType.LIMIT_ORDER_SELL || transaction.orderType == OrderType.LIMIT_ORDER_BUY)) {
@@ -2122,7 +2122,7 @@ function validatePriceConditions(transaction: any, triggerPrice: number, sellTok
         }
 
         if (limitOrderPrice < sellTokenPriceInUSD && transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
-            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again. \n";
+            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Did you mean setting up stop loss instead? If not, please set a higher sell value and try again. \n";
         }
     }
 
