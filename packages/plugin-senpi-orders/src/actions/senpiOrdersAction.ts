@@ -1848,7 +1848,7 @@ async function handleSellOrder(
                 if (valueType === USD) {
                     // buyValue = buyQuantity / buyTokenPriceInUSD;
                     // buyValueInWEI = ethers.parseUnits(buyValue.toString(), extractedBuyTokenDecimals);
-                    buyValueInUSD = buyQuantity / buyTokenPriceInUSD;
+                    buyValueInUSD = buyQuantity;
                 }
             } else {
                 elizaLogger.error(
