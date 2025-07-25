@@ -105,7 +105,7 @@ For successful interpretation:
       "balance": {
         "sourceToken": "<$[SYMBOL|ADDRESS]>",
         "type": "FULL" | "PERCENTAGE" | "QUANTITY",
-        "value": "<number>" # represents what percentage/quantity of token is to transacted
+        "value": "<number>" # represents what percentage/quantity of token is to transacted. This is a mandatory field for stop loss/limit order.
       }
     }
   ],

@@ -622,7 +622,7 @@ async function handleOrderCreationResult(
         }
 
         const message = [
-            `\n✅ Swap order completed:\n`,
+            `\n&nbsp;\n✅ Swap order completed:\n`,
             `\nAmount: **${amount}** of $[${tokenSymbol}|${tokenAddress}] ${swapOrderType == OrderType.BUY ? "received" : "sold"}\n`,
             `\nPrice: ${price}\n`,
             `\nView tx: [BaseScan](https://basescan.org/tx/${swapOutput.txHash})\n`
@@ -674,19 +674,19 @@ async function handleOrderCreationResult(
 
             if (output.triggerType === OrderTriggerType.PERCENTAGE) {
                 if (output.sellAmount && Number(output.sellAmount) > 0) {
-                    message += `\n📈 [+${triggerValue}%] Limit Sell created:\nLMT Price: $${limitPrice}\nSell Quantity: ${sellAmount}\n`;
-                } else if (output.buyAmount && Number(output.buyAmount) > 0 && limitOrderInput[index]?.buyAmount) {
-                    message += `\n📉 [-${triggerValue}%] Limit Buy created:\nLMT Price: $${limitPrice}\nBuy Quantity: ${buyAmount}\n`;
-                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0 && limitOrderInput[index]?.buyAmountUSD) {
-                    message += `\n📉 [-${triggerValue}%] Limit Buy created:\nLMT Price: $${limitPrice}\nBuy Amount: $${buyAmountUSD}\n`;
+                    message += `\n&nbsp;\n📈 [+${triggerValue}%] Limit Sell created:\nLMT Price: $${limitPrice}\nSell Quantity: ${sellAmount}\n`;
+                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
+                    message += `\n&nbsp;\n📉 [-${triggerValue}%] Limit Buy created:\nLMT Price: $${limitPrice}\nBuy Amount: $${buyAmountUSD}\n`;
+                } else if (output.buyAmount && Number(output.buyAmount) > 0) {
+                    message += `\n&nbsp;\n📉 [-${triggerValue}%] Limit Buy created:\nLMT Price: $${limitPrice}\nBuy Quantity: ${buyAmount}\n`;
                 }
             } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
                 if (output.sellAmount && Number(output.sellAmount) > 0) {
-                    message += `\n📈 [LMT Price: $${limitPrice}] Limit Sell created:\nSell Quantity: ${sellAmount}\n`;
-                } else if (output.buyAmount && Number(output.buyAmount) > 0 && limitOrderInput[index]?.buyAmount) {
-                    message += `\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\nBuy Quantity: ${buyAmount}\n`;
-                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0 && limitOrderInput[index]?.buyAmountUSD) {
-                    message += `\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\nBuy Amount: $${buyAmountUSD}\n`;
+                    message += `\n&nbsp;\n📈 [LMT Price: $${limitPrice}] Limit Sell created:\nSell Quantity: ${sellAmount}\n`;
+                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
+                    message += `\n&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\nBuy Amount: $${buyAmountUSD}\n`;
+                } else if (output.buyAmount && Number(output.buyAmount) > 0) {
+                    message += `\n&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created:\nBuy Quantity: ${buyAmount}\n`;
                 }
             }
         });
@@ -1512,6 +1512,72 @@ async function fetchAndCacheTokenDecimals(tokenAddress: string, traceId: string,
     return tokenAddressToDecimals.get(tokenAddress)!;
 }
 
+async function validateSellOrder(transaction: any, traceId: string, moxieUserId: string, callback?: any): Promise<boolean> {
+
+    let valid = true;
+    if (!transaction.triggerType) {
+        elizaLogger.error(
+            traceId,
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing trigger type for stop loss order: ${JSON.stringify(transaction)}`
+        );
+        await callback?.({
+            text: "\n⚠️ Missing Sell Order trigger condition. For instance, you can set a trigger price or percentage. Please review and try again. \n",
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+        valid = false;
+    }
+
+    if (!transaction.triggerPrice) {
+        elizaLogger.error(
+            traceId,
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing trigger price for stop loss order: ${JSON.stringify(transaction)}`
+        );
+        await callback?.({
+            text: "\n⚠️ Missing Sell Order trigger price. For instance, you can set a trigger price or percentage. Please review and try again. \n",
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+        valid = false;
+    }
+
+    if (!transaction.balance || !transaction.balance.type ) {
+        elizaLogger.error(
+            traceId,
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing balance or balance type for stop loss order: ${JSON.stringify(transaction)}`
+        );
+        await callback?.({
+            text: "\n⚠️ Sell Order parameters are incomplete. Specify the quantity or percentage to sell and try again. \n",
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+        valid = false;
+    }
+
+    if (!transaction.balance.value) {
+        elizaLogger.error(
+            traceId,
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing balance value for stop loss order: ${JSON.stringify(transaction)}`
+        );
+        await callback?.({
+            text: "\n⚠️ Incomplete Sell Order details. Please specify the quantity or percentage for the stop loss or limit order and try again. \n",
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+        valid = false;
+    }
+
+    return valid;
+}
+
 async function handleSellOrder(
     transaction: any,
     extractedSellTokenSymbol: string,
@@ -1533,18 +1599,12 @@ async function handleSellOrder(
     let limitOrderInput: OpenOrderInput[] = [];
     let error = false;
 
-    if (!transaction.triggerType || !transaction.triggerPrice || !transaction.balance || !transaction.balance.type || !transaction.balance.value) {
+    const valid = await validateSellOrder(transaction, traceId, moxieUserId, callback);
+    if (!valid) {
         elizaLogger.error(
             traceId,
-            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Missing trigger type or trigger price or balance for stop loss order: ${JSON.stringify(transaction)}`
+            `[senpiOrders] [${moxieUserId}] [handleSellOrder] Invalid sell order: ${JSON.stringify(transaction)}`
         );
-        await callback?.({
-            text: "\n⚠️ Missing trigger parameters for Sell Order. Please review and try again. \n",
-            content: {
-                action: "SENPI_ORDERS",
-                inReplyTo: traceId,
-            },
-        });
         return {stopLossInput: [], limitOrderInput: [], error: true};
     }
 
@@ -2039,15 +2099,15 @@ function validatePriceConditions(transaction: any, triggerPrice: number, sellTok
 
     if (transaction.triggerType == TriggerType.ABSOLUTE_VALUE) {
         if (triggerPrice > sellTokenPriceInUSD && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n";
+            errorMessage = "\n⚠️ Stop Loss higher than the current price. Did you mean setting up limit order instead ? If not, please set a lower sell value and try again. \n";
         }
 
         if (triggerPrice < sellTokenPriceInUSD && transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
-            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again. \n";
+            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Did you mean setting up stop loss instead ? If not, please set a higher sell value and try again. \n";
         }
     } else if (transaction.triggerType == TriggerType.PERCENTAGE) {
         if (triggerPrice > 100 && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "\n⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n";
+            errorMessage = "\n⚠️ Stop Loss higher than the current price. Did you mean setting up limit order instead? If not, please set a lower sell value and try again. \n";
         }
 
         if (triggerPrice < 0 && (transaction.orderType == OrderType.LIMIT_ORDER_SELL || transaction.orderType == OrderType.LIMIT_ORDER_BUY)) {
@@ -2062,7 +2122,7 @@ function validatePriceConditions(transaction: any, triggerPrice: number, sellTok
         }
 
         if (limitOrderPrice < sellTokenPriceInUSD && transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
-            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again. \n";
+            errorMessage = "\n⚠️ Limit Sell order price is lower than current price. Did you mean setting up stop loss instead? If not, please set a higher sell value and try again. \n";
         }
     }
 
