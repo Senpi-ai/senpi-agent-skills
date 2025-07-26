@@ -92,7 +92,7 @@ export const autonomousTradingAction: Action = {
         "GROUP_COPY_TRADE_WITH_PROFIT",
     ],
     description:
-        "Select this action when a specific trading rule is being set up, including details like specific wallets to follow, token amounts, time conditions, or other specific parameters for automated trades. Example: 'Buy 10$ worth tokens whenever @[betashop|M4] and @[jessepollak|M739] buy minimum of $50 of any token in 6 hours.",
+        "Select this action only when the trading rule involves copying trades from specific users or groups. This includes scenarios where you follow specific wallets, set token amounts, or define time conditions for automated trades. Do not use it if it is not about copy trades. Example: 'Buy $10 worth of tokens whenever @[betashop|M4] and @[jessepollak|M739] buy a minimum of $50 of any token within 6 hours.'",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (
