@@ -1625,7 +1625,7 @@ async function handleSellOrder(
         return {stopLossInput: [], limitOrderInput: [], error: true};
     }
 
-    let triggerPrice = Number(transaction.triggerPrice);
+    let triggerPrice = Math.abs(Number(transaction.triggerPrice));
     let triggerBalanceValue = Number(transaction.balance.value);
 
     if ((extractedSellTokenSymbol === ETH && transaction.orderType !== OrderType.LIMIT_ORDER_BUY) ||
