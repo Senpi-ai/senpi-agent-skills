@@ -692,7 +692,7 @@ async function handleOrderCreationResult(
         let message = '';
 
         limitOrderOutputs.forEach((output, index) => {
-            if (output.subscriptionId) {
+            if (output.limitOrderId) {
                 numberOfOrdersCreated++;
                 const limitPrice = Number(output.limitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
                 const buyAmount = output.buyAmount && Number(output.buyAmount) > 0 ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
