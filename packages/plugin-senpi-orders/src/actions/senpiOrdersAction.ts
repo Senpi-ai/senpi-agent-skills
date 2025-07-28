@@ -584,20 +584,6 @@ async function handleOrderCreationResult(
         `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] result: ${JSON.stringify(result)}`
     );
 
-    if (!result.success) {
-        elizaLogger.error(
-            traceId,
-            `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] Could not create orders: ${JSON.stringify(result)}`
-        );
-        await callback?.({
-            text: `⚠️ Something went wrong. Please try again. \n`,
-            content: {
-                action: "SENPI_ORDERS",
-                inReplyTo: traceId,
-            },
-        });
-    }
-
     let ordersViewAvailable = false;
     let numberOfOrdersCreated = 0;
     let hadErrors = false;
