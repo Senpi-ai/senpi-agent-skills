@@ -659,14 +659,22 @@ async function handleOrderCreationResult(
         const stopLossOutputs = result.metadata.stopLossOutputs;
         let message = '';
         stopLossOutputs.forEach(output => {
-            numberOfOrdersCreated++;
-            const stopLossPrice = Number(output.stopLossPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
-            const sellAmount = Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
-            if (output.triggerType === OrderTriggerType.PERCENTAGE) {
-                message += `&nbsp;\n🛑 [-${output.triggerValue}%] Stop Loss created: \nSL Price: $${stopLossPrice} \nSell Quantity: ${sellAmount} \n`;
-            } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
-                message += `&nbsp;\n🛑 [$${stopLossPrice}] Stop Loss created: \nSL Price: $${stopLossPrice} \nSell Quantity: ${sellAmount} \n`;
+            if (output.subscriptionId) {
+                numberOfOrdersCreated++;
+                const stopLossPrice = Number(output.stopLossPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
+                const sellAmount = Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
+                if (output.triggerType === OrderTriggerType.PERCENTAGE) {
+                    message += `&nbsp;\n🛑 [-${output.triggerValue}%] Stop Loss created: \nSL Price: $${stopLossPrice} \nSell Quantity: ${sellAmount} \n`;
+                } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
+                    message += `&nbsp;\n🛑 [$${stopLossPrice}] Stop Loss created: \nSL Price: $${stopLossPrice} \nSell Quantity: ${sellAmount} \n`;
+                }
+            } else {
+                elizaLogger.error(
+                    traceId,
+                    `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] Stop loss order not created: ${JSON.stringify(output)}`
+                );
             }
+            
         });
 
         await callback?.({
@@ -684,29 +692,36 @@ async function handleOrderCreationResult(
         let message = '';
 
         limitOrderOutputs.forEach((output, index) => {
-            numberOfOrdersCreated++;
-            const limitPrice = Number(output.limitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
-            const buyAmount = output.buyAmount && Number(output.buyAmount) > 0 ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
-            const sellAmount = output.sellAmount && Number(output.sellAmount) > 0 ? Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
-            const buyAmountUSD = output.buyAmountUSD && Number(output.buyAmountUSD) > 0 ? Number(output.buyAmountUSD).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
-            const triggerValue = output.triggerValue;
+            if (output.subscriptionId) {
+                numberOfOrdersCreated++;
+                const limitPrice = Number(output.limitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
+                const buyAmount = output.buyAmount && Number(output.buyAmount) > 0 ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
+                const sellAmount = output.sellAmount && Number(output.sellAmount) > 0 ? Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
+                const buyAmountUSD = output.buyAmountUSD && Number(output.buyAmountUSD) > 0 ? Number(output.buyAmountUSD).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
+                const triggerValue = output.triggerValue;
 
-            if (output.triggerType === OrderTriggerType.PERCENTAGE) {
-                if (output.sellAmount && Number(output.sellAmount) > 0) {
-                    message += `&nbsp;\n📈 [+${triggerValue}%] Limit Sell created: \nLMT Price: $${limitPrice} \nSell Quantity: ${sellAmount} \n`;
-                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
-                    message += `&nbsp;\n📉 [-${triggerValue}%] Limit Buy created: \nLMT Price: $${limitPrice} \nBuy Amount: $${buyAmountUSD} \n`;
-                } else if (output.buyAmount && Number(output.buyAmount) > 0) {
-                    message += `&nbsp;\n📉 [-${triggerValue}%] Limit Buy created: \nLMT Price: $${limitPrice} \nBuy Quantity: ${buyAmount} \n`;
+                if (output.triggerType === OrderTriggerType.PERCENTAGE) {
+                    if (output.sellAmount && Number(output.sellAmount) > 0) {
+                        message += `&nbsp;\n📈 [+${triggerValue}%] Limit Sell created: \nLMT Price: $${limitPrice} \nSell Quantity: ${sellAmount} \n`;
+                    } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
+                        message += `&nbsp;\n📉 [-${triggerValue}%] Limit Buy created: \nLMT Price: $${limitPrice} \nBuy Amount: $${buyAmountUSD} \n`;
+                    } else if (output.buyAmount && Number(output.buyAmount) > 0) {
+                        message += `&nbsp;\n📉 [-${triggerValue}%] Limit Buy created: \nLMT Price: $${limitPrice} \nBuy Quantity: ${buyAmount} \n`;
+                    }
+                } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
+                    if (output.sellAmount && Number(output.sellAmount) > 0) {
+                        message += `&nbsp;\n📈 [LMT Price: $${limitPrice}] Limit Sell created: \nSell Quantity: ${sellAmount} \n`;
+                    } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
+                        message += `&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created: \nBuy Amount: $${buyAmountUSD} \n`;
+                    } else if (output.buyAmount && Number(output.buyAmount) > 0) {
+                        message += `&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created: \nBuy Quantity: ${buyAmount} \n`;
+                    }
                 }
-            } else if (output.triggerType === OrderTriggerType.TOKEN_PRICE) {
-                if (output.sellAmount && Number(output.sellAmount) > 0) {
-                    message += `&nbsp;\n📈 [LMT Price: $${limitPrice}] Limit Sell created: \nSell Quantity: ${sellAmount} \n`;
-                } else if (output.buyAmountUSD && Number(output.buyAmountUSD) > 0) {
-                    message += `&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created: \nBuy Amount: $${buyAmountUSD} \n`;
-                } else if (output.buyAmount && Number(output.buyAmount) > 0) {
-                    message += `&nbsp;\n📉 [LMT Price: $${limitPrice}] Limit Buy created: \nBuy Quantity: ${buyAmount} \n`;
-                }
+            } else {
+                elizaLogger.error(
+                    traceId,
+                    `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] Limit order not created: ${JSON.stringify(output)}`
+                );
             }
         });
 
