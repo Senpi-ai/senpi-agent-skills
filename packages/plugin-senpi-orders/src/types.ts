@@ -207,6 +207,9 @@ export type LimitOrderOutput = {
 export type CreateManualOrderOutput = {
     success: boolean;
     error?: string;
+    swapError?: string;
+    stopLossError?: string;
+    limitOrderError?: string;
     metadata: {
         traceId: string;
         orderId: string;

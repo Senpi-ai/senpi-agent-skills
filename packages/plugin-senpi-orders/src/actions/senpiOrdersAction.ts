@@ -599,10 +599,41 @@ async function handleOrderCreationResult(
     }
 
     let ordersViewAvailable = false;
+    let numberOfOrdersCreated = 0;
+    let hadErrors = false;
+    let hadSwapErrors = false;
+    let hadStopLossErrors = false;
+    let hadLimitOrderErrors = false;
+    let errors = [];
 
-    if (result.success && result.metadata?.swapOutput) {
+    if (!result.success) {
+        hadErrors = true;
+        if (result.error) {
+            errors.push(result.error);
+        }
+        if (result.swapError) {
+            hadSwapErrors = true;
+            errors.push(result.swapError);
+        }
+        if (result.stopLossError) {
+            hadStopLossErrors = true;
+            errors.push(result.stopLossError);
+        }
+        if (result.limitOrderError) {
+            hadLimitOrderErrors = true;
+            errors.push(result.limitOrderError);
+        }
+    }
+
+    elizaLogger.debug(
+        traceId,
+        `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] hadErrors: ${hadErrors}, hadSwapErrors: ${hadSwapErrors}, hadStopLossErrors: ${hadStopLossErrors}, hadLimitOrderErrors: ${hadLimitOrderErrors}, errors: ${JSON.stringify(errors)}`
+    );
+
+    if (!hadSwapErrors && result.metadata?.swapOutput && result.metadata?.swapOutput?.txHash) {
         ordersViewAvailable = true;
         const swapOutput = result.metadata.swapOutput;
+        numberOfOrdersCreated++;
 
         let amount: string;
         let tokenSymbol: string;
@@ -637,11 +668,12 @@ async function handleOrderCreationResult(
         });
     }
 
-    if (result.success && result.metadata?.stopLossOutputs) {
+    if (!hadStopLossErrors && result.metadata?.stopLossOutputs) {
         ordersViewAvailable = true;
         const stopLossOutputs = result.metadata.stopLossOutputs;
         let message = '';
         stopLossOutputs.forEach(output => {
+            numberOfOrdersCreated++;
             const stopLossPrice = Number(output.stopLossPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             const sellAmount = Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             if (output.triggerType === OrderTriggerType.PERCENTAGE) {
@@ -660,12 +692,13 @@ async function handleOrderCreationResult(
         });
     }
 
-    if (result.success && result.metadata?.limitOrderOutputs) {
+    if (!hadLimitOrderErrors && result.metadata?.limitOrderOutputs) {
         ordersViewAvailable = true;
         const limitOrderOutputs = result.metadata.limitOrderOutputs;
         let message = '';
 
         limitOrderOutputs.forEach((output, index) => {
+            numberOfOrdersCreated++;
             const limitPrice = Number(output.limitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 });
             const buyAmount = output.buyAmount && Number(output.buyAmount) > 0 ? Number(output.buyAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
             const sellAmount = output.sellAmount && Number(output.sellAmount) > 0 ? Number(output.sellAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 20 }) : null;
@@ -703,6 +736,46 @@ async function handleOrderCreationResult(
             traceId,
             `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] Order creation result handled successfully`
         );
+    }
+
+    if (hadSwapErrors) {
+        await callback?.({
+            text: `⚠️ Had issues creating swap orders. Please try again. \n`,
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+    }
+
+    if (hadStopLossErrors) {
+        await callback?.({
+            text: `⚠️ Had issues creating stop loss order. Please try again. \n`,
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+    }
+
+    if (hadLimitOrderErrors) {
+        await callback?.({
+            text: `⚠️ Had issues creating limit orders. Please try again. \n`,
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
+    }
+
+    if (numberOfOrdersCreated === 0 && hadErrors) {
+        await callback?.({
+            text: `⚠️ Had issues creating orders. Please try again. \n`,
+            content: {
+                action: "SENPI_ORDERS",
+                inReplyTo: traceId,
+            },
+        });
     }
 
     if (ordersViewAvailable) {
