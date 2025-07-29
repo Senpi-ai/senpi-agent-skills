@@ -922,7 +922,7 @@ async function handleBuyQuantity(
                     `[senpiOrders] [${moxieUserId}] [handleBuyQuantity] Insufficient balance for sell token: ${extractedSellTokenSymbol}`
                 );
                 callback?.({
-                    text: `⚠️ Unfortunately, the Swap failed. The buy token is the same as the sell token. \n`,
+                    text: `⚠️ Unfortunately, the Swap failed. The buy token is the same as the sell token. Please try again. \n`,
                     content: {
                         action: "SENPI_ORDERS",
                         inReplyTo: traceId,
@@ -2200,15 +2200,15 @@ function validatePriceConditions(transaction: any, triggerPrice: number, sellTok
 
     if (transaction.triggerType == TriggerType.ABSOLUTE_VALUE) {
         if (triggerPrice > sellTokenPriceInUSD && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "⚠️ Stop Loss higher than the current price. Did you mean setting up limit order instead ? \n";
+            errorMessage = "⚠️ Stop Loss higher than the current price. Did you mean setting up limit order instead ? If not, please set a lower sell value and try again. \n";
         }
 
         if (triggerPrice < sellTokenPriceInUSD && transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
-            errorMessage = "⚠️ Limit Sell order price is lower than current price. Did you mean setting up stop loss instead ? \n";
+            errorMessage = "⚠️ Limit Sell order price is lower than current price. Did you mean setting up stop loss instead ? If not, please set a higher sell value and try again. \n";
         }
     } else if (transaction.triggerType == TriggerType.PERCENTAGE) {
         if (triggerPrice > 100 && transaction.orderType == OrderType.STOP_LOSS) {
-            errorMessage = "⚠️ Stop Loss higher than the current price. Did you mean setting up limit order instead? \n";
+            errorMessage = "⚠️ Stop Loss higher than the current price. Did you mean setting up limit order instead? If not, please set a lower sell value and try again. \n";
         }
 
         if (triggerPrice < 0 && (transaction.orderType == OrderType.LIMIT_ORDER_SELL || transaction.orderType == OrderType.LIMIT_ORDER_BUY)) {
@@ -2223,7 +2223,7 @@ function validatePriceConditions(transaction: any, triggerPrice: number, sellTok
         }
 
         if (limitOrderPrice < sellTokenPriceInUSD && transaction.orderType == OrderType.LIMIT_ORDER_SELL) {
-            errorMessage = "⚠️ Limit Sell order price is lower than current price. Did you mean setting up stop loss instead? \n";
+            errorMessage = "⚠️ Limit Sell order price is lower than current price. Did you mean setting up stop loss instead? If not, please set a higher sell value and try again. \n";
         }
     }
 
