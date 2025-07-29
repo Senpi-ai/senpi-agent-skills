@@ -225,11 +225,9 @@ export const senpiOrdersAction = {
         "PURCHASE_TOKENS",
         "STOP_LOSS",
         "LIMIT_ORDER",
-        "SWAP_SL",
-        "SWAP_SL_LO",
-        "LO",
-        "SL",
-        "SL_LO",
+        "SWAP_STOP_LOSS",
+        "SWAP_LIMIT_ORDER_STOP_LOSS",
+        "STOP_LOSS_LIMIT_ORDER",
     ],
 };
 
@@ -462,8 +460,11 @@ async function validateSenpiOrders(
         if (transaction.orderType === OrderType.STOP_LOSS || transaction.orderType === OrderType.LIMIT_ORDER_BUY || transaction.orderType === OrderType.LIMIT_ORDER_SELL) {
             if (!transaction.triggerType) missingFields.push("triggerType");
             if (!transaction.triggerPrice) missingFields.push("triggerPrice");
-            if (!transaction.balance.type) missingFields.push("balance.type");
-            if (!transaction.balance.value) missingFields.push("balance.value");
+            if (!transaction.balance) missingFields.push("balance");
+            if (transaction.balance) {
+                if (!transaction.balance.type) missingFields.push("balance.type");
+                if (!transaction.balance.value) missingFields.push("balance.value");
+            }
         }
 
         if (missingFields.length > 0) {
@@ -584,7 +585,6 @@ async function handleOrderCreationResult(
         `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] result: ${JSON.stringify(result)}`
     );
 
-    let ordersViewAvailable = false;
     let numberOfOrdersCreated = 0;
     let hadErrors = false;
     let hadSwapErrors = false;
@@ -617,7 +617,6 @@ async function handleOrderCreationResult(
     );
 
     if (!hadSwapErrors && result.metadata?.swapOutput && result.metadata?.swapOutput?.txHash) {
-        ordersViewAvailable = true;
         const swapOutput = result.metadata.swapOutput;
         numberOfOrdersCreated++;
 
@@ -655,7 +654,6 @@ async function handleOrderCreationResult(
     }
 
     if (!hadStopLossErrors && result.metadata?.stopLossOutputs) {
-        ordersViewAvailable = true;
         const stopLossOutputs = result.metadata.stopLossOutputs;
         let message = '';
         stopLossOutputs.forEach(output => {
@@ -687,7 +685,6 @@ async function handleOrderCreationResult(
     }
 
     if (!hadLimitOrderErrors && result.metadata?.limitOrderOutputs) {
-        ordersViewAvailable = true;
         const limitOrderOutputs = result.metadata.limitOrderOutputs;
         let message = '';
 
@@ -779,7 +776,7 @@ async function handleOrderCreationResult(
         });
     }
 
-    if (ordersViewAvailable) {
+    if (numberOfOrdersCreated > 0) {
         await callback?.({
             text: '',
             content: {
@@ -919,6 +916,19 @@ async function handleBuyQuantity(
                     });
                     return {swapInput: undefined, error: true};
                 }
+            } else {
+                elizaLogger.error(
+                    traceId,
+                    `[senpiOrders] [${moxieUserId}] [handleBuyQuantity] Insufficient balance for sell token: ${extractedSellTokenSymbol}`
+                );
+                callback?.({
+                    text: `⚠️ Unfortunately, the Swap failed. The buy token is the same as the sell token. Please try again. \n`,
+                    content: {
+                        action: "SENPI_ORDERS",
+                        inReplyTo: traceId,
+                    },
+                });
+                return {swapInput: undefined, error: true};
             }
         } catch (error) {
             elizaLogger.error(
