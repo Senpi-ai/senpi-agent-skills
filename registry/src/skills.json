@@ -148,8 +148,9 @@
       "status": "ACTIVE",
       "isDefault": true,
       "loaders": [
-        "Initiating transaction",
-        "Writing to the Base blockchain"
+        "Sensing your intent",
+        "Preparing the strike",
+        "Executing on Base — clean and silent"
       ],
       "orderIndex": 1
     },
