@@ -1,5 +1,208 @@
 [
     {
+        "pluginId": "f65a02f3-4bf2-436d-be50-34e7d33fd293",
+        "name": "@moxie-protocol/plugin-moxie-autonomous-trading",
+        "displayName": "Autonomous Trading",
+        "version": "0.1.8+build.1",
+        "author": "Senpi",
+        "description": "Have Senpi automatically buy and sell tokens for you when specific conditions are met!",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-autonomous-trading",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Copy Trade specific user(s)",
+            "Copy Trade a group",
+            "Buy when they buy + Sell when they sell",
+            "Buy when they buy + Sell when price achieved",
+            "Buy when they buy, but only if marketcap is within specific range",
+            "Buy when they buy, buy only if token was created within specific range",
+            "**New! Set stop loss!**",
+            "Sophisticated combinations",
+            "Notes:",
+            "You can view all your open Auto-Trade rules in the Autonomous Trades section of the dashboard",
+            "The Orders page also includes a tab for executed Auto-Trades",
+            "“Sell when they sell” will currently sell 100% of your tokens purchased in the auto-trade when they sell 50% of theirs. You’ll be able to adjust these settings in a future release.",
+            "Stop loss will attempt to sell 5 times once the target is achieved. Actual sale price may vary somewhat from target on extremely volatile tokens."
+        ],
+        "starterQuestions": [
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%.",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%.",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%.",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set stop loss to 10%.",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set target to 0%."
+            },
+            {
+                "label": "If any 3 people in #copytrade buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%.",
+                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg"
+        ],
+        "actions": [
+            "AUTONOMOUS_TRADING",
+            "COPY_TRADE_RULE_DETAILS",
+            "COPY_TRADE",
+            "COPY_TRADES",
+            "COPY_TRADE_WITH_PROFIT",
+            "GROUP_COPY_TRADE",
+            "GROUP_COPY_TRADES",
+            "GROUP_COPY_TRADE_WITH_PROFIT",
+            "AUTONOMOUS_TRADING_RULE_DETAILS"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Listening to the market’s rhythm",
+            "Detecting synchronized moves",
+            "Locking in your entry",
+            "Executing with quiet precision"
+        ],
+        "orderIndex": 0
+    },
+    {
+        "pluginId": "b5622f90-987e-51d1-bea9-5b1471bb9379",
+        "name": "@moxie-protocol/plugin-senpi-orders",
+        "displayName": "Place Orders",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Enables your agent to trade and swap for you onchain using your Agent Wallet, with instructions for profit-taking and stop losses, including laddered profits and stop losses. ",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-orders",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Swap any token on Base. 💡Pro Tip: use “$” to auto-complete token names",
+            "Spend a % of your wallet to buy coins",
+            "Buy on dip — buy a token when the price drops",
+            "Buy at target price — buy at target price",
+            "Sell at target price — sell at target price (all or some)",
+            "Take profits using profit ladders (see conversation starters for examples).",
+            "Set a stop loss, for all or some of the token",
+            "Apply profit taking or stop loss to any tokens already in your wallet"
+        ],
+        "starterQuestions": [
+            {
+                "label": "Buy me $25 worth of $[replace with token name]",
+                "value": "Buy me $25 worth of $[replace with token name]"
+            },
+            {
+                "label": "Buy me $25 worth of $[TOKEN] and then sell all for 30% gain. Set stop loss at 25%.",
+                "value": "Buy me $25 worth of $[TOKEN] and then sell all for 30% gain. Set stop loss at 25%."
+            },
+            {
+                "label": "Buy me $25 worth of $[TOKEN] and then sell 50% for 30% gain and the other 50% for 100% gain. Sell 50% for stop loss of 20% and 50% for stop loss of 40%.",
+                "value": "Buy me $25 worth of $[TOKEN] and then sell 50% for 30% gain and the other 50% for 100% gain. Sell 50% for stop loss of 20% and 50% for stop loss of 40%."
+            },
+            {
+                "label": "Apply 30% stop loss on all of my $[TOKEN]",
+                "value": "Apply 30% stop loss on all of my $[TOKEN]"
+            },
+            {
+                "label": "Sell 30% of my $[TOKEN] if the price increases by 25% and then 30% more when the price increases by 50%",
+                "value": "Sell 30% of my $[TOKEN] if the price increases by 25% and then 30% more when the price increases by 50%"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg"
+        ],
+        "actions": [
+            "SENPI_ORDERS",
+            "TRADE_TOKENS",
+            "SWAP_TOKENS",
+            "BUY_TOKENS",
+            "SELL_TOKENS",
+            "PURCHASE_TOKENS",
+            "STOP_LOSS",
+            "LIMIT_ORDER",
+            "SWAP_STOP_LOSS",
+            "SWAP_LIMIT_ORDER",
+            "LIMIT_ORDER",
+            "STOP_LOSS_LIMIT_ORDER"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Sensing your intent",
+            "Preparing the strike",
+            "Executing on Base — clean and silent"
+        ],
+        "orderIndex": 1
+    },
+    {
+        "pluginId": "3d5e16f1-40e0-5df0-89c0-b2216bfa8850",
+        "name": "@moxie-protocol/plugin-moxie-groups",
+        "displayName": "Groups",
+        "version": "0.1.8+build.1",
+        "author": "Senpi",
+        "description": "Easily add any Base users to a group, which can then be used for copy trading and other features.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-groups",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-groups/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Create groups",
+            "Add users to groups (This can be done by asking Senpi or on the Groups page.)",
+            "Add all to a group. (Example: (a) ask Senpi for the top holders of a token e.g. $zora, (b) after Senpi returns the results, ask Senpi to add all users to your Zora group.)"
+        ],
+        "starterQuestions": [
+            {
+                "label": "Create the [replace with group name] group",
+                "value": "Create the [replace with group name] group"
+            },
+            {
+                "label": "Add @[replace with name]  to [replace with group name] group",
+                "value": "Add @[replace with name]  to [replace with group name] group"
+            }
+        ],
+        "actions": [
+            "MANAGE_GROUPS",
+            "CREATE_GROUP",
+            "ADD_GROUP_MEMBER",
+            "REMOVE_GROUP_MEMBER",
+            "DELETE_GROUP",
+            "GET_GROUP_DETAILS",
+            "UPDATE_GROUP"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Establishing precision",
+            "Opening the circle",
+            "Confirming members",
+            "Aligning group"
+        ],
+        "orderIndex": 2
+    },
+    {
         "pluginId": "a1aa9887-fc11-5f54-aa62-235c7536ba67",
         "name": "@moxie-protocol/plugin-moxie-token-details",
         "displayName": "Base Token Details",
@@ -280,89 +483,6 @@
         "orderIndex": 5
     },
     {
-        "pluginId": "f65a02f3-4bf2-436d-be50-34e7d33fd293",
-        "name": "@moxie-protocol/plugin-moxie-autonomous-trading",
-        "displayName": "Autonomous Trading",
-        "version": "0.1.8+build.1",
-        "author": "Senpi",
-        "description": "Have Senpi automatically buy and sell tokens for you when specific conditions are met!",
-        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-autonomous-trading",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg",
-        "settings": {},
-        "capabilities": [
-            "Copy Trade specific user(s)",
-            "Copy Trade a group",
-            "Buy when they buy + Sell when they sell",
-            "Buy when they buy + Sell when price achieved",
-            "Buy when they buy, but only if marketcap is within specific range",
-            "Buy when they buy, buy only if token was created within specific range",
-            "**New! Set stop loss!**",
-            "Sophisticated combinations",
-            "Notes:",
-            "You can view all your open Auto-Trade rules in the Autonomous Trades section of the dashboard",
-            "The Orders page also includes a tab for executed Auto-Trades",
-            "“Sell when they sell” will currently sell 100% of your tokens purchased in the auto-trade when they sell 50% of theirs. You’ll be able to adjust these settings in a future release.",
-            "Stop loss will attempt to sell 5 times once the target is achieved. Actual sale price may vary somewhat from target on extremely volatile tokens."
-        ],
-        "starterQuestions": [
-            {
-                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%.",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%."
-            },
-            {
-                "label": "If any 2 people in #copytrade buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%.",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%."
-            },
-            {
-                "label": "If any 2 people in #copytrade buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%.",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%."
-            },
-            {
-                "label": "If any 2 people in #copytrade buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set stop loss to 10%.",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set target to 0%."
-            },
-            {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%.",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
-            },
-            {
-                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
-            },
-            {
-                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%"
-            }
-        ],
-        "mediaUrls": [
-            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg"
-        ],
-        "actions": [
-            "AUTONOMOUS_TRADING",
-            "COPY_TRADE_RULE_DETAILS",
-            "COPY_TRADE",
-            "COPY_TRADES",
-            "COPY_TRADE_WITH_PROFIT",
-            "GROUP_COPY_TRADE",
-            "GROUP_COPY_TRADES",
-            "GROUP_COPY_TRADE_WITH_PROFIT",
-            "AUTONOMOUS_TRADING_RULE_DETAILS"
-        ],
-        "isPremium": false,
-        "freeQueries": 0,
-        "skillCoinAddress": "",
-        "minimumSkillBalance": 0,
-        "status": "ACTIVE",
-        "isDefault": true,
-        "loaders": [
-            "Listening to the market’s rhythm",
-            "Detecting synchronized moves",
-            "Locking in your entry",
-            "Executing with quiet precision"
-        ],
-        "orderIndex": 0
-    },
-    {
         "pluginId": "79449cd9-0590-4ccc-9d9f-12f99438c17b",
         "name": "@moxie-protocol/plugin-degenfans-alfafrens",
         "displayName": "DegenFans AlfaFrens",
@@ -418,54 +538,7 @@
         ],
         "orderIndex": 7
     },
-    {
-        "pluginId": "3d5e16f1-40e0-5df0-89c0-b2216bfa8850",
-        "name": "@moxie-protocol/plugin-moxie-groups",
-        "displayName": "Groups",
-        "version": "0.1.8+build.1",
-        "author": "Senpi",
-        "description": "Easily add any Base users to a group, which can then be used for copy trading and other features.",
-        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-groups",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-groups/images/logo.svg",
-        "settings": {},
-        "capabilities": [
-            "Create groups",
-            "Add users to groups (This can be done by asking Senpi or on the Groups page.)",
-            "Add all to a group. (Example: (a) ask Senpi for the top holders of a token e.g. $zora, (b) after Senpi returns the results, ask Senpi to add all users to your Zora group.)"
-        ],
-        "starterQuestions": [
-            {
-                "label": "Create the [replace with group name] group",
-                "value": "Create the [replace with group name] group"
-            },
-            {
-                "label": "Add @[replace with name]  to [replace with group name] group",
-                "value": "Add @[replace with name]  to [replace with group name] group"
-            }
-        ],
-        "actions": [
-            "MANAGE_GROUPS",
-            "CREATE_GROUP",
-            "ADD_GROUP_MEMBER",
-            "REMOVE_GROUP_MEMBER",
-            "DELETE_GROUP",
-            "GET_GROUP_DETAILS",
-            "UPDATE_GROUP"
-        ],
-        "isPremium": false,
-        "freeQueries": 0,
-        "skillCoinAddress": "",
-        "minimumSkillBalance": 0,
-        "status": "ACTIVE",
-        "isDefault": true,
-        "loaders": [
-            "Establishing precision",
-            "Opening the circle",
-            "Confirming members",
-            "Aligning group"
-        ],
-        "orderIndex": 1
-    },
+
     {
         "pluginId": "b30be45e-ff5a-4ef9-9674-7e27bdc8d1d8",
         "name": "@moxie-protocol/plugin-senpi-sharing",
@@ -837,84 +910,5 @@
             "Sneaking into the market dojo"
         ],
         "orderIndex": 16
-    },
-    {
-        "pluginId": "b5622f90-987e-51d1-bea9-5b1471bb9379",
-        "name": "@moxie-protocol/plugin-senpi-orders",
-        "displayName": "Senpi Orders",
-        "version": "0.1.8+build.1",
-        "author": null,
-        "description": "Handles all order-related operations for Senpi, including swapping (buying or selling) ERC20 tokens, setting up limit orders for profit-taking, and configuring stop-loss orders for minimising loss. It does not support copy trading or automated trading strategies.",
-        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-orders",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg",
-        "settings": {},
-        "capabilities": [
-            "Swap any token on Base. 💡Pro Tip: use “$” to auto-complete token names",
-            "Spend a % of your wallet to buy coins",
-            "Buy on dip — buy a token when the price drops",
-            "Buy at target price — buy at target price",
-            "Sell at target price — sell at target price (all or some)",
-            "Set a stop loss on your agent wallet to automatically sell tokens when the price drops below a certain percentage."
-        ],
-        "starterQuestions": [
-            {
-                "label": "Buy me $25 worth of  $ [replace with token name]",
-                "value": "Buy me $25 worth of  $ [replace with token name]"
-            },
-            {
-                "label": "Swap 100 $DEGEN for  $ [replace with token name]",
-                "value": "Swap 100 $[DEGEN|0x4ed4e862860bed51a9570b96d89af5e1b0efefed] for  $ [replace with token name]"
-            },
-            {
-                "label": "Use 40% of my $eth to buy  $ [replace with token name] and 20% to buy $DEGEN",
-                "value": "Use 40% of my $eth to buy  $ [replace with token name] and 20% to buy $[DEGEN|0x4ed4e862860bed51a9570b96d89af5e1b0efefed]"
-            },
-            {
-                "label": "Set a stop loss on my agent wallet to sell $VVV if the price dips by 5%",
-                "value": "Set a stop loss on my agent wallet to sell $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 5%"
-            },
-            {
-                "label": "Buy me $25 worth of $VVV if the price dips by 5%",
-                "value": "Buy me $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 5%"
-            },
-            {
-                "label": "Buy $25 worth of $VVV if the price dips by 10%",
-                "value": "Buy $25 worth of $[VVV|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
-            },
-            {
-                "label": "Sell 10% of my $BNKR if the price dips by 10%",
-                "value": "Sell 10% of my $[BNKR|0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf] if the price dips by 10%"
-            }
-
-        ],
-        "mediaUrls": [
-            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg"
-        ],
-        "actions": [
-            "SENPI_ORDERS",
-            "TRADE_TOKENS",
-            "SWAP_TOKENS",
-            "BUY_TOKENS",
-            "SELL_TOKENS",
-            "PURCHASE_TOKENS",
-            "STOP_LOSS",
-            "LIMIT_ORDER",
-            "SWAP_STOP_LOSS",
-            "SWAP_LIMIT_ORDER",
-            "LIMIT_ORDER",
-            "STOP_LOSS_LIMIT_ORDER"
-        ],
-        "isPremium": false,
-        "freeQueries": 0,
-        "skillCoinAddress": "",
-        "minimumSkillBalance": 0,
-        "status": "ACTIVE",
-        "isDefault": true,
-        "loaders": [
-            "Sensing your intent",
-            "Preparing the strike",
-            "Executing on Base — clean and silent"
-        ],
-        "orderIndex": 9
     }
 ]
