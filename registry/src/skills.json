@@ -85,7 +85,7 @@
     {
       "pluginId": "b5622f90-987e-51d1-bea9-5b1471bb9379",
       "name": "@moxie-protocol/plugin-senpi-orders",
-      "displayName": "Place Orders",
+      "displayName": "Place Order",
       "version": "0.1.8+build.1",
       "author": null,
       "description": "Enables your agent to trade and swap for you onchain using your Agent Wallet, with instructions for profit-taking and stop losses, including laddered profits and stop losses. ",
@@ -148,9 +148,8 @@
       "status": "ACTIVE",
       "isDefault": true,
       "loaders": [
-        "Sensing your intent",
-        "Preparing the strike",
-        "Executing on Base — clean and silent"
+        "Initiating transaction",
+        "Writing to the Base blockchain"
       ],
       "orderIndex": 1
     },
