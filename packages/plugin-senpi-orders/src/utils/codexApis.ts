@@ -134,3 +134,79 @@ export async function getPrice(
         throw error;
     }
 }
+
+/**
+ * Get the price of a token in USD
+ * @param context
+ * @param amount
+ * @param tokenAddress
+ * @param tokenDecimals
+ * @param output
+ * @returns the amount of tokens equivalent to the USD amount
+ */
+export async function getUSDPrice(
+    traceId: string,
+    moxieUserId: string,
+    sourceTokenAddress: string,
+): Promise<string> {
+
+    try {
+        elizaLogger.debug(
+            traceId,
+            `[getUSDPrice] started with [${moxieUserId}] ` +
+            `[sourceTokenAddress]: ${sourceTokenAddress}`
+        );
+
+       // check if the source token is ETH
+       if (sourceTokenAddress === ETH_ADDRESS) {
+        sourceTokenAddress = WETH_ADDRESS;
+       }
+
+        const tokenDetails = await getTokenDetails([sourceTokenAddress]);
+        elizaLogger.debug(
+            traceId,
+            `[getUSDPrice] [${moxieUserId}] [TOKEN_DETAILS] ${JSON.stringify(tokenDetails)}`
+        );
+
+        if (!tokenDetails || tokenDetails.length === 0) {
+            elizaLogger.error(
+                traceId,
+                `[getUSDPrice] [${moxieUserId}] [ERROR] Error getting token details: ${tokenDetails}`
+            );
+            throw new Error(`Failed to get token details from codex with error`)
+        }
+
+        const sourceTokenDetail = tokenDetails.find(token => token.tokenAddress.toLowerCase() === sourceTokenAddress.toLowerCase());
+
+        // if source token details are not found, throw an error
+        if (!sourceTokenDetail) {
+            elizaLogger.error(
+                traceId,
+                `[getUSDPrice] [${moxieUserId}] [ERROR] source token details not found`
+            );
+            throw new Error(`Failed to get token details from codex with error`)
+        }
+        if (!sourceTokenDetail?.priceUSD) {
+            elizaLogger.error(
+                traceId,
+                `[getUSDPrice] [${moxieUserId}] [ERROR] priceUSD not found for source token: ${sourceTokenDetail}`
+            );
+            throw new Error(`Failed to get token price in USD for token: ${sourceTokenAddress}`)
+        }
+
+        const sourceTokenPriceInUSD = new Decimal(sourceTokenDetail.priceUSD);
+        elizaLogger.debug(
+            traceId,
+            `[getUSDPrice] [${moxieUserId}] [${sourceTokenAddress}] Price USD: ${sourceTokenPriceInUSD}`
+        );
+
+        return sourceTokenPriceInUSD.toString();
+
+    } catch (error) {
+        elizaLogger.error(
+            traceId,
+            `[getUSDPrice] [${moxieUserId}] [ERROR] Unhandled error: ${error.message}`
+        );
+        throw error;
+    }
+}
