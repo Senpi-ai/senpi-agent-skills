@@ -1667,9 +1667,8 @@ async function convertUSDToTokenAmount(
             tokenAddressForCodex = WETH_ADDRESS;
         }
 
-        const tokenWithNetworkId = `${tokenAddressForCodex}:${BASE_NETWORK_ID}`;
         const tokenDetails = await agentLib.getTokenDetails([
-            tokenWithNetworkId,
+            tokenAddressForCodex,
         ]);
         elizaLogger.debug(
             context.traceId,
