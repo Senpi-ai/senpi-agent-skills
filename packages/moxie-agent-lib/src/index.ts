@@ -8,12 +8,11 @@ export { ftaService };
 
 export { walletService };
 
-
 export { RedisClient } from "./services/RedisClient";
 
 export { MoxieAgentDBAdapter } from "./services/MoxieAgentDBAdapter";
 
-export { getTokenDetails, getTrendingTokenDetails } from "./services/tokenDetails";
+export { getTokenDetails } from "./services/tokenDetails";
 
 export { getERC20TokenSymbol } from "./services/tokenSymbol";
 
