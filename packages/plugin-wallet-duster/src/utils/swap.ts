@@ -54,10 +54,24 @@ export async function createManualOrder(
     swapInput: SwapInput | undefined,
     callback: HandlerCallback
 ): Promise<CreateManualOrderOutput> {
-    // Validate input: Ensure at least one of the inputs is provided
+    if (
+        !swapInput ||
+        !swapInput.sellTokenSymbol ||
+        !swapInput.sellTokenAddress ||
+        !swapInput.buyTokenSymbol ||
+        !swapInput.buyTokenAddress
+    ) {
+        elizaLogger.error(
+            `[CREATE_MANUAL_ORDER] [${source}] [${actionType}] [${JSON.stringify(swapInput)}] Invalid swap request: Missing swap input parameters`
+        );
+        return {
+            success: false,
+            error: "Missing swap input parameters",
+        };
+    }
 
     await callback?.({
-        text: `\n# Dusting ${formatTokenMention(swapInput?.sellTokenSymbol, swapInput?.sellTokenAddress)} to ${formatTokenMention(swapInput?.buyTokenSymbol, swapInput?.buyTokenAddress)}\n`,
+        text: `\n# Dusting ${formatTokenMention(swapInput.sellTokenSymbol, swapInput.sellTokenAddress)} to ${formatTokenMention(swapInput.buyTokenSymbol, swapInput.buyTokenAddress)}\n`,
     });
 
     elizaLogger.debug(
@@ -72,7 +86,7 @@ export async function createManualOrder(
 
     try {
         await callback?.({
-            text: `\nDusting ${formatTokenMention(swapInput?.sellTokenSymbol, swapInput?.sellTokenAddress)} to ${formatTokenMention(swapInput?.buyTokenSymbol, swapInput?.buyTokenAddress)} is in progress.\n`,
+            text: `\nDusting ${formatTokenMention(swapInput.sellTokenSymbol, swapInput.sellTokenAddress)} to ${formatTokenMention(swapInput.buyTokenSymbol, swapInput.buyTokenAddress)} is in progress.\n`,
         });
 
         const response = await fetch(process.env.MOXIE_API_URL, {
@@ -98,7 +112,7 @@ export async function createManualOrder(
         }
 
         await callback?.({
-            text: `\nView transaction status on [BaseScan](https://basescan.org/tx/${result.data.CreateManualOrder.metadata.swapOutput.txHash}).\nDusting ${formatTokenMention(swapInput?.sellTokenSymbol, swapInput?.sellTokenAddress)} to ${formatTokenMention(swapInput?.buyTokenSymbol, swapInput?.buyTokenAddress)} completed successfully.\n`,
+            text: `\nView transaction status on [BaseScan](https://basescan.org/tx/${result.data.CreateManualOrder.metadata.swapOutput.txHash}).\nDusting ${formatTokenMention(swapInput.sellTokenSymbol, swapInput.sellTokenAddress)} to ${formatTokenMention(swapInput.buyTokenSymbol, swapInput.buyTokenAddress)} completed successfully.\n`,
         });
 
         return result.data.CreateManualOrder as CreateManualOrderOutput;
@@ -112,5 +126,10 @@ export async function createManualOrder(
                 details: `An error occurred while processing your request. Please try again.`,
             },
         });
+
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : String(error),
+        };
     }
 }

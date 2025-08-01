@@ -112,7 +112,7 @@ export type SwapOutput = {
 export type CreateManualOrderOutput = {
     success: boolean;
     error?: string;
-    metadata: {
+    metadata?: {
         traceId: string;
         orderId: string;
         ruleId?: string;
