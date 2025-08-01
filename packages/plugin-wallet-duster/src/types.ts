@@ -88,3 +88,65 @@ export interface GetQuoteResponse {
         value: string;
     };
 }
+
+export interface CreateManualOrderInput {
+    actionType: ActionType;
+    source: Source;
+    swapInput?: SwapInput;
+}
+
+// Use type for simple object shapes (could be interface too)
+export type SwapOutput = {
+    txHash: string;
+    buyAmount: string;
+    sellAmount: string;
+    status: string;
+    buyAmountInUSD?: string;
+    sellAmountInUSD?: string;
+    closedOrderId?: string;
+    sellTriggerLedgerId?: string;
+    buyPrice?: string;
+};
+
+// Use type for complex nested shapes
+export type CreateManualOrderOutput = {
+    success: boolean;
+    error?: string;
+    metadata: {
+        traceId: string;
+        orderId: string;
+        ruleId?: string;
+        ruleExecutionLogId?: string;
+        swapOutput?: SwapOutput;
+    };
+};
+
+// Use union type for simple string literals
+export enum Source {
+    AGENT = "AGENT",
+    WIDGET = "WIDGET",
+    AUTOMATION = "AUTOMATION",
+    MANUAL = "MANUAL",
+}
+
+export enum ActionType {
+    SWAP = "SWAP",
+    SWAP_SL = "SWAP_SL",
+    SWAP_SL_LO = "SWAP_SL_LO",
+    SWAP_LO = "SWAP_LO",
+    LO = "LO",
+    SL = "SL",
+    SL_LO = "SL_LO",
+}
+
+export interface SwapInput {
+    sellTokenAddress: string;
+    buyTokenAddress: string;
+    amount: string;
+    slippage?: number;
+    chainId: number;
+    sellTokenSymbol: string;
+    buyTokenSymbol: string;
+    sellTokenDecimal: number;
+    buyTokenDecimal: number;
+}

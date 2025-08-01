@@ -9,17 +9,11 @@ import {
     ModelClass,
     State,
 } from "@moxie-protocol/core";
-import {
-    MoxieClientWallet,
-    MoxieUser,
-    MoxieWalletClient,
-    Portfolio,
-} from "@moxie-protocol/moxie-agent-lib";
-import { DustRequestSchema } from "../types";
+import { MoxieUser, Portfolio } from "@moxie-protocol/moxie-agent-lib";
+import { ActionType, DustRequestSchema, Source } from "../types";
 import { dustRequestTemplate } from "../templates";
-import { swap } from "../utils/swap";
 import { ETH_ADDRESS } from "../constants/constants";
-import { ethers } from "ethers";
+import { createManualOrder } from "../utils/swap";
 
 export const dustWalletAction: Action = {
     name: "DUST_WALLET_TO_ETH",
@@ -162,9 +156,6 @@ export const dustWalletAction: Action = {
                 return true;
             }
 
-            const wallet = state?.moxieWalletClient as MoxieWalletClient;
-            const agentWallet = state?.agentWallet as MoxieClientWallet;
-
             const { tokenBalances }: Portfolio =
                 (state?.agentWalletBalance as Portfolio) ?? {
                     tokenBalances: [],
@@ -205,21 +196,26 @@ export const dustWalletAction: Action = {
             });
 
             let totalUsdValue = 0;
-            const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
             let dustedTokenCount = 0;
             for (const token of dustTokens) {
-                const dustedToken = await swap(
-                    traceId,
-                    token.token.baseToken.address,
-                    token.token.baseToken.symbol,
-                    moxieUserId,
-                    agentWallet.address,
-                    provider,
-                    callback,
-                    wallet,
-                    threshold
+                const { success } = await createManualOrder(
+                    state.authorizationHeader as string,
+                    ActionType.SWAP,
+                    Source.AGENT,
+                    {
+                        sellTokenAddress: token.token.baseToken.address,
+                        chainId: 8453,
+                        buyTokenAddress: ETH_ADDRESS,
+                        amount: token.token.balance.toString(),
+                        buyTokenDecimal: 18,
+                        buyTokenSymbol: "ETH",
+                        sellTokenDecimal: token.token.baseToken.decimals,
+                        sellTokenSymbol: token.token.baseToken.symbol,
+                    },
+                    callback
                 );
-                if (dustedToken !== null) {
+
+                if (success) {
                     dustedTokenCount++;
                     totalUsdValue += token.token.balanceUSD;
                 }
