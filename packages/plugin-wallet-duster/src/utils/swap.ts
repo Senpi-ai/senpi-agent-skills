@@ -107,7 +107,10 @@ export async function createManualOrder(
             `[CREATE_MANUAL_ORDER] [${source}] [${actionType}] CreateManualOrder result: ${JSON.stringify(result)}`
         );
 
-        if (result.errors) {
+        if (
+            result?.errors ||
+            !result?.data?.CreateManualOrder?.metadata?.swapOutput?.txHash
+        ) {
             throw new Error(result.errors[0].message);
         }
 
