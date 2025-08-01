@@ -14,6 +14,7 @@ import { ActionType, DustRequestSchema, Source } from "../types";
 import { dustRequestTemplate } from "../templates";
 import { ETH_ADDRESS } from "../constants/constants";
 import { createManualOrder } from "../utils/swap";
+import { parseUnits } from "ethers";
 
 export const dustWalletAction: Action = {
     name: "DUST_WALLET_TO_ETH",
@@ -198,6 +199,13 @@ export const dustWalletAction: Action = {
             let totalUsdValue = 0;
             let dustedTokenCount = 0;
             for (const token of dustTokens) {
+                const sellTokenDecimal = token.token.baseToken.decimals;
+
+                const balanceInWei = parseUnits(
+                    token.token.balance.toString(),
+                    sellTokenDecimal
+                ).toString();
+
                 const { success } = await createManualOrder(
                     state.authorizationHeader as string,
                     ActionType.SWAP,
@@ -206,10 +214,10 @@ export const dustWalletAction: Action = {
                         sellTokenAddress: token.token.baseToken.address,
                         chainId: 8453,
                         buyTokenAddress: ETH_ADDRESS,
-                        amount: token.token.balance.toString(),
+                        amount: balanceInWei,
                         buyTokenDecimal: 18,
                         buyTokenSymbol: "ETH",
-                        sellTokenDecimal: token.token.baseToken.decimals,
+                        sellTokenDecimal,
                         sellTokenSymbol: token.token.baseToken.symbol,
                     },
                     callback
