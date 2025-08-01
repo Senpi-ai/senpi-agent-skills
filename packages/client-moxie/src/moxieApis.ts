@@ -214,6 +214,7 @@ export function createMoxieApiRouter(
                                         name: edge.node.name,
                                         symbol: edge.node.symbol,
                                         address: edge.node.tokenAddress,
+                                        decimals: edge.node.decimals,
                                     },
                                 },
                             })),
