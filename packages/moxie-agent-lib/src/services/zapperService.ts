@@ -19,6 +19,7 @@ interface BaseToken {
     name: string;
     symbol: string;
     address: string;
+    decimals: number;
 }
 
 interface Token {
@@ -82,6 +83,7 @@ export interface TokenNode {
     tokenAddress: string;
     name: string;
     symbol: string;
+    decimals: number;
     price: number;
     balance: number;
     balanceUSD: number;
@@ -159,6 +161,7 @@ export async function getPortfolioV2Data(
                                         tokenAddress
                                         name
                                         symbol
+                                        decimals
                                         price
                                         balance
                                         balanceUSD

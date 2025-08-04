@@ -1,6 +1,7 @@
 import { GetQuoteResponse } from "../types";
 
 export const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+export const ETH_SYMBOL = "ETH";
 export const WETH_ADDRESS = "0x4200000000000000000000000000000000000006";
 export const ETH_TOKEN_DECIMALS = 18;
 export const USDC_ADDRESS = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";

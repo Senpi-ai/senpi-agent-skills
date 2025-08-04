@@ -9,17 +9,17 @@ import {
     ModelClass,
     State,
 } from "@moxie-protocol/core";
-import {
-    MoxieClientWallet,
-    MoxieUser,
-    MoxieWalletClient,
-    Portfolio,
-} from "@moxie-protocol/moxie-agent-lib";
-import { DustRequestSchema } from "../types";
+import { MoxieUser, Portfolio } from "@moxie-protocol/moxie-agent-lib";
+import { ActionType, DustRequestSchema, Source } from "../types";
 import { dustRequestTemplate } from "../templates";
-import { swap } from "../utils/swap";
-import { ETH_ADDRESS } from "../constants/constants";
-import { ethers } from "ethers";
+import {
+    BASE_NETWORK_ID,
+    ETH_ADDRESS,
+    ETH_SYMBOL,
+    ETH_TOKEN_DECIMALS,
+} from "../constants/constants";
+import { createManualOrder } from "../utils/swap";
+import { parseUnits } from "ethers";
 
 export const dustWalletAction: Action = {
     name: "DUST_WALLET_TO_ETH",
@@ -162,9 +162,6 @@ export const dustWalletAction: Action = {
                 return true;
             }
 
-            const wallet = state?.moxieWalletClient as MoxieWalletClient;
-            const agentWallet = state?.agentWallet as MoxieClientWallet;
-
             const { tokenBalances }: Portfolio =
                 (state?.agentWalletBalance as Portfolio) ?? {
                     tokenBalances: [],
@@ -205,21 +202,33 @@ export const dustWalletAction: Action = {
             });
 
             let totalUsdValue = 0;
-            const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
             let dustedTokenCount = 0;
             for (const token of dustTokens) {
-                const dustedToken = await swap(
-                    traceId,
-                    token.token.baseToken.address,
-                    token.token.baseToken.symbol,
-                    moxieUserId,
-                    agentWallet.address,
-                    provider,
-                    callback,
-                    wallet,
-                    threshold
+                const sellTokenDecimal = token.token.baseToken.decimals;
+
+                const balanceInWei = parseUnits(
+                    token.token.balance.toString(),
+                    sellTokenDecimal
+                ).toString();
+
+                const { success } = await createManualOrder(
+                    state.authorizationHeader as string,
+                    ActionType.SWAP,
+                    Source.AGENT,
+                    {
+                        sellTokenAddress: token.token.baseToken.address,
+                        chainId: BASE_NETWORK_ID,
+                        buyTokenAddress: ETH_ADDRESS,
+                        amount: balanceInWei,
+                        buyTokenDecimal: ETH_TOKEN_DECIMALS,
+                        buyTokenSymbol: ETH_SYMBOL,
+                        sellTokenDecimal,
+                        sellTokenSymbol: token.token.baseToken.symbol,
+                    },
+                    callback
                 );
-                if (dustedToken !== null) {
+
+                if (success) {
                     dustedTokenCount++;
                     totalUsdValue += token.token.balanceUSD;
                 }
