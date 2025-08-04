@@ -75,7 +75,7 @@ async function fetchWithRetry(
                 error instanceof Error ? error : new Error(String(error));
 
             // If this is the last attempt, throw the error
-            if (attempt === maxRetries) {
+            if (attempt + 1 === maxRetries) {
                 throw lastError;
             }
 
