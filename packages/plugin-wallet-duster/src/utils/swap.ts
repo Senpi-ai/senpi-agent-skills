@@ -46,8 +46,16 @@ async function fetchWithRetry(
     const maxRetries = 3;
     const delay = 1000; // 1 second delay between retries
 
+    elizaLogger.info(
+        `[CREATE_MANUAL_ORDER] [${url}] [${JSON.stringify(options)}]`
+    );
+
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
+            elizaLogger.info(
+                `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} of ${maxRetries}`
+            );
+
             const response = await fetch(url, options);
 
             // If the response is successful (2xx status), return it
@@ -156,10 +164,10 @@ export async function createManualOrder(
         );
 
         if (
-            result?.errors ||
+            !result?.data?.CreateManualOrder?.success ||
             !result?.data?.CreateManualOrder?.metadata?.swapOutput?.txHash
         ) {
-            throw new Error(result.errors[0].message);
+            throw new Error(result?.data?.CreateManualOrder?.error);
         }
 
         await callback?.({
