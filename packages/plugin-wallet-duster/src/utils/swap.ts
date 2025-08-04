@@ -36,6 +36,54 @@ const mutation = gql`
 `;
 
 /**
+ * Helper function to implement exponential backoff retry logic
+ */
+async function fetchWithRetry(
+    url: string,
+    options: RequestInit
+): Promise<Response> {
+    let lastError: Error;
+    const maxRetries = 3;
+    const delay = 1000; // 1 second delay between retries
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+            const response = await fetch(url, options);
+
+            // If the response is successful (2xx status), return it
+            if (response.ok) {
+                return response;
+            }
+
+            // If it's a client error (4xx), don't retry
+            if (response.status >= 400 && response.status < 500) {
+                return response;
+            }
+
+            // For server errors (5xx) or network errors, throw to trigger retry
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        } catch (error) {
+            lastError =
+                error instanceof Error ? error : new Error(String(error));
+
+            // If this is the last attempt, throw the error
+            if (attempt === maxRetries) {
+                throw lastError;
+            }
+
+            elizaLogger.warn(
+                `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${lastError.message}`
+            );
+
+            // Wait before retrying
+            await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+    }
+
+    throw lastError!;
+}
+
+/**
  * Creates a manual order by sending a GraphQL mutation request.
  *
  * @param authorizationHeader - The authorization token for the request.
@@ -89,7 +137,7 @@ export async function createManualOrder(
             text: `\nDusting ${formatTokenMention(swapInput.sellTokenSymbol, swapInput.sellTokenAddress)} to ${formatTokenMention(swapInput.buyTokenSymbol, swapInput.buyTokenAddress)} is in progress.\n`,
         });
 
-        const response = await fetch(process.env.MOXIE_API_URL, {
+        const response = await fetchWithRetry(process.env.MOXIE_API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
