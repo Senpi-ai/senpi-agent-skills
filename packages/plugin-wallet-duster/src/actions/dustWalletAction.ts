@@ -12,7 +12,12 @@ import {
 import { MoxieUser, Portfolio } from "@moxie-protocol/moxie-agent-lib";
 import { ActionType, DustRequestSchema, Source } from "../types";
 import { dustRequestTemplate } from "../templates";
-import { ETH_ADDRESS } from "../constants/constants";
+import {
+    BASE_NETWORK_ID,
+    ETH_ADDRESS,
+    ETH_SYMBOL,
+    ETH_TOKEN_DECIMALS,
+} from "../constants/constants";
 import { createManualOrder } from "../utils/swap";
 import { parseUnits } from "ethers";
 
@@ -212,11 +217,11 @@ export const dustWalletAction: Action = {
                     Source.AGENT,
                     {
                         sellTokenAddress: token.token.baseToken.address,
-                        chainId: 8453,
+                        chainId: BASE_NETWORK_ID,
                         buyTokenAddress: ETH_ADDRESS,
                         amount: balanceInWei,
-                        buyTokenDecimal: 18,
-                        buyTokenSymbol: "ETH",
+                        buyTokenDecimal: ETH_TOKEN_DECIMALS,
+                        buyTokenSymbol: ETH_SYMBOL,
                         sellTokenDecimal,
                         sellTokenSymbol: token.token.baseToken.symbol,
                     },
