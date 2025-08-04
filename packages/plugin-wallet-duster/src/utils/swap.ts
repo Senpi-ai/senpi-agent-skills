@@ -50,7 +50,7 @@ async function fetchWithRetry(
         `[CREATE_MANUAL_ORDER] [${url}] [${JSON.stringify(options)}]`
     );
 
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
             elizaLogger.info(
                 `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} of ${maxRetries}`
@@ -80,7 +80,7 @@ async function fetchWithRetry(
             }
 
             elizaLogger.warn(
-                `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${lastError.message}`
+                `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${lastError}`
             );
 
             // Wait before retrying
