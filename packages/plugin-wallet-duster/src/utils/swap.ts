@@ -60,11 +60,11 @@ async function fetchWithRetry(
 
                 if (!response.ok) {
                     elizaLogger.warn(
-                        `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${response.status}`
+                        `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${response.status} ${response.statusText}`
                     );
                     if (attempt + 1 === maxRetries) {
                         elizaLogger.error(
-                            `[CREATE_MANUAL_ORDER] Creating manual order failed, retrying in ${delay}ms: ${response.status}`
+                            `[CREATE_MANUAL_ORDER] Creating manual order failed, retrying in ${delay}ms: ${response.status} ${response.statusText}`
                         );
                         return;
                     }
