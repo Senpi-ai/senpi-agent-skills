@@ -163,6 +163,7 @@ export async function getPortfolioV2Data(
                                         tokenAddress
                                         name
                                         symbol
+                                        decimals
                                         price
                                         balance
                                         balanceUSD
@@ -304,7 +305,6 @@ export async function getPortfolioV2DataByTokenAddress(
                                     tokenAddress
                                     name
                                     symbol
-                                    decimals
                                     balance
                                     balanceUSD
                                     imgUrl
