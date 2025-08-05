@@ -50,45 +50,52 @@ async function fetchWithRetry(
         `[CREATE_MANUAL_ORDER] [${url}] [${JSON.stringify(options)}]`
     );
 
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-        try {
-            elizaLogger.info(
-                `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} of ${maxRetries}`
-            );
+    try {
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                elizaLogger.info(
+                    `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} of ${maxRetries}`
+                );
 
-            const response = await fetch(url, options);
+                const response = await fetch(url, options);
 
-            // If the response is successful (2xx status), return it
-            if (response.ok) {
-                return response;
+                // If the response is successful (2xx status), return it
+                if (response.ok) {
+                    return response;
+                }
+
+                // If it's a client error (4xx), don't retry
+                if (response.status >= 400 && response.status < 500) {
+                    return response;
+                }
+
+                // For server errors (5xx) or network errors, throw to trigger retry
+                throw new Error(
+                    `HTTP ${response.status}: ${response.statusText}`
+                );
+            } catch (error) {
+                lastError =
+                    error instanceof Error ? error : new Error(String(error));
+
+                // If this is the last attempt, throw the error
+                if (attempt + 1 === maxRetries) {
+                    throw lastError;
+                }
+
+                elizaLogger.warn(
+                    `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${lastError}`
+                );
+
+                // Wait before retrying
+                await new Promise((resolve) => setTimeout(resolve, delay));
             }
-
-            // If it's a client error (4xx), don't retry
-            if (response.status >= 400 && response.status < 500) {
-                return response;
-            }
-
-            // For server errors (5xx) or network errors, throw to trigger retry
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        } catch (error) {
-            lastError =
-                error instanceof Error ? error : new Error(String(error));
-
-            // If this is the last attempt, throw the error
-            if (attempt + 1 === maxRetries) {
-                throw lastError;
-            }
-
-            elizaLogger.warn(
-                `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${lastError}`
-            );
-
-            // Wait before retrying
-            await new Promise((resolve) => setTimeout(resolve, delay));
         }
+    } catch (error) {
+        elizaLogger.error(
+            `[CREATE_MANUAL_ORDER] [${url}] [${JSON.stringify(options)}] Error: ${error}`
+        );
+        throw error;
     }
-
-    throw lastError!;
 }
 
 /**
