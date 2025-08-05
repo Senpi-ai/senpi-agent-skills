@@ -148,20 +148,21 @@ export async function getPortfolioV2Data(
                 query PortfolioV2(
                     $addresses: [Address!]!
                     $networks: [Network!]!
+                    $after: String
                 ) {
                     portfolioV2(addresses: $addresses, networks: $networks) {
                         tokenBalances {
                             totalBalanceUSD
                             byToken(
                                 filters: { minBalanceUSD: 0.01 }
-                                first: 30
+                                first: 100
+                                after: $after
                             ) {
                                 edges {
                                     node {
                                         tokenAddress
                                         name
                                         symbol
-                                        decimals
                                         price
                                         balance
                                         balanceUSD
@@ -173,6 +174,7 @@ export async function getPortfolioV2Data(
                                             }
                                         }
                                     }
+                                    cursor
                                 }
                             }
                         }
@@ -184,49 +186,91 @@ export async function getPortfolioV2Data(
                 }
             `;
 
-            let attempts = 0;
-            const maxAttempts = 3;
-            const backoffMs = 1000;
+            let allEdges: Array<{ cursor: string; node: TokenNode }> = [];
+            let after: string | null = null;
+            let hasNextPage = true;
 
-            while (attempts < maxAttempts) {
-                try {
-                    const response = await client.post("", {
-                        query: query,
-                        variables: {
-                            addresses,
-                            networks,
-                        },
-                    });
+            while (hasNextPage) {
+                let attempts = 0;
+                const maxAttempts = 3;
+                const backoffMs = 1000;
 
-                    if (response.status !== 200) {
-                        throw new Error(
-                            `HTTP error! status: ${response.status}`
+                while (attempts < maxAttempts) {
+                    try {
+                        const response = await client.post("", {
+                            query: query,
+                            variables: {
+                                addresses,
+                                networks,
+                                after,
+                            },
+                        });
+
+                        if (response.status !== 200) {
+                            throw new Error(
+                                `HTTP error! status: ${response.status}`
+                            );
+                        }
+
+                        const portfolioData = response.data.data.portfolioV2;
+                        const edges = portfolioData.tokenBalances.byToken.edges;
+
+                        // Add edges from this page to our collection
+                        allEdges = allEdges.concat(edges);
+
+                        // Check if there are more pages
+                        if (edges.length === 0 || edges.length < 100) {
+                            hasNextPage = false;
+                        } else {
+                            // Get the cursor from the last edge for the next page
+                            after = edges[edges.length - 1].cursor;
+                        }
+
+                        break; // Success, exit retry loop
+                    } catch (error) {
+                        attempts++;
+                        if (attempts === maxAttempts) {
+                            throw error;
+                        }
+                        elizaLogger.warn(
+                            `Airstack API call failed, attempt ${attempts}/${maxAttempts}. Retrying...`
+                        );
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, backoffMs * attempts)
                         );
                     }
-
-                    const portfolioData = response.data.data.portfolioV2;
-                    await runtime.cacheManager.set(
-                        cacheKey,
-                        JSON.stringify(portfolioData),
-                        {
-                            expires: Date.now() + CACHE_EXPIRATION,
-                        }
-                    );
-
-                    return portfolioData;
-                } catch (error) {
-                    attempts++;
-                    if (attempts === maxAttempts) {
-                        throw error;
-                    }
-                    elizaLogger.warn(
-                        `Airstack API call failed, attempt ${attempts}/${maxAttempts}. Retrying...`
-                    );
-                    await new Promise((resolve) =>
-                        setTimeout(resolve, backoffMs * attempts)
-                    );
                 }
             }
+
+            // Construct the final response with all edges
+            const finalPortfolioData: PortfolioV2Data = {
+                tokenBalances: {
+                    totalBalanceUSD: 0, // This will be calculated from all edges
+                    byToken: {
+                        edges: allEdges,
+                    },
+                },
+                metadata: {
+                    addresses,
+                    networks,
+                },
+            };
+
+            // Calculate total balance from all edges
+            finalPortfolioData.tokenBalances.totalBalanceUSD = allEdges.reduce(
+                (total, edge) => total + edge.node.balanceUSD,
+                0
+            );
+
+            await runtime.cacheManager.set(
+                cacheKey,
+                JSON.stringify(finalPortfolioData),
+                {
+                    expires: Date.now() + CACHE_EXPIRATION,
+                }
+            );
+
+            return finalPortfolioData;
         } catch (error) {
             elizaLogger.error("Error fetching portfolioV2 data:", error);
             throw error;
