@@ -41,7 +41,7 @@ const mutation = gql`
 async function fetchWithRetry(
     url: string,
     options: RequestInit
-): Promise<Response> {
+): Promise<Response | undefined> {
     let lastError: Error;
     const maxRetries = 3;
     const delay = 1000; // 1 second delay between retries
@@ -49,46 +49,56 @@ async function fetchWithRetry(
     elizaLogger.info(
         `[CREATE_MANUAL_ORDER] [${url}] [${JSON.stringify(options)}]`
     );
+    try {
+        for (let attempt = 0; attempt < maxRetries; attempt++) {
+            try {
+                elizaLogger.info(
+                    `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} of ${maxRetries}`
+                );
 
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-        try {
-            elizaLogger.info(
-                `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} of ${maxRetries}`
-            );
+                const response = await fetch(url, options);
 
-            const response = await fetch(url, options);
+                if (!response.ok) {
+                    elizaLogger.warn(
+                        `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${response.status} ${response.statusText}`
+                    );
+                    if (attempt + 1 === maxRetries) {
+                        elizaLogger.error(
+                            `[CREATE_MANUAL_ORDER] Creating manual order failed, retrying in ${delay}ms: ${response.status} ${response.statusText}`
+                        );
+                        return;
+                    }
+                    await new Promise((resolve) => setTimeout(resolve, delay));
+                    continue;
+                }
 
-            // If the response is successful (2xx status), return it
-            if (response.ok) {
                 return response;
+            } catch (error) {
+                lastError =
+                    error instanceof Error ? error : new Error(String(error));
+
+                // If this is the last attempt, throw the error
+                if (attempt + 1 === maxRetries) {
+                    elizaLogger.error(
+                        `[CREATE_MANUAL_ORDER] Creating manual order failed, retrying in ${delay}ms: ${lastError}`
+                    );
+                    return;
+                }
+
+                elizaLogger.warn(
+                    `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${lastError}`
+                );
+
+                // Wait before retrying
+                await new Promise((resolve) => setTimeout(resolve, delay));
             }
-
-            // If it's a client error (4xx), don't retry
-            if (response.status >= 400 && response.status < 500) {
-                return response;
-            }
-
-            // For server errors (5xx) or network errors, throw to trigger retry
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        } catch (error) {
-            lastError =
-                error instanceof Error ? error : new Error(String(error));
-
-            // If this is the last attempt, throw the error
-            if (attempt + 1 === maxRetries) {
-                throw lastError;
-            }
-
-            elizaLogger.warn(
-                `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${lastError}`
-            );
-
-            // Wait before retrying
-            await new Promise((resolve) => setTimeout(resolve, delay));
         }
+    } catch (error) {
+        elizaLogger.error(
+            `[CREATE_MANUAL_ORDER] Creating manual order failed: ${error}`
+        );
+        throw error;
     }
-
-    throw lastError!;
 }
 
 /**
@@ -157,7 +167,7 @@ export async function createManualOrder(
             }),
         });
 
-        const result = await response.json();
+        const result = await response?.json();
 
         elizaLogger.info(
             `[CREATE_MANUAL_ORDER] [${source}] [${actionType}] CreateManualOrder result: ${JSON.stringify(result)}`
