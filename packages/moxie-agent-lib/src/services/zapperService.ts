@@ -153,11 +153,7 @@ export async function getPortfolioV2Data(
                     portfolioV2(addresses: $addresses, networks: $networks) {
                         tokenBalances {
                             totalBalanceUSD
-                            byToken(
-                                filters: { minBalanceUSD: 0.01 }
-                                first: 100
-                                after: $after
-                            ) {
+                            byToken(first: 100, after: $after) {
                                 edges {
                                     node {
                                         tokenAddress
