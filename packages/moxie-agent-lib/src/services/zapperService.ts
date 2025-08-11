@@ -25,7 +25,7 @@ interface BaseToken {
 interface Token {
     balance: number;
     balanceUSD: number;
-    balanceRaw: number;
+    balanceRaw: string;
     baseToken: BaseToken;
     holdingPercentage?: number;
 }
@@ -88,7 +88,7 @@ export interface TokenNode {
     price: number;
     balance: number;
     balanceUSD: number;
-    balanceRaw: number;
+    balanceRaw: string;
     holdingPercentage: number;
     imgUrl: string;
     accountBalances?: {
