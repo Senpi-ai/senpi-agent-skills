@@ -353,6 +353,8 @@ export async function getUserByPrivyBearerToken(
             headers: {
                 "Content-Type": "application/json",
                 Authorization: bearerToken,
+                'Origin': process.env.ORIGIN_HEADER,
+
             },
             body: JSON.stringify({
                 query,
@@ -408,6 +410,8 @@ query GetWalletDetails {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: bearerToken,
+                    'Origin': process.env.ORIGIN_HEADER,
+
                 },
                 body: JSON.stringify({ query }),
             });
@@ -501,6 +505,8 @@ export async function SignMessage(
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: bearerToken,
+                    'Origin': process.env.ORIGIN_HEADER,
+
                 },
                 body: JSON.stringify({
                     query,
@@ -593,6 +599,8 @@ export async function SignTransaction(
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: bearerToken,
+                    'Origin': process.env.ORIGIN_HEADER,
+
                 },
                 body: JSON.stringify({
                     query,
@@ -681,6 +689,8 @@ export async function SignTypedData(
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: bearerToken,
+                    'Origin': process.env.ORIGIN_HEADER,
+
                 },
                 body: JSON.stringify({
                     query,
@@ -771,6 +781,8 @@ export async function sendTransaction(
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: bearerToken,
+                    'Origin': process.env.ORIGIN_HEADER,
+
                 },
                 body: JSON.stringify({
                     query,
@@ -903,6 +915,7 @@ export async function publishPost(
             headers: {
                 "Content-Type": "application/json",
                 Authorization: bearerToken,
+                'Origin': process.env.ORIGIN_HEADER,
             },
             body: JSON.stringify({
                 query: mutation,
