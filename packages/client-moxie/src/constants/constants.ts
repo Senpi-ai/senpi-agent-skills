@@ -124,10 +124,12 @@ export const mockPortfolio: Portfolio = {
             token: {
                 balance: 1000000000000000000,
                 balanceUSD: 1000000000000000000,
+                balanceRaw: 1000000000000000000,
                 baseToken: {
                     name: "ETH",
                     address: "0x0000000000000000000000000000000000000000",
                     symbol: "ETH",
+                    decimals: 18,
                 },
             },
         },
