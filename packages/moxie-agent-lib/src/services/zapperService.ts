@@ -25,6 +25,7 @@ interface BaseToken {
 interface Token {
     balance: number;
     balanceUSD: number;
+    balanceRaw: number;
     baseToken: BaseToken;
     holdingPercentage?: number;
 }
@@ -87,6 +88,7 @@ export interface TokenNode {
     price: number;
     balance: number;
     balanceUSD: number;
+    balanceRaw: number;
     holdingPercentage: number;
     imgUrl: string;
     accountBalances?: {
@@ -163,6 +165,7 @@ export async function getPortfolioV2Data(
                                         price
                                         balance
                                         balanceUSD
+                                        balanceRaw
                                         accountBalances {
                                             edges {
                                                 node {

@@ -210,6 +210,7 @@ export function createMoxieApiRouter(
                                 token: {
                                     balance: edge.node.balance,
                                     balanceUSD: edge.node.balanceUSD,
+                                    balanceRaw: edge.node.balanceRaw,
                                     baseToken: {
                                         name: edge.node.name,
                                         symbol: edge.node.symbol,

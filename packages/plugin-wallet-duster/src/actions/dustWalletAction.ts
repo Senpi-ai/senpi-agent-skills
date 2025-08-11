@@ -19,7 +19,6 @@ import {
     ETH_TOKEN_DECIMALS,
 } from "../constants/constants";
 import { createManualOrder } from "../utils/swap";
-import { parseUnits } from "ethers";
 
 export const dustWalletAction: Action = {
     name: "DUST_WALLET_TO_ETH",
@@ -205,11 +204,7 @@ export const dustWalletAction: Action = {
             let dustedTokenCount = 0;
             for (const token of dustTokens) {
                 const sellTokenDecimal = token.token.baseToken.decimals;
-
-                const balanceInWei = parseUnits(
-                    token.token.balance.toString(),
-                    sellTokenDecimal
-                ).toString();
+                const balanceInWei = token.token.balanceRaw;
 
                 const { success } = await createManualOrder(
                     state.authorizationHeader as string,
