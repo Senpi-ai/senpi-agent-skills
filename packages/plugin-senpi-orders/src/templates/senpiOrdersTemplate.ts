@@ -24,7 +24,7 @@ Please analyze the user's request and provide a detailed breakdown of the transa
    - SWAP_SL: Execute a swap and set a stop-loss simultaneously (only for buy operations)
    - SWAP_LO: Execute a swap and set a sell limit order (only for buy operations)
    - SWAP_SL_LO: Execute a swap, set a stop-loss, and a limit order (only for buy operations)
-   - LO: Limit Order (buy/sell at a target price)
+   - LO: Limit Order (buy at a lower price or sell at a higher target price)
    - SL: Stop-Loss (sell if price drops below a threshold)
    - SL_LO: Set both stop-loss and limit order on currently held token
 
