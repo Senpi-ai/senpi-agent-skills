@@ -160,6 +160,7 @@ export async function createManualOrder(
             headers: {
                 "Content-Type": "application/json",
                 Authorization: authorizationHeader,
+                'Origin': process.env.ORIGIN_HEADER,
             },
             body: JSON.stringify({
                 query: mutation,
