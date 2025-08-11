@@ -122,8 +122,8 @@ export const mockPortfolio: Portfolio = {
             address: "0x0000000000000000000000000000000000000000",
             network: "BASE_MAINNET",
             token: {
-                balance: 1000000000000000000,
-                balanceUSD: 1000000000000000000,
+                balance: 1,
+                balanceUSD: 1,
                 balanceRaw: "1000000000000000000",
                 baseToken: {
                     name: "ETH",
