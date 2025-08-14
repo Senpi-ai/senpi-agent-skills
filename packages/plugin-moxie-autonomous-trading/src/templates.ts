@@ -22,6 +22,9 @@ Please follow these steps to process the user input and generate the appropriate
    - If it mentions selling based on profit, it's a PROFIT rule.
    - Combine these factors to determine the exact rule type.
    - Important: The presence of multiple individual users (e.g., "@[user1|id1] and @[user2|id2]") does NOT indicate a GROUP rule. Only use GROUP rules when "#[" is present.
+   - If there is no profit-taking condition, classify it as COPY_TRADE for user trades or GROUP_COPY_TRADE for group trades.
+   - Important: Copy sell conditions or stop loss conditions alone do not classify a rule as a PROFIT rule. Only explicit profit-taking conditions should lead to a PROFIT classification.
+
 
 3. Extract the required parameters based on the rule type:
 
@@ -29,12 +32,9 @@ Please follow these steps to process the user input and generate the appropriate
    - moxieIds: Find all matches of @[username|id] or @[0xaddress|id] and extract the 'id' part.
    - timeDurationInSec: Look for time-related phrases and convert to seconds. Note: This is not required if there's only one user whose trades are copied.
    - amountInUSD: Find the dollar amount mentioned to "buy" (not sell).
-   - profitPercentage (for PROFIT rules only): Find the profit percentage mentioned for selling. Ensure to capture the exact percentage as stated by the user (e.g., if the user mentions 110%, record it as 110; if 10% is mentioned, record it as 10).
+   - profitPercentage (for PROFIT rules only): Find the profit percentage mentioned for selling. Capture the exact percentage as stated by the user.
    - minPurchaseAmount: Look for any mention of a minimum purchase amount in USD.
-   - sellTriggerType: 
-     - Set to "LIMIT_ORDER" if a profit-taking condition is mentioned.
-     - Set to "STOP_LOSS" if a loss-limiting condition is mentioned.
-     - Set to "BOTH" only if both profit-taking and stop loss conditions are mentioned.
+   - sellTriggerType: Set to "LIMIT_ORDER" for profit-taking, "STOP_LOSS" for loss-limiting, or "BOTH" if both profit and loss conditions are explicitly mentioned.
    - sellTriggerCount: For COPY_SELL, how many users need to sell to trigger a sell.
    - sellTriggerCondition: For COPY_SELL, should the trigger happen when "ANY", "ALL", or a specific number of users sell.
    - sellPercentage: What percentage of their tokens must users sell for it to qualify as a trigger.
@@ -45,31 +45,27 @@ Please follow these steps to process the user input and generate the appropriate
    - groupId: Find the match of #[groupname|id] and extract the 'id' part.
    - timeDurationInSec: Look for time-related phrases and convert them to seconds. Note: This is not required if there's only one user from the group whose trades are copied.
    - amountInUSD: Find the dollar amount mentioned to "buy" (not sell).
-   - profitPercentage (for PROFIT rules only): Find the profit percentage mentioned for selling. Ensure to capture the exact percentage as stated by the user (e.g., if the user mentions 110%, record it as 110; if 10% is mentioned, record it as 10).
+   - profitPercentage (for PROFIT rules only): Find the profit percentage mentioned for selling. Capture the exact percentage as stated by the user.
    - condition: Determine if it's "ANY" or "ALL" based on the input for buying.
    - conditionValue: For "ANY" condition, extract the number of people mentioned for buying (default to 1 if not specified).
    - minPurchaseAmount: Look for any mention of a minimum purchase amount in USD.
-   - sellTriggerType: 
-     - Set to "LIMIT_ORDER" if a profit-taking condition is mentioned.
-     - Set to "STOP_LOSS" if a loss-limiting condition is mentioned.
-     - Set to "BOTH" only if both profit-taking and stop loss conditions are mentioned.
+   - sellTriggerType: Set to "LIMIT_ORDER" for profit-taking, "STOP_LOSS" for loss-limiting, or "BOTH" if both conditions are explicitly mentioned.
    - sellTriggerCount: For COPY_SELL, how many group members need to sell to trigger a sell.
    - sellTriggerCondition: For COPY_SELL, should the trigger happen when "ANY", "ALL", or a specific number of group members sell.
    - sellPercentage: What percentage of their tokens must group members sell for it to qualify as a trigger.
    - stopLossPercentage: Find the stop loss percentage mentioned. Capture the exact percentage as stated by the user.
    - stopLossDurationInSec (optional): Find the duration for which the stop loss should be active. Convert to seconds.
 
-
 4. Look for optional token-level filters:
-   - tokenAge: Look for mentions of the token age. Extract min and max values if present. Convert any time units (sec/hours/min/days/month/year) to seconds.
+   - tokenAge: Look for mentions of the token age. Extract min and max values if present. Convert any time units to seconds.
    - marketCap: Look for mentions of market cap requirements. Extract min and max values if present.
-   Important: tokenAge and marketCap are independent, optional filters. Do not assume they must be provided together. Extract them if present in the user query, regardless of whether the other is mentioned.
+   Important: tokenAge and marketCap are independent, optional filters. Extract them if present, regardless of whether the other is mentioned.
 
 5. Validate that all required parameters for the determined rule type are present.
 
-6. If the current input appears to be a follow-up to a previous question, only then extract any missing information from the earlier conversation. Otherwise, ignore the previous conversation and focus only on the current input.
+6. If the current input appears to be a follow-up to a previous question, only then extract any missing information from the earlier conversation. Otherwise, focus only on the current input.
 
-Before providing the final JSON output, show your reasoning process inside <rule_extraction> tags. In your analysis:
+Before providing the final JSON output, break down your reasoning process inside <rule_analysis> tags. In your analysis:
 
 1. Quote the most recent user input related to a copy trading rule.
 2. Break down the user input step-by-step, identifying key phrases and their relevance to rule type and parameters.
@@ -89,6 +85,7 @@ Before providing the final JSON output, show your reasoning process inside <rule
 13. Do not add sell conditions unless specifically asked by the user.
 14. Important: Copy trading rules must replicate the same trade action as the source. Only buy trades can be copied — initiating a sell trade in response to a buy, or copying a sell trade with a buy, is not supported. However, it's valid to specify exit conditions (like selling at a target profit or when users sell) for the copied buy trade.
 15. Carefully distinguish between timeDurationInSec and tokenAge. timeDurationInSec is related to the time window for monitoring trades, while tokenAge is a filter for the age of the token being traded.
+16. When determining sellTriggerType, consider only explicit mentions of profit-taking (limit order) or loss-limiting (stop loss) conditions. Do not factor in COPY_SELL conditions for this parameter.
 
 After completing the rule analysis, provide the JSON output based on your analysis.
 
