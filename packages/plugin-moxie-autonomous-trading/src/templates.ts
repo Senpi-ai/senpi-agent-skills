@@ -31,7 +31,10 @@ Please follow these steps to process the user input and generate the appropriate
    - amountInUSD: Find the dollar amount mentioned to "buy" (not sell).
    - profitPercentage (for PROFIT rules only): Find the profit percentage mentioned for selling. Ensure to capture the exact percentage as stated by the user (e.g., if the user mentions 110%, record it as 110; if 10% is mentioned, record it as 10).
    - minPurchaseAmount: Look for any mention of a minimum purchase amount in USD.
-   - sellTriggerType: Determine if it's a "LIMIT_ORDER" (based on profit percentage), "COPY_SELL" (based on users' selling actions), or a combination of both (BOTH).
+   - sellTriggerType: 
+     - Set to "LIMIT_ORDER" if a profit-taking condition is mentioned.
+     - Set to "STOP_LOSS" if a loss-limiting condition is mentioned.
+     - Set to "BOTH" only if both profit-taking and stop loss conditions are mentioned.
    - sellTriggerCount: For COPY_SELL, how many users need to sell to trigger a sell.
    - sellTriggerCondition: For COPY_SELL, should the trigger happen when "ANY", "ALL", or a specific number of users sell.
    - sellPercentage: What percentage of their tokens must users sell for it to qualify as a trigger.
@@ -46,7 +49,10 @@ Please follow these steps to process the user input and generate the appropriate
    - condition: Determine if it's "ANY" or "ALL" based on the input for buying.
    - conditionValue: For "ANY" condition, extract the number of people mentioned for buying (default to 1 if not specified).
    - minPurchaseAmount: Look for any mention of a minimum purchase amount in USD.
-   - sellTriggerType: Determine if it's a "LIMIT_ORDER" (based on profit percentage), "COPY_SELL" (based on group members' selling actions), or a combination of both (BOTH).
+   - sellTriggerType: 
+     - Set to "LIMIT_ORDER" if a profit-taking condition is mentioned.
+     - Set to "STOP_LOSS" if a loss-limiting condition is mentioned.
+     - Set to "BOTH" only if both profit-taking and stop loss conditions are mentioned.
    - sellTriggerCount: For COPY_SELL, how many group members need to sell to trigger a sell.
    - sellTriggerCondition: For COPY_SELL, should the trigger happen when "ANY", "ALL", or a specific number of group members sell.
    - sellPercentage: What percentage of their tokens must group members sell for it to qualify as a trigger.
