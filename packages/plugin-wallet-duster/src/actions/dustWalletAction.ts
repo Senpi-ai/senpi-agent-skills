@@ -23,8 +23,7 @@ import {
     ETH_TOKEN_DECIMALS,
 } from "../constants/constants";
 import { createManualOrder } from "../utils/swap";
-import { createPublicClient, erc20Abi, http } from "viem";
-import { base } from "viem/chains";
+import { getERC20Balance } from "../utils/erc20";
 
 export const dustWalletAction: Action = {
     name: "DUST_WALLET_TO_ETH",
@@ -208,24 +207,14 @@ export const dustWalletAction: Action = {
 
             let totalUsdValue = 0;
             let dustedTokenCount = 0;
-            const publicClient = createPublicClient({
-                chain: base,
-                transport: http(),
-            });
             for (const token of dustTokens) {
                 const sellTokenDecimal = token.token.baseToken.decimals;
-                // Use ethers to get the balance of a token
-                const balanceInWei = await publicClient
-                    .readContract({
-                        address: token.token.baseToken.address as `0x${string}`,
-                        abi: erc20Abi,
-                        functionName: "balanceOf",
-                        args: [
-                            (state?.agentWallet as MoxieClientWallet)
-                                ?.address as `0x${string}`,
-                        ],
-                    })
-                    .then((res) => res.toString());
+                const balanceInWei = await getERC20Balance(
+                    traceId,
+                    token.token.baseToken.address,
+                    (state?.agentWallet as MoxieClientWallet)
+                        ?.address as `0x${string}`
+                );
 
                 const { success } = await createManualOrder(
                     state.authorizationHeader as string,
