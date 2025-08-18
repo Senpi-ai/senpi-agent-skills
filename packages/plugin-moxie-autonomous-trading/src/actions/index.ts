@@ -58,7 +58,7 @@ export interface AutonomousTradingRuleParams {
     condition?: "ANY" | "ALL";
     conditionValue?: number;
     minPurchaseAmount?: number;
-    sellTriggerType?: "LIMIT_ORDER" | "COPY_SELL" | "BOTH";
+    sellTriggerType?: "LIMIT_ORDER" | "STOP_LOSS" | "BOTH";
     sellTriggerCondition?: "ANY" | "ALL";
     sellTriggerCount?: number;
     sellPercentage?: number;
@@ -266,11 +266,7 @@ export const autonomousTradingAction: Action = {
                         : undefined,
             };
 
-            if (
-                params.sellTriggerType === "COPY_SELL" ||
-                (params.sellTriggerType === "BOTH" &&
-                    (params?.sellTriggerCondition || params?.sellTriggerCount))
-            ) {
+            if (params?.sellTriggerCondition || params?.sellTriggerCount) {
                 baseParams.sellConfig = {
                     buyToken: {
                         symbol: "ETH",
