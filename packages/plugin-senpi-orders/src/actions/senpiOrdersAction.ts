@@ -122,6 +122,18 @@ export const senpiOrdersAction = {
             );
 
             const groupedTransactions = groupTransactionsByTokenAddress(senpiOrders.transactions, traceId, moxieUserId);
+
+            if (groupedTransactions.size === 0) {
+                await callback?.({
+                    text: "⚠️ No token addresses were detected in your request. Please specify the token addresses you wish to trade.",
+                    content: {
+                        action: "SENPI_ORDERS",
+                        inReplyTo: traceId,
+                    },
+                });
+                return true;
+            }
+
             const currentWalletBalanceForBalanceBasedSwaps: Map<string, bigint | undefined> = new Map();
 
             for (const [tokenAddress, transactions] of groupedTransactions.entries()) {
