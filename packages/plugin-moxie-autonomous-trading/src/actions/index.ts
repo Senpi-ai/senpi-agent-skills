@@ -175,7 +175,7 @@ export const autonomousTradingAction: Action = {
             }
 
             // Extract parameters from response
-            const { ruleType, params } = autonomousTradingResponse;
+            let { ruleType, params } = autonomousTradingResponse;
 
             if (
                 params.moxieIds &&
@@ -265,6 +265,20 @@ export const autonomousTradingAction: Action = {
                           }
                         : undefined,
             };
+
+            if (
+                ruleType === "COPY_TRADE_AND_PROFIT" ||
+                ruleType === "GROUP_COPY_TRADE_AND_PROFIT"
+            ) {
+                if (params.profitPercentage === undefined || params.profitPercentage === null) {
+                    if (ruleType === "COPY_TRADE_AND_PROFIT") {
+                        ruleType = "COPY_TRADE";
+                    }
+                    if (ruleType === "GROUP_COPY_TRADE_AND_PROFIT") {
+                        ruleType = "GROUP_COPY_TRADE";
+                    }
+                }
+            }
 
             if (params?.sellTriggerCondition || params?.sellTriggerCount) {
                 baseParams.sellConfig = {
