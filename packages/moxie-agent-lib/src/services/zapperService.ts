@@ -6,7 +6,6 @@ export interface TokenNode {
     name: string;
     symbol: string;
     decimals: number;
-    price: number;
     balance: number;
     balanceUSD: number;
     balanceRaw: string;
