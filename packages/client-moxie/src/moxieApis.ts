@@ -193,6 +193,7 @@ export function createMoxieApiRouter(
                 if (process.env.ZAPPER_API_KEY) {
                     // fetch the current balance of the agent wallet
                     currentWalletBalance = await getPortfolio(
+                        traceId,
                         [agentWallet.address],
                         [8453] // BASE_MAINNET
                     );
