@@ -49,7 +49,7 @@ export {
     MoxieWalletClient,
 } from "./wallet";
 
-export { getTokenMetadata } from "./services/zapperService";
+export { type TokenNode, getTokenMetadata } from "./services/zapperService";
 
 export {
     validateMoxieUserTokens,

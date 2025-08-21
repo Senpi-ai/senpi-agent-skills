@@ -10,6 +10,7 @@ interface BaseToken {
     symbol: string;
     address: string;
     decimals: number;
+    imgUrl: string;
 }
 
 interface Token {
@@ -28,13 +29,21 @@ interface TokenBalance {
 /**
  * @param addresses - The addresses of the wallets to get the portfolio for
  * @param networks - The networks of the wallets to get the portfolio for
+ * @param tokenAddresses - If added, will just return the portfolio for the given token addresses
  * @returns The portfolio for the given addresses and networks
  */
 export async function getPortfolio(
+    traceId: string,
     addresses: string[],
-    networks: number[]
+    networks: number[],
+    tokenAddresses?: string[]
 ): Promise<Portfolio> {
     try {
+        elizaLogger.debug(`[getPortfolio] [${traceId}] Fetching portfolio`, {
+            addresses,
+            networks,
+            tokenAddresses,
+        });
         const query = /* GraphQL */ `
             query GetPortfolio($input: GetPortfolioInput!) {
                 GetPortfolio(input: $input) {
@@ -73,6 +82,9 @@ export async function getPortfolio(
                         input: {
                             addresses,
                             networks,
+                            ...(tokenAddresses && tokenAddresses?.length > 0
+                                ? { tokenAddresses }
+                                : {}),
                         },
                     },
                 }),
@@ -81,21 +93,21 @@ export async function getPortfolio(
 
         if (!response.ok) {
             elizaLogger.error(
-                "Failed to fetch portfolio",
-                response.statusText,
-                response.status
+                `[getPortfolio] [${traceId}] Failed to fetch portfolio ${response.statusText} ${response.status}`
             );
             throw new Error(
-                `Failed to fetch portfolio: ${response.statusText} ${response.status}`
+                `[getPortfolio] [${traceId}] Failed to fetch portfolio: ${response.statusText} ${response.status}`
             );
         }
 
         const { data, errors } = await response.json();
 
         if (errors) {
-            elizaLogger.error("Failed to fetch portfolio", errors);
+            elizaLogger.error(
+                `[getPortfolio] [${traceId}] Failed to fetch portfolio ${errors.map((e: any) => e?.message).join(", ")}`
+            );
             throw new Error(
-                `Failed to fetch portfolio: ${errors.map((e: any) => e?.message).join(", ")}`
+                `[getPortfolio] [${traceId}] Failed to fetch portfolio: ${errors.map((e: any) => e?.message).join(", ")}`
             );
         }
 
@@ -115,14 +127,18 @@ export async function getPortfolio(
                         symbol: token.tokenSymbol,
                         address: token.tokenAddress,
                         decimals: token.decimals,
+                        imgUrl: token.tokenImgUrl,
                     },
                 },
             })),
         };
     } catch (e) {
-        elizaLogger.error("Failed to fetch portfolio", e);
+        elizaLogger.error(
+            `[getPortfolio] [${traceId}] Failed to fetch portfolio`,
+            e
+        );
         throw new Error(
-            `Failed to fetch portfolio: ${e instanceof Error ? e.message : "Unknown error"}`
+            `[getPortfolio] [${traceId}] Failed to fetch portfolio: ${e instanceof Error ? e.message : "Unknown error"}`
         );
     }
 }

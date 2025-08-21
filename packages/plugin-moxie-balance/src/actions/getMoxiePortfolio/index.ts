@@ -4,13 +4,11 @@ import {
     elizaLogger,
     streamText,
     HandlerCallback,
-    generateMessageResponse,
     IAgentRuntime,
     Memory,
     ModelClass,
     State,
     type Action,
-    stringToUuid,
     generateObjectDeprecated,
 } from "@moxie-protocol/core";
 import { portfolioExamples } from "./examples";
@@ -24,11 +22,8 @@ import {
 } from "@moxie-protocol/moxie-agent-lib";
 import {
     getCommonHoldings,
-    getMoxieCache,
     getMoxieToUSD,
     getWalletAddresses,
-    setMoxieCache,
-    handleIneligibleMoxieUsers,
     formatMessages,
 } from "../../util";
 import { PortfolioUserRequested } from "../../types";
@@ -94,8 +89,7 @@ async function generatePortfolioSummary(
  */
 export async function handleMultipleUsers(
     moxieUserInfoMultiple: MoxieUser[],
-    runtime: IAgentRuntime,
-    moxieToUSD: number
+    traceId: string
 ) {
     const portfolioSummaries: PortfolioSummary[] = [];
     const commonPortfolioHoldingsMetadata = {};
@@ -106,7 +100,9 @@ export async function handleMultipleUsers(
             continue;
         }
 
-        const portfolioData = await getPortfolio(walletAddresses, [8453]);
+        const portfolioData = await getPortfolio(traceId, walletAddresses, [
+            8453,
+        ]);
 
         if (!portfolioData || portfolioData?.tokenBalances.length === 0) {
             continue;
@@ -179,6 +175,7 @@ export default {
         callback?: HandlerCallback
     ): Promise<boolean> => {
         elizaLogger.log("[Portfolio] Starting portfolio fetch");
+        const traceId = message.id;
 
         try {
             const moxieToUSD = await getMoxieToUSD();
@@ -261,11 +258,7 @@ export default {
                 moxieUserInfoMultiple.push(...userInfoResults);
 
                 const { portfolioSummaries, commonPortfolioHoldingsMetadata } =
-                    await handleMultipleUsers(
-                        moxieUserInfoMultiple,
-                        runtime,
-                        moxieToUSD
-                    );
+                    await handleMultipleUsers(moxieUserInfoMultiple, traceId);
                 const { filteredCommonTokenHoldings } = getCommonHoldings(
                     moxieUserInfoMultiple,
                     commonPortfolioHoldingsMetadata
@@ -352,7 +345,9 @@ export default {
             elizaLogger.log("[Portfolio] Fetching portfolio data");
 
             // Fetch fresh portfolio data
-            const portfolioData = await getPortfolio(walletAddresses, [8453]);
+            const portfolioData = await getPortfolio(traceId, walletAddresses, [
+                8453,
+            ]);
             const totalTokenValue = portfolioData?.totalBalanceUSD || 0;
             portfolioData?.tokenBalances?.map((token) => {
                 const { balanceUSD } = token.token;

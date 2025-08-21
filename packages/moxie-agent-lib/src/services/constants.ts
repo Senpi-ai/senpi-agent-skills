@@ -150,6 +150,7 @@ export const mockPortfolio: Portfolio = {
                     address: "0x0000000000000000000000000000000000000000",
                     symbol: "ETH",
                     decimals: 18,
+                    imgUrl: "https://i.imgur.com/Y1au7ZB.jpg",
                 },
             },
         },
