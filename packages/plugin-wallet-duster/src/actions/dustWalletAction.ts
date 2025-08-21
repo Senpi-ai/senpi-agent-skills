@@ -9,7 +9,11 @@ import {
     ModelClass,
     State,
 } from "@moxie-protocol/core";
-import { MoxieUser, Portfolio } from "@moxie-protocol/moxie-agent-lib";
+import {
+    MoxieClientWallet,
+    MoxieUser,
+    Portfolio,
+} from "@moxie-protocol/moxie-agent-lib";
 import { ActionType, DustRequestSchema, Source } from "../types";
 import { dustRequestTemplate } from "../templates";
 import {
@@ -19,6 +23,7 @@ import {
     ETH_TOKEN_DECIMALS,
 } from "../constants/constants";
 import { createManualOrder } from "../utils/swap";
+import { getERC20Balance } from "../utils/erc20";
 
 export const dustWalletAction: Action = {
     name: "DUST_WALLET_TO_ETH",
@@ -204,7 +209,12 @@ export const dustWalletAction: Action = {
             let dustedTokenCount = 0;
             for (const token of dustTokens) {
                 const sellTokenDecimal = token.token.baseToken.decimals;
-                const balanceInWei = token.token.balanceRaw;
+                const balanceInWei = await getERC20Balance(
+                    traceId,
+                    token.token.baseToken.address,
+                    (state?.agentWallet as MoxieClientWallet)
+                        ?.address as `0x${string}`
+                );
 
                 const { success } = await createManualOrder(
                     state.authorizationHeader as string,

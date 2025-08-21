@@ -34,73 +34,6 @@ const mutation = gql`
         }
     }
 `;
-
-/**
- * Helper function to implement exponential backoff retry logic
- */
-async function fetchWithRetry(
-    url: string,
-    options: RequestInit
-): Promise<Response | undefined> {
-    let lastError: Error;
-    const maxRetries = 3;
-    const delay = 1000; // 1 second delay between retries
-
-    elizaLogger.info(
-        `[CREATE_MANUAL_ORDER] [${url}] [${JSON.stringify(options)}]`
-    );
-    try {
-        for (let attempt = 0; attempt < maxRetries; attempt++) {
-            try {
-                elizaLogger.info(
-                    `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} of ${maxRetries}`
-                );
-
-                const response = await fetch(url, options);
-
-                if (!response.ok) {
-                    elizaLogger.warn(
-                        `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${response.status} ${response.statusText}`
-                    );
-                    if (attempt + 1 === maxRetries) {
-                        elizaLogger.error(
-                            `[CREATE_MANUAL_ORDER] Creating manual order failed, retrying in ${delay}ms: ${response.status} ${response.statusText}`
-                        );
-                        return;
-                    }
-                    await new Promise((resolve) => setTimeout(resolve, delay));
-                    continue;
-                }
-
-                return response;
-            } catch (error) {
-                lastError =
-                    error instanceof Error ? error : new Error(String(error));
-
-                // If this is the last attempt, throw the error
-                if (attempt + 1 === maxRetries) {
-                    elizaLogger.error(
-                        `[CREATE_MANUAL_ORDER] Creating manual order failed, retrying in ${delay}ms: ${lastError}`
-                    );
-                    return;
-                }
-
-                elizaLogger.warn(
-                    `[CREATE_MANUAL_ORDER] Attempt ${attempt + 1} failed, retrying in ${delay}ms: ${lastError}`
-                );
-
-                // Wait before retrying
-                await new Promise((resolve) => setTimeout(resolve, delay));
-            }
-        }
-    } catch (error) {
-        elizaLogger.error(
-            `[CREATE_MANUAL_ORDER] Creating manual order failed: ${error}`
-        );
-        throw error;
-    }
-}
-
 /**
  * Creates a manual order by sending a GraphQL mutation request.
  *
@@ -155,12 +88,12 @@ export async function createManualOrder(
             text: `\nDusting ${formatTokenMention(swapInput.sellTokenSymbol, swapInput.sellTokenAddress)} to ${formatTokenMention(swapInput.buyTokenSymbol, swapInput.buyTokenAddress)} is in progress.\n`,
         });
 
-        const response = await fetchWithRetry(process.env.MOXIE_API_URL, {
+        const response = await fetch(process.env.MOXIE_API_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: authorizationHeader,
-                'Origin': process.env.ORIGIN_HEADER,
+                Origin: process.env.ORIGIN_HEADER,
             },
             body: JSON.stringify({
                 query: mutation,
