@@ -28,11 +28,13 @@ interface TokenBalance {
 /**
  * @param addresses - The addresses of the wallets to get the portfolio for
  * @param networks - The networks of the wallets to get the portfolio for
+ * @param tokenAddresses - If added, will just return the portfolio for the given token addresses
  * @returns The portfolio for the given addresses and networks
  */
 export async function getPortfolio(
     addresses: string[],
-    networks: number[]
+    networks: number[],
+    tokenAddresses?: string[]
 ): Promise<Portfolio> {
     try {
         const query = /* GraphQL */ `
@@ -73,6 +75,9 @@ export async function getPortfolio(
                         input: {
                             addresses,
                             networks,
+                            ...(tokenAddresses && tokenAddresses?.length > 0
+                                ? { tokenAddresses }
+                                : {}),
                         },
                     },
                 }),
