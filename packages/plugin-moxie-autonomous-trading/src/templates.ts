@@ -86,8 +86,7 @@ Before providing the final JSON output, break down your reasoning process inside
 14. Important: Copy trading rules must replicate the same trade action as the source. Only buy trades can be copied — initiating a sell trade in response to a buy, or copying a sell trade with a buy, is not supported. However, it's valid to specify exit conditions (like selling at a target profit or when users sell) for the copied buy trade.
 15. Carefully distinguish between timeDurationInSec and tokenAge. timeDurationInSec is related to the time window for monitoring trades, while tokenAge is a filter for the age of the token being traded.
 16. When determining sellTriggerType, consider only explicit mentions of profit-taking (limit order) or loss-limiting (stop loss) conditions. Do not factor in COPY_SELL conditions for this parameter.
-17. Pay close attention to the sellPercentage parameter, especially in COPY_SELL scenarios. This parameter defines the proportion of tokens the copied traders or group members should sell to trigger COPY_SELL.
-
+17. Pay close attention to the sellPercentage parameter, especially in COPY_SELL scenarios. This parameter defines the proportion of tokens the copied traders or group members should sell to trigger COPY_SELL.  sellTriggerCondition and sellTriggerCondition are required with it.
 After completing the rule analysis, provide the JSON output based on your analysis.
 
 If all required parameters are present, use this format for the JSON output:
