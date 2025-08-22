@@ -309,14 +309,6 @@ export default {
 
             // Fetch fresh portfolio data
             const portfolioData = await getPortfolio(traceId, walletAddresses, [8453]);
-            const totalTokenValue = portfolioData?.totalBalanceUSD || 0;
-            portfolioData?.tokenBalances?.map((token) => {
-                const { balanceUSD } = token.token;
-                return {
-                    ...token,
-                    holdingPercentage: (balanceUSD * 100) / totalTokenValue,
-                };
-            });
 
             if(!portfolioData || portfolioData?.totalBalanceUSD === 0) {
                 elizaLogger.error("[Portfolio] No Tokens in the portfolio for this wallet address: ", walletAddresses, ' moxieUser :', JSON.stringify(moxieUserInfo));
@@ -326,12 +318,52 @@ export default {
                 });
                 return false;
             }
+            
+            const totalTokenValue = portfolioData?.totalBalanceUSD || 0;
+            const groupedTokens = portfolioData?.tokenBalances?.reduce(
+                (acc, token) => {
+                    const address = token.address;
+                    const { balanceUSD } = token.token;
+
+                    if (!acc[address]) {
+                        acc[address] = {
+                            ...token,
+                            token: {
+                                ...token.token,
+                                balanceUSD: balanceUSD,
+                            },
+                            holdingPercentage:
+                                (balanceUSD * 100) / totalTokenValue,
+                        };
+                    } else {
+                        acc[address].token.balanceUSD += balanceUSD;
+                        acc[address].holdingPercentage =
+                            (acc[address].token.balanceUSD * 100) /
+                            totalTokenValue;
+                    }
+
+                    return acc;
+                },
+                {}
+            );
+
+            const groupedTokensArray = Object.values(
+                groupedTokens
+            ) as TokenBalance[];
 
             elizaLogger.success("[Portfolio] Portfolio data fetched successfully");
             elizaLogger.log("[Portfolio] Generating portfolio summary");
 
-            const summaryStream = await generatePortfolioSummary(portfolioData, moxieUserInfo, message, runtime, isSelfPortolioRequested);
-
+            const summaryStream = await generatePortfolioSummary(
+                {
+                    totalBalanceUSD: totalTokenValue,
+                    tokenBalances: groupedTokensArray,
+                },
+                moxieUserInfo,
+                message,
+                runtime,
+                isSelfPortolioRequested
+            );
             elizaLogger.success("[Portfolio] Successfully generated portfolio summary");
 
             for await (const textPart of summaryStream) {
