@@ -176,8 +176,7 @@ export default {
         callback?: HandlerCallback
     ): Promise<boolean> => {
         elizaLogger.log("[Portfolio] Starting portfolio fetch");
-
-
+        const traceId = message.id;
 
         try {
             const moxieToUSD = await getMoxieToUSD()
@@ -331,7 +330,7 @@ export default {
             elizaLogger.success("[Portfolio] Portfolio data fetched successfully");
             elizaLogger.log("[Portfolio] Generating portfolio summary");
 
-            const summaryStream = await generatePortfolioSummary(portfolioV2Data, moxieUserInfo, message, runtime, isSelfPortolioRequested);
+            const summaryStream = await generatePortfolioSummary(portfolioData, moxieUserInfo, message, runtime, isSelfPortolioRequested);
 
             elizaLogger.success("[Portfolio] Successfully generated portfolio summary");
 
