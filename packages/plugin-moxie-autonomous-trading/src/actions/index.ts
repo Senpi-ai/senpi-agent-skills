@@ -233,6 +233,9 @@ export const autonomousTradingAction: Action = {
                     symbol: "ETH",
                     address: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
                 },
+                // This code checks if either tokenAge or marketCap is present in params.
+                // If so, it constructs a tokenMetrics object with min/max values for each, handling both object and number types.
+                // If neither is present, tokenMetrics is undefined.
                 tokenMetrics:
                     params.tokenAge || params.marketCap
                         ? {
@@ -240,13 +243,13 @@ export const autonomousTradingAction: Action = {
                                   typeof params.tokenAge === "object"
                                       ? {
                                             min:
-                                            params.tokenAge?.min ??
-                                            params.tokenAge?.minAgeInSec ??
-                                            null,
+                                                params.tokenAge?.min ??
+                                                params.tokenAge?.minAgeInSec ??
+                                                null,
                                             max:
-                                            params.tokenAge?.max ??
-                                            params.tokenAge?.maxAgeInSec ??
-                                            null,
+                                                params.tokenAge?.max ??
+                                                params.tokenAge?.maxAgeInSec ??
+                                                null,
                                         }
                                       : typeof params.tokenAge === "number"
                                       ? {
@@ -257,16 +260,14 @@ export const autonomousTradingAction: Action = {
                               marketCap:
                                   typeof params.marketCap === "object"
                                       ? {
-                                        min:
-                                        params.marketCap?.min ??
-                                        params.marketCap
-                                            ?.minMarketCapInUSD ??
-                                        null,
-                                    max:
-                                        params.marketCap?.max ??
-                                        params.marketCap
-                                            ?.maxMarketCapInUSD ??
-                                        null,
+                                            min:
+                                                params.marketCap?.min ??
+                                                params.marketCap?.minMarketCapInUSD ??
+                                                null,
+                                            max:
+                                                params.marketCap?.max ??
+                                                params.marketCap?.maxMarketCapInUSD ??
+                                                null,
                                         }
                                       : typeof params.marketCap === "number"
                                       ? {
@@ -293,6 +294,52 @@ export const autonomousTradingAction: Action = {
             }
 
             if (params?.sellTriggerCondition || params?.sellTriggerCount) {
+                let sellCondition = params.sellTriggerCondition === "ANY" ? Condition.ANY : Condition.ALL;
+                let sellConditionValue = params.sellTriggerCount;
+
+                // If sellTriggerCondition is ANY and sellTriggerCount is not provided, throw error
+                if (
+                    params.sellTriggerCondition === "ANY" &&
+                    (params.sellTriggerCount === undefined || params.sellTriggerCount === null)
+                ) {
+                    throw new Error(
+                        "sellTriggerCount must be provided when sellTriggerCondition is ANY."
+                    );
+                }
+
+                // If sellTriggerCondition is ALL and sellTriggerCount is not provided
+                if (
+                    params.sellTriggerCondition === "ALL" &&
+                    (params.sellTriggerCount === undefined || params.sellTriggerCount === null)
+                ) {
+                    // Check if params.condition is ANY and params.conditionValue is provided
+                    if (
+                        params.condition === "ANY" &&
+                        params.conditionValue !== undefined &&
+                        params.conditionValue !== null
+                    ) {
+                        sellConditionValue = params.conditionValue;
+                    } else {
+                        callback?.({
+                            text: `I'm unable to understand your copy sell condition. Could you please clarify how you want the sell triggers to work?`,
+                            action: "AUTONOMOUS_TRADING",
+                        });
+                        return true;
+                    }
+                }
+
+                // If params.condition is ALL and params.sellTriggerCondition is ALL, throw error
+                if (
+                    params.condition === "ALL" &&
+                    params.sellTriggerCondition === "ALL"
+                ) {
+                    callback?.({
+                        text: `Both your buy and sell conditions are set to ALL, which I can't process. Please clarify your sell condition by specifying the number of member sells that should trigger a sell for you.`,
+                        action: "AUTONOMOUS_TRADING",
+                    });
+                    return true;
+                }
+
                 baseParams.sellConfig = {
                     buyToken: {
                         symbol: "ETH",
@@ -300,11 +347,8 @@ export const autonomousTradingAction: Action = {
                     },
                     // triggerPercentage: params.sellPercentage,
                     triggerPercentage: 50, // Hardcoded for now
-                    condition:
-                        params.sellTriggerCondition === "ANY"
-                            ? Condition.ANY
-                            : Condition.ALL,
-                    conditionValue: params.sellTriggerCount,
+                    condition: sellCondition,
+                    conditionValue: sellConditionValue,
                 };
             }
 
