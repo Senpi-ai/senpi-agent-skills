@@ -120,19 +120,32 @@ export async function handleMultipleUsers(
             });
         });
 
-        const tokenBalancesFiltered = portfolioData.tokenBalances.map(
-            (token) => {
-                const { balanceUSD } = token.token;
-                return {
-                    ...token,
-                    holdingPercentage: (balanceUSD * 100) / totalTokenValue,
-                };
-            }
+        const tokenBalancesFiltered = portfolioData.tokenBalances.reduce(
+            (acc, token) => {
+                const { baseToken, balanceUSD } = token.token;
+                const tokenAddress = baseToken.address;
+
+                if (!acc[tokenAddress]) {
+                    acc[tokenAddress] = {
+                        ...token,
+                        holdingPercentage: (balanceUSD * 100) / totalTokenValue,
+                    };
+                } else {
+                    acc[tokenAddress].token.balanceUSD += balanceUSD;
+                    acc[tokenAddress].holdingPercentage =
+                        (acc[tokenAddress].token.balanceUSD * 100) /
+                        totalTokenValue;
+                }
+                return acc;
+            },
+            {}
         );
+
+        const tokenBalancesArray = Object.values(tokenBalancesFiltered);
 
         portfolioSummaries.push({
             [userInfo.userName]: {
-                tokenBalances: tokenBalancesFiltered,
+                tokenBalances: tokenBalancesArray,
                 totalTokenValue: totalTokenValue,
             },
         });
