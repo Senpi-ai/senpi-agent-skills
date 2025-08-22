@@ -35,19 +35,19 @@ import {
 import { autonomousTradingTemplate } from "../templates";
 import { validate } from "uuid";
 
-export interface TokenAge {
+export type TokenAge = number | {
     min?: number;
     minAgeInSec?: number;
     max?: number;
     maxAgeInSec?: number;
-}
+};
 
-export interface MarketCap {
+export type MarketCap = number | {
     min?: number;
     minMarketCapInUSD?: number;
     max?: number;
     maxMarketCapInUSD?: number;
-}
+};
 
 export interface AutonomousTradingRuleParams {
     moxieIds?: string[];
@@ -236,32 +236,44 @@ export const autonomousTradingAction: Action = {
                 tokenMetrics:
                     params.tokenAge || params.marketCap
                         ? {
-                              tokenAge: params.tokenAge
-                                  ? {
-                                        min:
+                              tokenAge:
+                                  typeof params.tokenAge === "object"
+                                      ? {
+                                            min:
                                             params.tokenAge?.min ??
                                             params.tokenAge?.minAgeInSec ??
                                             null,
-                                        max:
+                                            max:
                                             params.tokenAge?.max ??
                                             params.tokenAge?.maxAgeInSec ??
                                             null,
-                                    }
-                                  : undefined,
-                              marketCap: params.marketCap
-                                  ? {
+                                        }
+                                      : typeof params.tokenAge === "number"
+                                      ? {
+                                            min: params.tokenAge,
+                                            max: null,
+                                        }
+                                      : undefined,
+                              marketCap:
+                                  typeof params.marketCap === "object"
+                                      ? {
                                         min:
-                                            params.marketCap?.min ??
-                                            params.marketCap
-                                                ?.minMarketCapInUSD ??
-                                            null,
-                                        max:
-                                            params.marketCap?.max ??
-                                            params.marketCap
-                                                ?.maxMarketCapInUSD ??
-                                            null,
-                                    }
-                                  : undefined,
+                                        params.marketCap?.min ??
+                                        params.marketCap
+                                            ?.minMarketCapInUSD ??
+                                        null,
+                                    max:
+                                        params.marketCap?.max ??
+                                        params.marketCap
+                                            ?.maxMarketCapInUSD ??
+                                        null,
+                                        }
+                                      : typeof params.marketCap === "number"
+                                      ? {
+                                            min: params.marketCap,
+                                            max: null,
+                                        }
+                                      : undefined,
                           }
                         : undefined,
             };
