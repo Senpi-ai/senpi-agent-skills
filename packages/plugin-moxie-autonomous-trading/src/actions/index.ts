@@ -295,6 +295,16 @@ export const autonomousTradingAction: Action = {
 
             if (params?.sellTriggerCondition || params?.sellTriggerCount) {
                 let sellCondition = params.sellTriggerCondition === "ANY" ? Condition.ANY : Condition.ALL;
+
+                // If sellCondition is ANY while params.condition is ALL, and sellTriggerCount is not set, default to 1
+                if (
+                    sellCondition === Condition.ANY &&
+                    params.condition === "ALL" &&
+                    (params.sellTriggerCount === undefined || params.sellTriggerCount === null)
+                ) {
+                    params.sellTriggerCount = 1;
+                }
+
                 let sellConditionValue = params.sellTriggerCount;
 
                 // If sellTriggerCondition is ANY and sellTriggerCount is not provided, throw error
@@ -302,9 +312,11 @@ export const autonomousTradingAction: Action = {
                     params.sellTriggerCondition === "ANY" &&
                     (params.sellTriggerCount === undefined || params.sellTriggerCount === null)
                 ) {
-                    throw new Error(
-                        "sellTriggerCount must be provided when sellTriggerCondition is ANY."
-                    );
+                    callback?.({
+                        text: `I'm unable to understand your copy sell condition. Could you please clarify how you want the sell triggers (number of members, all or any) to work?`,
+                        action: "AUTONOMOUS_TRADING",
+                    });
+                    return true;
                 }
 
                 // If sellTriggerCondition is ALL and sellTriggerCount is not provided
