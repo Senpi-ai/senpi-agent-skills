@@ -2,24 +2,14 @@ import axios from "axios";
 import { elizaLogger, IAgentRuntime } from "@moxie-protocol/core";
 
 export interface TokenNode {
-    id: string;
     tokenAddress: string;
     name: string;
     symbol: string;
     decimals: number;
-    price: number;
     balance: number;
     balanceUSD: number;
     balanceRaw: string;
-    holdingPercentage: number;
     imgUrl: string;
-    accountBalances?: {
-        edges: {
-            node: {
-                accountAddress: string;
-            };
-        }[];
-    };
 }
 
 const API_KEY = process.env.ZAPPER_API_KEY;
