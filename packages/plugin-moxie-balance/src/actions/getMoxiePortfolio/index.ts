@@ -16,7 +16,7 @@ import {
 import { portfolioExamples } from "./examples";
 import { mutiplePortfolioSummary, portfolioSummary } from "./template";
 import { portfolioUserIdsExtractionTemplate } from "../../commonTemplate";
-import { MoxieUser, moxieUserService, Portfolio, getPortfolioV2Data, PortfolioV2Data, MoxieAgentDBAdapter } from "@moxie-protocol/moxie-agent-lib";
+import { MoxieUser, moxieUserService, Portfolio, getPortfolio } from "@moxie-protocol/moxie-agent-lib";
 import { getCommonHoldings, getMoxieCache, getMoxieToUSD, getWalletAddresses, setMoxieCache, handleIneligibleMoxieUsers, formatMessages } from "../../util";
 import { PortfolioUserRequested } from "../../types";
 
@@ -32,20 +32,18 @@ export interface PortfolioSummary {
  * Filters and sorts token balances and app balances by value
  */
 async function generatePortfolioSummary(
-    portfolioV2Data: PortfolioV2Data,
+    portfolioData: Portfolio,
     moxieUserInfo: MoxieUser,
     message: Memory,
     runtime: IAgentRuntime,
-    isSelfPortolioRequested: boolean,
+    isSelfPortolioRequested: boolean
 ) {
-
-
     const portfolioDataFiltered = {
-        tokenBalances: portfolioV2Data?.tokenBalances?.byToken?.edges,
+        tokenBalances: portfolioData?.tokenBalances,
     };
 
 
-    const tokenAddresses = [...new Set(portfolioV2Data?.metadata?.addresses)]
+    const tokenAddresses = [...new Set(portfolioData?.tokenBalances?.map((token) => token.address))]
         .map((address: string) => `${address.slice(0, 2)}*****${address.slice(-4)}`);
 
     // Compose new state with filtered portfolio data
@@ -79,8 +77,7 @@ async function generatePortfolioSummary(
  */
 export async function handleMultipleUsers(
     moxieUserInfoMultiple: MoxieUser[],
-    runtime: IAgentRuntime,
-    moxieToUSD: number,
+    traceId: string,
 ){
 
     const portfolioSummaries: PortfolioSummary[] = [];
@@ -92,28 +89,52 @@ export async function handleMultipleUsers(
             continue;
         }
 
-        const portfolioV2Data = await getPortfolioV2Data(walletAddresses, ["BASE_MAINNET"], userInfo.id, runtime)
+        const portfolioData = await getPortfolio(traceId, walletAddresses, [
+            8453,
+        ]);
 
-        if(!portfolioV2Data || portfolioV2Data?.tokenBalances?.totalBalanceUSD === 0) {
+        if (!portfolioData || portfolioData?.tokenBalances.length === 0) {
             continue;
         }
-        const totalTokenValue = portfolioV2Data?.tokenBalances?.totalBalanceUSD || 0;
-        let tokenHoldings = []
+        const totalTokenValue = portfolioData?.totalBalanceUSD || 0;
+        let tokenHoldings = [];
 
-        portfolioV2Data.tokenBalances.byToken.edges.forEach(token => {
-            tokenHoldings.push({tokenSymbol: token.node.symbol, balanceUSD: token.node.balanceUSD, balance: token.node.balance})
-        })
+        portfolioData.tokenBalances.forEach((token) => {
+            const { baseToken, balance, balanceUSD } = token.token;
+            const { symbol: tokenSymbol } = baseToken;
+            tokenHoldings.push({
+                tokenSymbol,
+                balanceUSD,
+                balance,
+            });
+        });
 
-        const tokenBalancesFiltered = portfolioV2Data.tokenBalances.byToken.edges
-        tokenBalancesFiltered.forEach(token => {
-            token.node.holdingPercentage = (token.node.balanceUSD*100) / totalTokenValue
-        })
+        const tokenBalancesFiltered = portfolioData.tokenBalances.reduce(
+            (acc, token) => {
+                const { baseToken, balanceUSD } = token.token;
+                const tokenAddress = baseToken.address;
 
+                if (!acc[tokenAddress]) {
+                    acc[tokenAddress] = {
+                        ...token,
+                        holdingPercentage: (balanceUSD * 100) / totalTokenValue,
+                    };
+                } else {
+                    acc[tokenAddress].token.balanceUSD += balanceUSD;
+                    acc[tokenAddress].holdingPercentage =
+                        (acc[tokenAddress].token.balanceUSD * 100) /
+                        totalTokenValue;
+                }
+                return acc;
+            },
+            {}
+        );
 
+        const tokenBalancesArray = Object.values(tokenBalancesFiltered);
 
         portfolioSummaries.push({
             [userInfo.userName]: {
-                tokenBalances: tokenBalancesFiltered,
+                tokenBalances: tokenBalancesArray,
                 totalTokenValue: totalTokenValue,
             }
         });
@@ -155,8 +176,7 @@ export default {
         callback?: HandlerCallback
     ): Promise<boolean> => {
         elizaLogger.log("[Portfolio] Starting portfolio fetch");
-
-
+        const traceId = message.id;
 
         try {
             const moxieToUSD = await getMoxieToUSD()
@@ -226,7 +246,7 @@ export default {
                 ));
                 moxieUserInfoMultiple.push(...userInfoResults);
 
-                const {portfolioSummaries, commonPortfolioHoldingsMetadata} = await handleMultipleUsers(moxieUserInfoMultiple, runtime, moxieToUSD);
+                const {portfolioSummaries, commonPortfolioHoldingsMetadata} = await handleMultipleUsers(moxieUserInfoMultiple, traceId);
                 const {filteredCommonTokenHoldings} = getCommonHoldings(moxieUserInfoMultiple, commonPortfolioHoldingsMetadata)
                 const newstate = await runtime.composeState(message, {
                     portfolioSummaries: JSON.stringify(portfolioSummaries),
@@ -288,13 +308,9 @@ export default {
             elizaLogger.log("[Portfolio] Fetching portfolio data");
 
             // Fetch fresh portfolio data
-            const portfolioV2Data = await getPortfolioV2Data(walletAddresses, ["BASE_MAINNET"], moxieUserInfo?.id, runtime)
-            const totalTokenValue = portfolioV2Data?.tokenBalances?.totalBalanceUSD || 0;
-            portfolioV2Data?.tokenBalances?.byToken?.edges?.forEach(token => {
-                token.node.holdingPercentage = (token?.node?.balanceUSD*100) / totalTokenValue
-            })
+            const portfolioData = await getPortfolio(traceId, walletAddresses, [8453]);
 
-            if(!portfolioV2Data || portfolioV2Data?.tokenBalances?.totalBalanceUSD === 0) {
+            if(!portfolioData || portfolioData?.totalBalanceUSD === 0) {
                 elizaLogger.error("[Portfolio] No Tokens in the portfolio for this wallet address: ", walletAddresses, ' moxieUser :', JSON.stringify(moxieUserInfo));
                 await callback({
                     text: "I couldn't find any Tokens in the portfolio for this wallet address",
@@ -302,12 +318,52 @@ export default {
                 });
                 return false;
             }
+            
+            const totalTokenValue = portfolioData?.totalBalanceUSD || 0;
+            const groupedTokens = portfolioData?.tokenBalances?.reduce(
+                (acc, token) => {
+                    const address = token.address;
+                    const { balanceUSD } = token.token;
+
+                    if (!acc[address]) {
+                        acc[address] = {
+                            ...token,
+                            token: {
+                                ...token.token,
+                                balanceUSD: balanceUSD,
+                            },
+                            holdingPercentage:
+                                (balanceUSD * 100) / totalTokenValue,
+                        };
+                    } else {
+                        acc[address].token.balanceUSD += balanceUSD;
+                        acc[address].holdingPercentage =
+                            (acc[address].token.balanceUSD * 100) /
+                            totalTokenValue;
+                    }
+
+                    return acc;
+                },
+                {}
+            );
+
+            const groupedTokensArray = Object.values(
+                groupedTokens
+            ) as TokenBalance[];
 
             elizaLogger.success("[Portfolio] Portfolio data fetched successfully");
             elizaLogger.log("[Portfolio] Generating portfolio summary");
 
-            const summaryStream = await generatePortfolioSummary(portfolioV2Data, moxieUserInfo, message, runtime, isSelfPortolioRequested);
-
+            const summaryStream = await generatePortfolioSummary(
+                {
+                    totalBalanceUSD: totalTokenValue,
+                    tokenBalances: groupedTokensArray,
+                },
+                moxieUserInfo,
+                message,
+                runtime,
+                isSelfPortolioRequested
+            );
             elizaLogger.success("[Portfolio] Successfully generated portfolio summary");
 
             for await (const textPart of summaryStream) {

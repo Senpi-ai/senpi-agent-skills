@@ -117,19 +117,21 @@ export const mockWallet: MoxieClientWallet = {
 };
 
 export const mockPortfolio: Portfolio = {
+    totalBalanceUSD: 100,
     tokenBalances: [
         {
             address: "0x0000000000000000000000000000000000000000",
             network: "BASE_MAINNET",
             token: {
                 balance: 1,
-                balanceUSD: 1,
+                balanceUSD: 100,
                 balanceRaw: "1000000000000000000",
                 baseToken: {
                     name: "ETH",
                     address: "0x0000000000000000000000000000000000000000",
                     symbol: "ETH",
                     decimals: 18,
+                    imgUrl: "https://i.imgur.com/Y1au7ZB.jpg",
                 },
             },
         },
