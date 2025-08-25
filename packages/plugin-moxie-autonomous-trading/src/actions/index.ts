@@ -201,6 +201,17 @@ export const autonomousTradingAction: Action = {
                 return true;
             }
 
+            if (
+                params.condition === "ALL" &&
+                !params.timeDurationInSec
+            ) {
+                callback?.({
+                    text: `Please specify the duration between which copied traders make trades to be counted for the rule`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+
             if (params.stopLossPercentage && params.stopLossPercentage > 100) {
                 callback?.({
                     text: `Please specify a stop loss percentage less than 100%. You can not lose more than you invested.`,
