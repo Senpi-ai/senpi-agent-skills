@@ -1,0 +1,1 @@
+export const MAX_TOKEN_BALANCES_TO_FETCH = 20;
