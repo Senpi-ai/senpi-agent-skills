@@ -19,6 +19,7 @@ import { portfolioUserIdsExtractionTemplate } from "../../commonTemplate";
 import { MoxieUser, moxieUserService, Portfolio, getPortfolioV2Data, PortfolioV2Data, MoxieAgentDBAdapter } from "@moxie-protocol/moxie-agent-lib";
 import { getCommonHoldings, getMoxieCache, getMoxieToUSD, getWalletAddresses, setMoxieCache, handleIneligibleMoxieUsers, formatMessages } from "../../util";
 import { PortfolioUserRequested } from "../../types";
+import { MAX_TOKEN_BALANCES_TO_FETCH } from "../../constants";
 
 export interface PortfolioSummary {
     [userName: string]: {
@@ -92,7 +93,7 @@ export async function handleMultipleUsers(
             continue;
         }
 
-        const portfolioV2Data = await getPortfolioV2Data(walletAddresses, ["BASE_MAINNET"], userInfo.id, runtime)
+        const portfolioV2Data = await getPortfolioV2Data(walletAddresses, ["BASE_MAINNET"], userInfo.id, runtime, MAX_TOKEN_BALANCES_TO_FETCH)
 
         if(!portfolioV2Data || portfolioV2Data?.tokenBalances?.totalBalanceUSD === 0) {
             continue;
@@ -288,7 +289,7 @@ export default {
             elizaLogger.log("[Portfolio] Fetching portfolio data");
 
             // Fetch fresh portfolio data
-            const portfolioV2Data = await getPortfolioV2Data(walletAddresses, ["BASE_MAINNET"], moxieUserInfo?.id, runtime)
+            const portfolioV2Data = await getPortfolioV2Data(walletAddresses, ["BASE_MAINNET"], moxieUserInfo?.id, runtime, MAX_TOKEN_BALANCES_TO_FETCH)
             const totalTokenValue = portfolioV2Data?.tokenBalances?.totalBalanceUSD || 0;
             portfolioV2Data?.tokenBalances?.byToken?.edges?.forEach(token => {
                 token.node.holdingPercentage = (token?.node?.balanceUSD*100) / totalTokenValue
