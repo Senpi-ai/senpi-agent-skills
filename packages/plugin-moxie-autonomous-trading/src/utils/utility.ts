@@ -58,19 +58,18 @@ export interface BaseParams {
     tokenMetrics?: TokenMetrics;
 }
 
+export interface SellConditionInput {
+    priceChangePercentage: number;
+    sellPercentage: number;
+}
+
 export interface LimitOrderParams {
-    sellConditions: {
-        sellPercentage: number;
-        priceChangePercentage: number;
-    };
+    sellConditions: SellConditionInput[];
     limitOrderValidityInSeconds: number;
 }
 
 export interface StopLossParams {
-    sellConditions: {
-        sellPercentage: number;
-        priceChangePercentage: number;
-    };
+    sellConditions: SellConditionInput[];
     stopLossValidityInSeconds: number;
 }
 
@@ -91,8 +90,8 @@ export interface CreateRuleInput {
     ruleType: RuleType;
     ruleParameters: {
         baseParams: BaseParams;
-        limitOrderParams?: LimitOrderParams;
-        stopLossParams?: StopLossParams;
+        limitOrderParams?: LimitOrderParams | LimitOrderParams[];
+        stopLossParams?: StopLossParams | StopLossParams[];
         groupTradeParams?: GroupTradeParams;
         userTradeParams?: UserTradeParams;
     };

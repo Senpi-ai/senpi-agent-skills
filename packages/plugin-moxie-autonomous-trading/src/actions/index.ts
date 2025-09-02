@@ -49,12 +49,21 @@ export type MarketCap = number | {
     maxMarketCapInUSD?: number;
 };
 
+export interface StopLossOrder {
+    dropPercentage: number;
+    sellPercentage: number;
+}
+
+export interface LimitOrder {
+    priceChangePercentage: number;
+    sellPercentage: number;
+}
+
 export interface AutonomousTradingRuleParams {
     moxieIds?: string[];
     groupId?: string;
     timeDurationInSec: number;
     amountInUSD: number;
-    profitPercentage?: number;
     condition?: "ANY" | "ALL";
     conditionValue?: number;
     minPurchaseAmount?: number;
@@ -64,8 +73,9 @@ export interface AutonomousTradingRuleParams {
     sellPercentage?: number;
     tokenAge?: TokenAge;
     marketCap?: MarketCap;
-    stopLossPercentage?: number;
     stopLossDurationInSec?: number;
+    stopLossOrders?: StopLossOrder[];
+    limitOrders?: LimitOrder[];
 }
 
 export interface AutonomousTradingError {
@@ -212,13 +222,60 @@ export const autonomousTradingAction: Action = {
                 return true;
             }
 
-            if (params.stopLossPercentage && params.stopLossPercentage > 100) {
-                callback?.({
-                    text: `Please specify a stop loss percentage less than 100%. You can not lose more than you invested.`,
-                    action: "AUTONOMOUS_TRADING",
-                });
-                return true;
+            if (Array.isArray(params.stopLossOrders)) {
+                let totalSellPercentage = 0;
+                for (let i = 0; i < params.stopLossOrders.length; i++) {
+                    const order = params.stopLossOrders[i];
+                    totalSellPercentage += order.sellPercentage;
+                    if (Math.abs(order.dropPercentage) <= 0) {
+                        callback?.({
+                            text: `Stop loss order #${i + 1}: drop percentage must be greater than 0%.`,
+                            action: "AUTONOMOUS_TRADING",
+                        });
+                        return true;
+                    }
+                }
+                if (totalSellPercentage > 100) {
+                    callback?.({ 
+                        text: `The sum of sell percentages in stop loss orders must not exceed 100%.`,
+                        action: "AUTONOMOUS_TRADING",
+                    });
+                    return true;
+                }
             }
+
+            // Validate limitOrders
+            if (Array.isArray(params.limitOrders)) {
+                let totalSellPercentage = 0;
+                for (let i = 0; i < params.limitOrders.length; i++) {
+                    const order = params.limitOrders[i];
+                    // LimitOrder does not have sellPercentage, so skip that check
+                    if (order.priceChangePercentage <= 0) {
+                        callback?.({
+                            text: `Limit order #${i + 1}: price change percentage must be greater than 0%.`,
+                            action: "AUTONOMOUS_TRADING",
+                        });
+                        return true;
+                    }
+                    if (typeof order.sellPercentage === "number") {
+                        totalSellPercentage += order.sellPercentage;
+                    }
+                }
+                // Only check totalSellPercentage if at least one sellPercentage exists
+                if (
+                    params.limitOrders.some(
+                        (order) => typeof order.sellPercentage === "number"
+                    ) &&
+                    totalSellPercentage > 100
+                ) {
+                    callback?.({
+                        text: `The sum of sell percentages in limit orders must not exceed 100%.`,
+                        action: "AUTONOMOUS_TRADING",
+                    });
+                    return true;
+                }
+            }
+
 
             if (!params.amountInUSD) {
                 callback?.({
@@ -294,7 +351,7 @@ export const autonomousTradingAction: Action = {
                 ruleType === "COPY_TRADE_AND_PROFIT" ||
                 ruleType === "GROUP_COPY_TRADE_AND_PROFIT"
             ) {
-                if (params.profitPercentage === undefined || params.profitPercentage === null) {
+                if (params.limitOrders === undefined || params.limitOrders === null || params.limitOrders.length === 0) {
                     if (ruleType === "COPY_TRADE_AND_PROFIT") {
                         ruleType = "COPY_TRADE";
                     }
@@ -430,24 +487,67 @@ export const autonomousTradingAction: Action = {
                 ruleType === "GROUP_COPY_TRADE_AND_PROFIT" ||
                 ruleType === "COPY_TRADE_AND_PROFIT"
             ) {
-                limitOrderParams = {
-                    sellConditions: {
-                        sellPercentage: 100,
-                        priceChangePercentage: params.profitPercentage,
-                    },
-                    limitOrderValidityInSeconds: 7 * 24 * 60 * 60, // 7 days in seconds
-                };
+                if (Array.isArray(params.limitOrders) && params.limitOrders.length > 0) {
+                    limitOrderParams = params.limitOrders.map((order) => ({
+                        sellConditions: [
+                            {
+                                ...(typeof order.priceChangePercentage === "number"
+                                    ? { priceChangePercentage: Math.abs(order.priceChangePercentage) }
+                                    : (() => {
+                                        callback?.({
+                                            text: `Missing required parameter: priceChangePercentage in limit order.`,
+                                            action: "AUTONOMOUS_TRADING",
+                                        });
+                                        throw new Error("Missing priceChangePercentage in limit order");
+                                    })()),
+                                ...(typeof order.sellPercentage === "number"
+                                    ? { sellPercentage: Math.abs(order.sellPercentage) }
+                                    : (() => {
+                                        callback?.({
+                                            text: `Missing required parameter: sellPercentage in limit order.`,
+                                            action: "AUTONOMOUS_TRADING",
+                                        });
+                                        throw new Error("Missing sellPercentage in limit order");
+                                    })()),
+                            },
+                        ],
+                        limitOrderValidityInSeconds: 7 * 24 * 60 * 60, // 7 days in seconds
+                    })) as unknown as LimitOrderParams;
+                } else {
+                    callback?.({
+                        text: `Please specify at least one limit order for a profit rule.`,
+                        action: "AUTONOMOUS_TRADING",
+                    });
+                    return true;
+                }
             }
 
-            if (params.stopLossPercentage) {
-                stopLossParams = {
-                    sellConditions: {
-                        sellPercentage: 100,
-                        priceChangePercentage: params.stopLossPercentage,
-                    },
-                    stopLossValidityInSeconds:
-                        params.stopLossDurationInSec || 7 * 24 * 60 * 60,
-                };
+            if (Array.isArray(params.stopLossOrders) && params.stopLossOrders.length > 0) {
+                stopLossParams = params.stopLossOrders.map((order) => ({
+                    sellConditions: [
+                        {
+                            ...(typeof order.dropPercentage === "number"
+                                ? { priceChangePercentage: Math.abs(order.dropPercentage) }
+                                : (() => {
+                                    callback?.({
+                                        text: `Missing required parameter: dropPercentage in stop loss order.`,
+                                        action: "AUTONOMOUS_TRADING",
+                                    });
+                                    throw new Error("Missing dropPercentage in stop loss order");
+                                })()),
+                            ...(typeof order.sellPercentage === "number"
+                                ? { sellPercentage: Math.abs(order.sellPercentage) }
+                                : (() => {
+                                    callback?.({
+                                        text: `Missing required parameter: sellPercentage in stop loss order.`,
+                                        action: "AUTONOMOUS_TRADING",
+                                    });
+                                    throw new Error("Missing sellPercentage in stop loss order");
+                                })()),
+                        },
+                    ],
+                    stopLossValidityInSeconds: params.stopLossDurationInSec || 7 * 24 * 60 * 60,
+                })) as unknown as StopLossParams;
             }
 
             try {
