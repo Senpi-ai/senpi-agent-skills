@@ -1,942 +1,932 @@
 [
     {
-      "pluginId": "f65a02f3-4bf2-436d-be50-34e7d33fd293",
-      "name": "@moxie-protocol/plugin-moxie-autonomous-trading",
-      "displayName": "Autonomous Trading",
-      "version": "0.1.8+build.1",
-      "author": "Senpi",
-      "description": "Have Senpi automatically buy and sell tokens for you when specific conditions are met!",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-autonomous-trading",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Copy Trade specific user(s)",
-        "Copy Trade a group",
-        "Buy when they buy + Sell when they sell",
-        "Buy when they buy + Sell when price achieved",
-        "Buy when they buy, but only if marketcap is within specific range",
-        "Buy when they buy, buy only if token was created within specific range",
-        "**New! Set stop loss!**",
-        "Sophisticated combinations",
-        "Notes:",
-        "You can view all your open Auto-Trade rules in the Autonomous Trades section of the dashboard",
-        "The Orders page also includes a tab for executed Auto-Trades",
-        "“Sell when they sell” will currently sell 100% of your tokens purchased in the auto-trade when they sell 50% of theirs. You’ll be able to adjust these settings in a future release.",
-        "Stop loss will attempt to sell 5 times once the target is achieved. Actual sale price may vary somewhat from target on extremely volatile tokens."
-      ],
-      "starterQuestions": [
-        {
-          "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%.",
-          "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%."
-        },
-        {
-          "label": "If any 2 people in #copytrade buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%.",
-          "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%."
-        },
-        {
-          "label": "If any 2 people in #copytrade buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%.",
-          "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%."
-        },
-        {
-          "label": "If any 2 people in #copytrade buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set stop loss to 10%.",
-          "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set target to 0%."
-        },
-        {
-          "label": "If any 3 people in #copytrade buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%.",
-          "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
-        },
-        {
-          "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%",
-          "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
-        },
-        {
-          "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%",
-          "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg"
-      ],
-      "actions": [
-        "AUTONOMOUS_TRADING",
-        "COPY_TRADE_RULE_DETAILS",
-        "COPY_TRADE",
-        "COPY_TRADES",
-        "COPY_TRADE_WITH_PROFIT",
-        "GROUP_COPY_TRADE",
-        "GROUP_COPY_TRADES",
-        "GROUP_COPY_TRADE_WITH_PROFIT",
-        "AUTONOMOUS_TRADING_RULE_DETAILS"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Listening to the market’s rhythm",
-        "Detecting synchronized moves",
-        "Locking in your entry",
-        "Executing with quiet precision"
-      ],
-      "orderIndex": 0
+        "pluginId": "f65a02f3-4bf2-436d-be50-34e7d33fd293",
+        "name": "@moxie-protocol/plugin-moxie-autonomous-trading",
+        "displayName": "Autonomous Trading",
+        "version": "0.1.8+build.1",
+        "author": "Senpi",
+        "description": "Have Senpi automatically buy and sell tokens for you when specific conditions are met!",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-autonomous-trading",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Copy Trade specific user(s)",
+            "Copy Trade a group",
+            "Buy when they buy + Sell when they sell",
+            "Buy when they buy + Sell when price achieved",
+            "Buy when they buy, but only if marketcap is within specific range",
+            "Buy when they buy, buy only if token was created within specific range",
+            "**New! Set stop loss!**",
+            "Sophisticated combinations",
+            "Notes:",
+            "You can view all your open Auto-Trade rules in the Autonomous Trades section of the dashboard",
+            "The Orders page also includes a tab for executed Auto-Trades",
+            "“Sell when they sell” will currently sell 100% of your tokens purchased in the auto-trade when they sell 50% of theirs. You’ll be able to adjust these settings in a future release.",
+            "Stop loss will attempt to sell 5 times once the target is achieved. Actual sale price may vary somewhat from target on extremely volatile tokens."
+        ],
+        "starterQuestions": [
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%.",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%.",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%.",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set stop loss to 10%.",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set target to 0%."
+            },
+            {
+                "label": "If any 3 people in #copytrade buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%.",
+                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
+            },
+            {
+                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg"
+        ],
+        "actions": [
+            "AUTONOMOUS_TRADING",
+            "COPY_TRADE_RULE_DETAILS",
+            "COPY_TRADE",
+            "COPY_TRADES",
+            "COPY_TRADE_WITH_PROFIT",
+            "GROUP_COPY_TRADE",
+            "GROUP_COPY_TRADES",
+            "GROUP_COPY_TRADE_WITH_PROFIT",
+            "AUTONOMOUS_TRADING_RULE_DETAILS"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Listening to the market’s rhythm",
+            "Detecting synchronized moves",
+            "Locking in your entry",
+            "Executing with quiet precision"
+        ],
+        "orderIndex": 0
     },
     {
-      "pluginId": "b5622f90-987e-51d1-bea9-5b1471bb9379",
-      "name": "@moxie-protocol/plugin-senpi-orders",
-      "displayName": "Place Order",
-      "version": "0.1.8+build.1",
-      "author": null,
-      "description": "Enables your agent to trade and swap for you onchain using your Agent Wallet, with instructions for profit-taking and stop losses, including laddered profits and stop losses. ",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-orders",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Swap any token on Base. 💡Pro Tip: use “$” to auto-complete token names",
-        "Spend a % of your wallet to buy coins",
-        "Buy on dip — buy a token when the price drops",
-        "Buy at target price — buy at target price",
-        "Sell at target price — sell at target price (all or some)",
-        "Take profits using profit ladders (see conversation starters for examples).",
-        "Set a stop loss, for all or some of the token",
-        "Apply profit taking or stop loss to any tokens already in your wallet"
-      ],
-      "starterQuestions": [
-        {
-          "label": "Buy me $25 worth of $[replace with token name]",
-          "value": "Buy me $25 worth of $[replace with token name]"
-        },
-        {
-          "label": "Buy me $25 worth of $[TOKEN] and then sell all for 30% gain. Set stop loss at 25%.",
-          "value": "Buy me $25 worth of $[TOKEN] and then sell all for 30% gain. Set stop loss at 25%."
-        },
-        {
-          "label": "Buy me $25 worth of $[TOKEN] and then sell 50% for 30% gain and the other 50% for 100% gain. Sell 50% for stop loss of 20% and 50% for stop loss of 40%.",
-          "value": "Buy me $25 worth of $[TOKEN] and then sell 50% for 30% gain and the other 50% for 100% gain. Sell 50% for stop loss of 20% and 50% for stop loss of 40%."
-        },
-        {
-          "label": "Apply 30% stop loss on all of my $[TOKEN]",
-          "value": "Apply 30% stop loss on all of my $[TOKEN]"
-        },
-        {
-          "label": "Sell 30% of my $[TOKEN] if the price increases by 25% and then 30% more when the price increases by 50%",
-          "value": "Sell 30% of my $[TOKEN] if the price increases by 25% and then 30% more when the price increases by 50%"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg"
-      ],
-      "actions": [
-        "SENPI_ORDERS",
-        "TRADE_TOKENS",
-        "SWAP_TOKENS",
-        "BUY_TOKENS",
-        "SELL_TOKENS",
-        "PURCHASE_TOKENS",
-        "STOP_LOSS",
-        "LIMIT_ORDER",
-        "SWAP_STOP_LOSS",
-        "SWAP_LIMIT_ORDER",
-        "LIMIT_ORDER",
-        "STOP_LOSS_LIMIT_ORDER"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Initiating transaction",
-        "Writing to the Base blockchain"
-      ],
-      "orderIndex": 1
+        "pluginId": "b5622f90-987e-51d1-bea9-5b1471bb9379",
+        "name": "@moxie-protocol/plugin-senpi-orders",
+        "displayName": "Place Order",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Enables your agent to trade and swap for you onchain using your Agent Wallet, with instructions for profit-taking and stop losses, including laddered profits and stop losses. ",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-orders",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Swap any token on Base. 💡Pro Tip: use “$” to auto-complete token names",
+            "Spend a % of your wallet to buy coins",
+            "Buy on dip — buy a token when the price drops",
+            "Buy at target price — buy at target price",
+            "Sell at target price — sell at target price (all or some)",
+            "Take profits using profit ladders (see conversation starters for examples).",
+            "Set a stop loss, for all or some of the token",
+            "Apply profit taking or stop loss to any tokens already in your wallet"
+        ],
+        "starterQuestions": [
+            {
+                "label": "Buy me $25 worth of $[replace with token name]",
+                "value": "Buy me $25 worth of $[replace with token name]"
+            },
+            {
+                "label": "Buy me $25 worth of $[TOKEN] and then sell all for 30% gain. Set stop loss at 25%.",
+                "value": "Buy me $25 worth of $[TOKEN] and then sell all for 30% gain. Set stop loss at 25%."
+            },
+            {
+                "label": "Buy me $25 worth of $[TOKEN] and then sell 50% for 30% gain and the other 50% for 100% gain. Sell 50% for stop loss of 20% and 50% for stop loss of 40%.",
+                "value": "Buy me $25 worth of $[TOKEN] and then sell 50% for 30% gain and the other 50% for 100% gain. Sell 50% for stop loss of 20% and 50% for stop loss of 40%."
+            },
+            {
+                "label": "Apply 30% stop loss on all of my $[TOKEN]",
+                "value": "Apply 30% stop loss on all of my $[TOKEN]"
+            },
+            {
+                "label": "Sell 30% of my $[TOKEN] if the price increases by 25% and then 30% more when the price increases by 50%",
+                "value": "Sell 30% of my $[TOKEN] if the price increases by 25% and then 30% more when the price increases by 50%"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders/images/logo.svg"
+        ],
+        "actions": [
+            "SENPI_ORDERS",
+            "TRADE_TOKENS",
+            "SWAP_TOKENS",
+            "BUY_TOKENS",
+            "SELL_TOKENS",
+            "PURCHASE_TOKENS",
+            "STOP_LOSS",
+            "LIMIT_ORDER",
+            "SWAP_STOP_LOSS",
+            "SWAP_LIMIT_ORDER",
+            "LIMIT_ORDER",
+            "STOP_LOSS_LIMIT_ORDER"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": ["Initiating transaction", "Writing to the Base blockchain"],
+        "orderIndex": 1
     },
     {
-      "pluginId": "3d5e16f1-40e0-5df0-89c0-b2216bfa8850",
-      "name": "@moxie-protocol/plugin-moxie-groups",
-      "displayName": "Groups",
-      "version": "0.1.8+build.1",
-      "author": "Senpi",
-      "description": "Easily add any Base users to a group, which can then be used for copy trading and other features.",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-groups",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-groups/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Create groups",
-        "Add users to groups (This can be done by asking Senpi or on the Groups page.)",
-        "Add all to a group. (Example: (a) ask Senpi for the top holders of a token e.g. $zora, (b) after Senpi returns the results, ask Senpi to add all users to your Zora group.)"
-      ],
-      "starterQuestions": [
-        {
-          "label": "Create the [replace with group name] group",
-          "value": "Create the [replace with group name] group"
-        },
-        {
-          "label": "Add @[replace with name]  to [replace with group name] group",
-          "value": "Add @[replace with name]  to [replace with group name] group"
-        }
-      ],
-      "actions": [
-        "MANAGE_GROUPS",
-        "CREATE_GROUP",
-        "ADD_GROUP_MEMBER",
-        "REMOVE_GROUP_MEMBER",
-        "DELETE_GROUP",
-        "GET_GROUP_DETAILS",
-        "UPDATE_GROUP"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Establishing precision",
-        "Opening the circle",
-        "Confirming members",
-        "Aligning group"
-      ],
-      "orderIndex": 2
+        "pluginId": "3d5e16f1-40e0-5df0-89c0-b2216bfa8850",
+        "name": "@moxie-protocol/plugin-moxie-groups",
+        "displayName": "Groups",
+        "version": "0.1.8+build.1",
+        "author": "Senpi",
+        "description": "Easily add any Base users to a group, which can then be used for copy trading and other features.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-groups",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-groups/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Create groups",
+            "Add users to groups (This can be done by asking Senpi or on the Groups page.)",
+            "Add all to a group. (Example: (a) ask Senpi for the top holders of a token e.g. $zora, (b) after Senpi returns the results, ask Senpi to add all users to your Zora group.)"
+        ],
+        "starterQuestions": [
+            {
+                "label": "Create the [replace with group name] group",
+                "value": "Create the [replace with group name] group"
+            },
+            {
+                "label": "Add @[replace with name]  to [replace with group name] group",
+                "value": "Add @[replace with name]  to [replace with group name] group"
+            }
+        ],
+        "actions": [
+            "MANAGE_GROUPS",
+            "CREATE_GROUP",
+            "ADD_GROUP_MEMBER",
+            "REMOVE_GROUP_MEMBER",
+            "DELETE_GROUP",
+            "GET_GROUP_DETAILS",
+            "UPDATE_GROUP"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Establishing precision",
+            "Opening the circle",
+            "Confirming members",
+            "Aligning group"
+        ],
+        "orderIndex": 2
     },
     {
-      "pluginId": "a1aa9887-fc11-5f54-aa62-235c7536ba67",
-      "name": "@moxie-protocol/plugin-moxie-token-details",
-      "displayName": "Base Token Details",
-      "version": "0.1.8+build.1",
-      "author": null,
-      "description": "Enables your agent to fetch token details for any token on Base",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-token-details",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-token-details/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Token prices",
-        "Market caps",
-        "Liquidity",
-        "Holders"
-      ],
-      "starterQuestions": [
-        {
-          "label": "Show token details for  $ [replace with token name]",
-          "value": "Show token details for  $ [replace with token name]"
-        },
-        {
-          "label": "Compare $CLANKER and $BNKR",
-          "value": "Compare $[CLANKER|0x1bc0c42215582d5a085795f4badbac3ff36d1bcb] and $[BNKR|0x22af33fe49fd1fa80c7149773dde5890d3c76f3b]"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-token-details/images/logo.svg"
-      ],
-      "actions": [
-        "TOKEN_DETAILS",
-        "TOKEN_DETAILS_SUMMARY",
-        "BASE_TOKEN_DETAIL",
-        "BASE_TOKEN_DETAILS",
-        "BASE_TOKEN_DETAILS_SUMMARY",
-        "TOKEN_SUMMARY",
-        "ERC20_DETAILS",
-        "ERC20_DETAILS_SUMMARY",
-        "ERC20_TOKEN_DETAILS",
-        "ERC20_TOKEN_DETAILS_SUMMARY",
-        "TOKEN_INFO",
-        "TOKEN_PORTFOLIO",
-        "TOKEN_PRICE",
-        "TOKEN_MARKET_CAP",
-        "TOKEN_HOLDINGS",
-        "TOKEN_LIQUIDITY",
-        "TOKEN_MARKET_PERFORMANCE",
-        "TOKEN_MARKET_SENTIMENT"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Entering stealth mode",
-        "Scanning onchain terrain",
-        "Tracking target movements",
-        "Delivering precision insights"
-      ],
-      "orderIndex": 12
+        "pluginId": "a1aa9887-fc11-5f54-aa62-235c7536ba67",
+        "name": "@moxie-protocol/plugin-moxie-token-details",
+        "displayName": "Base Token Details",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Enables your agent to fetch token details for any token on Base",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-token-details",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-token-details/images/logo.svg",
+        "settings": {},
+        "capabilities": ["Token prices", "Market caps", "Liquidity", "Holders"],
+        "starterQuestions": [
+            {
+                "label": "Show token details for  $ [replace with token name]",
+                "value": "Show token details for  $ [replace with token name]"
+            },
+            {
+                "label": "Compare $CLANKER and $BNKR",
+                "value": "Compare $[CLANKER|0x1bc0c42215582d5a085795f4badbac3ff36d1bcb] and $[BNKR|0x22af33fe49fd1fa80c7149773dde5890d3c76f3b]"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-token-details/images/logo.svg"
+        ],
+        "actions": [
+            "TOKEN_DETAILS",
+            "TOKEN_DETAILS_SUMMARY",
+            "BASE_TOKEN_DETAIL",
+            "BASE_TOKEN_DETAILS",
+            "BASE_TOKEN_DETAILS_SUMMARY",
+            "TOKEN_SUMMARY",
+            "ERC20_DETAILS",
+            "ERC20_DETAILS_SUMMARY",
+            "ERC20_TOKEN_DETAILS",
+            "ERC20_TOKEN_DETAILS_SUMMARY",
+            "TOKEN_INFO",
+            "TOKEN_PORTFOLIO",
+            "TOKEN_PRICE",
+            "TOKEN_MARKET_CAP",
+            "TOKEN_HOLDINGS",
+            "TOKEN_LIQUIDITY",
+            "TOKEN_MARKET_PERFORMANCE",
+            "TOKEN_MARKET_SENTIMENT"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Entering stealth mode",
+            "Scanning onchain terrain",
+            "Tracking target movements",
+            "Delivering precision insights"
+        ],
+        "orderIndex": 12
     },
     {
-      "pluginId": "927fb66c-2ebc-48e1-82a8-907c6e54e379",
-      "name": "@moxie-protocol/plugin-moxie-token-transfer",
-      "displayName": "Send Tokens",
-      "version": "0.1.8+build.1",
-      "author": null,
-      "description": "Enables your agent to send tokens from your agent wallet",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-token-transfer",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-token-transfer/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Send tokens to yourself",
-        "Send tokens to any ENS or Senpi user",
-        "Send tokens to any 0x address"
-      ],
-      "starterQuestions": [
-        {
-          "label": "Send 50% of my  $ [replace with token name] to @betashop.eth",
-          "value": "Send 50% of my  $ [replace with token name] to @[betashop.eth|M4]"
-        },
-        {
-          "label": "Send 25% of my  $ [replace with token name] to @betashop.eth",
-          "value": "Send 25% of my  $ [replace with token name] to @[betashop.eth|M4]"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-token-transfer/images/logo.svg"
-      ],
-      "actions": [
-        "TOKEN_TRANSFERS",
-        "SEND_TOKENS",
-        "SEND_COINS",
-        "SEND_CRYPTO",
-        "SEND_FUNDS",
-        "SEND_PAYMENT",
-        "SEND_CREATOR_COIN",
-        "SEND_ERC20",
-        "SEND_TOKEN",
-        "TRANSFER_PAYMENT",
-        "TRANSFER_CREATOR_COIN",
-        "TRANSFER_ERC20",
-        "TRANSFER_TOKENS"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Target locked",
-        "Calibrating transfer path",
-        "Delivery in motion — no trace left behind"
-      ],
-      "orderIndex": 11
+        "pluginId": "927fb66c-2ebc-48e1-82a8-907c6e54e379",
+        "name": "@moxie-protocol/plugin-moxie-token-transfer",
+        "displayName": "Send Tokens",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Enables your agent to send tokens from your agent wallet",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-token-transfer",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-token-transfer/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Send tokens to yourself",
+            "Send tokens to any ENS or Senpi user",
+            "Send tokens to any 0x address"
+        ],
+        "starterQuestions": [
+            {
+                "label": "Send 50% of my  $ [replace with token name] to @betashop.eth",
+                "value": "Send 50% of my  $ [replace with token name] to @[betashop.eth|M4]"
+            },
+            {
+                "label": "Send 25% of my  $ [replace with token name] to @betashop.eth",
+                "value": "Send 25% of my  $ [replace with token name] to @[betashop.eth|M4]"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-token-transfer/images/logo.svg"
+        ],
+        "actions": [
+            "TOKEN_TRANSFERS",
+            "SEND_TOKENS",
+            "SEND_COINS",
+            "SEND_CRYPTO",
+            "SEND_FUNDS",
+            "SEND_PAYMENT",
+            "SEND_CREATOR_COIN",
+            "SEND_ERC20",
+            "SEND_TOKEN",
+            "TRANSFER_PAYMENT",
+            "TRANSFER_CREATOR_COIN",
+            "TRANSFER_ERC20",
+            "TRANSFER_TOKENS"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Target locked",
+            "Calibrating transfer path",
+            "Delivery in motion — no trace left behind"
+        ],
+        "orderIndex": 11
     },
     {
-      "pluginId": "5d3b79e2-ac61-0bb6-a3ba-b0e00b943614",
-      "name": "@moxie-protocol/plugin-moxie-social-alpha",
-      "displayName": "Social Alpha",
-      "version": "0.1.8+build.1",
-      "author": null,
-      "description": "In-depth analysis on Base users, including portfolios and posts on Farcaster and X.",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-social-alpha",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-social-alpha/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "AI Intelligence across social media",
-        "Powerful insights into peoples’ portfolios",
-        "Get Social Alpha insights on friends, influencers, whales",
-        "Aggregated trends",
-        "Alerts (coming soon)"
-      ],
-      "starterQuestions": [
-        {
-          "label": "Analyze portfolio for @maretus and @betashop",
-          "value": "Analyze portfolio for @[maretus|M7164] and @[betashop.eth|M4]"
-        },
-        {
-          "label": "Show me social media sentiment from @betashop.eth and @jessepollak",
-          "value": "Show me social media sentiment from @[betashop.eth|M4] and @[jessepollak|M1245]"
-        },
-        {
-          "label": "What's buzzing today on socials?",
-          "value": "What's buzzing today on socials?"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-social-alpha/images/logo.svg"
-      ],
-      "actions": [
-        "TWEET_SUMMARY",
-        "TWEET_HISTORY",
-        "TWITTER_ACTIVITY",
-        "TWITTER_UPDATES",
-        "FARCASTER_SUMMARY",
-        "FARCASTER_HISTORY",
-        "FARCASTER_ACTIVITY",
-        "FARCASTER_UPDATES",
-        "FARCASTER_CASTS",
-        "SOCIAL_SUMMARY",
-        "FARCASTER_AND_TWITTER_SUMMARY",
-        "FARCASTER_AND_TWITTER_ACTIVITY",
-        "FARCASTER_AND_TWITTER_UPDATES",
-        "SOCIAL_POSTS"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Tuning into Farcaster frequencies",
-        "Slipping through the noise on X",
-        "Extracting high-signal chatter",
-        "Returning with focused intel"
-      ],
-      "orderIndex": 10
+        "pluginId": "5d3b79e2-ac61-0bb6-a3ba-b0e00b943614",
+        "name": "@moxie-protocol/plugin-moxie-social-alpha",
+        "displayName": "Social Alpha",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "In-depth analysis on Base users, including portfolios and posts on Farcaster and X.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-social-alpha",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-social-alpha/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "AI Intelligence across social media",
+            "Powerful insights into peoples’ portfolios",
+            "Get Social Alpha insights on friends, influencers, whales",
+            "Aggregated trends",
+            "Alerts (coming soon)"
+        ],
+        "starterQuestions": [
+            {
+                "label": "Analyze portfolio for @maretus and @betashop",
+                "value": "Analyze portfolio for @[maretus|M7164] and @[betashop.eth|M4]"
+            },
+            {
+                "label": "Show me social media sentiment from @betashop.eth and @jessepollak",
+                "value": "Show me social media sentiment from @[betashop.eth|M4] and @[jessepollak|M1245]"
+            },
+            {
+                "label": "What's buzzing today on socials?",
+                "value": "What's buzzing today on socials?"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-social-alpha/images/logo.svg"
+        ],
+        "actions": [
+            "TWEET_SUMMARY",
+            "TWEET_HISTORY",
+            "TWITTER_ACTIVITY",
+            "TWITTER_UPDATES",
+            "FARCASTER_SUMMARY",
+            "FARCASTER_HISTORY",
+            "FARCASTER_ACTIVITY",
+            "FARCASTER_UPDATES",
+            "FARCASTER_CASTS",
+            "SOCIAL_SUMMARY",
+            "FARCASTER_AND_TWITTER_SUMMARY",
+            "FARCASTER_AND_TWITTER_ACTIVITY",
+            "FARCASTER_AND_TWITTER_UPDATES",
+            "SOCIAL_POSTS"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Tuning into Farcaster frequencies",
+            "Slipping through the noise on X",
+            "Extracting high-signal chatter",
+            "Returning with focused intel"
+        ],
+        "orderIndex": 10
     },
     {
-      "pluginId": "0ad0731e-698b-04bf-abeb-5d29cc36759f",
-      "name": "@moxie-protocol/plugin-moxie-balance",
-      "displayName": "Portfolios",
-      "version": "0.1.8+build.1",
-      "author": null,
-      "description": "Enables your agent to fetch portfolio details for thousands of wallets indexed by Moxie",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-balance",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-balance/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Analyze my portfolio",
-        "Analyze someone else’s portfolio (using Social Alpha skill)",
-        "Compare several portfolios"
-      ],
-      "starterQuestions": [
-        {
-          "label": "Analyze my portfolio",
-          "value": "Analyze my portfolio"
-        },
-        {
-          "label": "Analyze @maretus portfolio",
-          "value": "Analyze @[maretus|M7164] portfolio"
-        },
-        {
-          "label": "Compare portfolios of @betashop.eth @macster @sgniwder",
-          "value": "Compare portfolios of @[betashop.eth|M4] @[maretus|M7164] @[sgniwder|M739]"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-balance/images/logo.svg"
-      ],
-      "actions": [
-        "PORTFOLIO",
-        "PORTFOLIO_SUMMARY",
-        "TOTAL_BALANCE",
-        "ALL_POSITIONS",
-        "ASSET_OVERVIEW",
-        "HOLDINGS_SUMMARY",
-        "WALLET_BALANCE",
-        "INVESTMENT_SUMMARY",
-        "ASSET_POSITIONS",
-        "PORTFOLIO_OVERVIEW",
-        "PORTFOLIO_STATUS"
-      ],
-      "isPremium": false,
-      "freeQueries": 10,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Entering stealth mode",
-        "Scanning onchain terrain",
-        "Tracking target movements",
-        "Delivering precision insights"
-      ],
-      "orderIndex": 8
+        "pluginId": "0ad0731e-698b-04bf-abeb-5d29cc36759f",
+        "name": "@moxie-protocol/plugin-moxie-balance",
+        "displayName": "Portfolios",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Enables your agent to fetch portfolio details for thousands of wallets indexed by Moxie",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-balance",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-balance/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Analyze my portfolio",
+            "Analyze someone else’s portfolio (using Social Alpha skill)",
+            "Compare several portfolios"
+        ],
+        "starterQuestions": [
+            {
+                "label": "Analyze my portfolio",
+                "value": "Analyze my portfolio"
+            },
+            {
+                "label": "Analyze @maretus portfolio",
+                "value": "Analyze @[maretus|M7164] portfolio"
+            },
+            {
+                "label": "Compare portfolios of @betashop.eth @macster @sgniwder",
+                "value": "Compare portfolios of @[betashop.eth|M4] @[maretus|M7164] @[sgniwder|M739]"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-moxie-balance/images/logo.svg"
+        ],
+        "actions": [
+            "PORTFOLIO",
+            "PORTFOLIO_SUMMARY",
+            "TOTAL_BALANCE",
+            "ALL_POSITIONS",
+            "ASSET_OVERVIEW",
+            "HOLDINGS_SUMMARY",
+            "WALLET_BALANCE",
+            "INVESTMENT_SUMMARY",
+            "ASSET_POSITIONS",
+            "PORTFOLIO_OVERVIEW",
+            "PORTFOLIO_STATUS"
+        ],
+        "isPremium": false,
+        "freeQueries": 10,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Entering stealth mode",
+            "Scanning onchain terrain",
+            "Tracking target movements",
+            "Delivering precision insights"
+        ],
+        "orderIndex": 8
     },
     {
-      "pluginId": "0ad0731e-698b-04bf-abeb-5d29cc36759d",
-      "name": "@moxie-protocol/plugin-token-social-sentiment",
-      "displayName": "Token Sentiment",
-      "version": "0.1.8+build.1",
-      "author": null,
-      "description": "Analyze token sentiments on X and Farcaster!",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-token-social-sentiment",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/e9ac0912aba19398350aeaa63006211f0ccca403/packages/plugin-moxie-token-social-sentiment/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Analyze token sentiments on X and Farcaster"
-      ],
-      "starterQuestions": [
-        {
-          "label": "What are people saying today about $KTA?",
-          "value": "What are people saying today about $[KTA|0xc0634090f2fe6c6d75e61be2b949464abb498973]"
-        },
-        {
-          "label": "What's the sentiment on $DRB?",
-          "value": "What's the sentiment on $[DRB|0x3ec2156d4c0a9cbdab4a016633b7bcf6a8d68ea2]"
-        },
-        {
-          "label": "What's the vibe on $DEGEN?",
-          "value": "What's the vibe on $[DEGEN|0x4ed4e862860bed51a9570b96d89af5e1b0efefed]?"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/sharathkrml-patch-2/packages/plugin-token-social-sentiment/images/logo.svg"
-      ],
-      "actions": [
-        "TOKEN_SOCIAL_SENTIMENT"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Listening in the shadows",
-        "Catching the emotional undercurrent",
-        "Feeling the market’s mood",
-        "Delivering insights — crisp and precise"
-      ],
-      "orderIndex": 5
+        "pluginId": "0ad0731e-698b-04bf-abeb-5d29cc36759d",
+        "name": "@moxie-protocol/plugin-token-social-sentiment",
+        "displayName": "Token Sentiment",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Analyze token sentiments on X and Farcaster!",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-token-social-sentiment",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/e9ac0912aba19398350aeaa63006211f0ccca403/packages/plugin-moxie-token-social-sentiment/images/logo.svg",
+        "settings": {},
+        "capabilities": ["Analyze token sentiments on X and Farcaster"],
+        "starterQuestions": [
+            {
+                "label": "What are people saying today about $KTA?",
+                "value": "What are people saying today about $[KTA|0xc0634090f2fe6c6d75e61be2b949464abb498973]"
+            },
+            {
+                "label": "What's the sentiment on $DRB?",
+                "value": "What's the sentiment on $[DRB|0x3ec2156d4c0a9cbdab4a016633b7bcf6a8d68ea2]"
+            },
+            {
+                "label": "What's the vibe on $DEGEN?",
+                "value": "What's the vibe on $[DEGEN|0x4ed4e862860bed51a9570b96d89af5e1b0efefed]?"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/sharathkrml-patch-2/packages/plugin-token-social-sentiment/images/logo.svg"
+        ],
+        "actions": ["TOKEN_SOCIAL_SENTIMENT"],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Listening in the shadows",
+            "Catching the emotional undercurrent",
+            "Feeling the market’s mood",
+            "Delivering insights — crisp and precise"
+        ],
+        "orderIndex": 5
     },
     {
-      "pluginId": "79449cd9-0590-4ccc-9d9f-12f99438c17b",
-      "name": "@moxie-protocol/plugin-degenfans-alfafrens",
-      "displayName": "DegenFans AlfaFrens",
-      "version": "0.0.2",
-      "author": "DegenFans",
-      "description": "Enables your agent to recommend staking options for AlfaFrens channels",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-degenfans-alfafrens",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-degenfans-alfafrens/images/logo.png",
-      "settings": {},
-      "capabilities": [
-        "show the best staking options for a given staking amount"
-      ],
-      "starterQuestions": [
-        {
-          "label": "What is the Degenfans Alfafrens Skills?",
-          "value": "What is the Degenfans Alfafrens Skills?"
-        },
-        {
-          "label": "What are some staking recommendations you have for Alfafrens?",
-          "value": "What are some staking recommendations you have for Alfafrens?"
-        },
-        {
-          "label": "I have 9000 AF — how should I stake it?",
-          "value": "I have 9000 AF — how should I stake it?"
-        },
-        {
-          "label": "What are your top picks for staking on Alfafrens?",
-          "value": "What are your top picks for staking on Alfafrens?"
-        }
-      ],
-      "mediaUrls": [
-        ""
-      ],
-      "actions": [
-        "GET_ALFAFRENS_STAKING_RECOMMENDATION",
-        "VIEW_ALFAFRENS_STAKING_RECOMMENDATION",
-        "GIVE_ALFAFRENS_STAKING_RECOMMENDATION",
-        "GET_ALFAFRENS_STAKING_CONSULTANT",
-        "STAKING_RECOMMENDATION_ON_ALFAFRENS",
-        "DEGENFANS_ALFAFRENS_INFO",
-        "WHAT_IS_DEGENFANS_ALFAFRENS",
-        "HOW_DOES_DEGENFANS_ALFAFRENS_WORK",
-        "HOW_TO_USE_DEGENFANS_ALFAFRENS"
-      ],
-      "isPremium": true,
-      "freeQueries": 3,
-      "skillCoinAddress": "0x112cf1cc540eadf234158c0e4044c3b5f2a33e5e",
-      "minimumSkillBalance": 5,
-      "status": "ACTIVE",
-      "isDefault": false,
-      "loaders": [
-        "Querying AlfaFrens",
-        "Waiting for response",
-        "Doing some DegenFans magic"
-      ],
-      "orderIndex": 7
+        "pluginId": "79449cd9-0590-4ccc-9d9f-12f99438c17b",
+        "name": "@moxie-protocol/plugin-degenfans-alfafrens",
+        "displayName": "DegenFans AlfaFrens",
+        "version": "0.0.2",
+        "author": "DegenFans",
+        "description": "Enables your agent to recommend staking options for AlfaFrens channels",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-degenfans-alfafrens",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-degenfans-alfafrens/images/logo.png",
+        "settings": {},
+        "capabilities": [
+            "show the best staking options for a given staking amount"
+        ],
+        "starterQuestions": [
+            {
+                "label": "What is the Degenfans Alfafrens Skills?",
+                "value": "What is the Degenfans Alfafrens Skills?"
+            },
+            {
+                "label": "What are some staking recommendations you have for Alfafrens?",
+                "value": "What are some staking recommendations you have for Alfafrens?"
+            },
+            {
+                "label": "I have 9000 AF — how should I stake it?",
+                "value": "I have 9000 AF — how should I stake it?"
+            },
+            {
+                "label": "What are your top picks for staking on Alfafrens?",
+                "value": "What are your top picks for staking on Alfafrens?"
+            }
+        ],
+        "mediaUrls": [""],
+        "actions": [
+            "GET_ALFAFRENS_STAKING_RECOMMENDATION",
+            "VIEW_ALFAFRENS_STAKING_RECOMMENDATION",
+            "GIVE_ALFAFRENS_STAKING_RECOMMENDATION",
+            "GET_ALFAFRENS_STAKING_CONSULTANT",
+            "STAKING_RECOMMENDATION_ON_ALFAFRENS",
+            "DEGENFANS_ALFAFRENS_INFO",
+            "WHAT_IS_DEGENFANS_ALFAFRENS",
+            "HOW_DOES_DEGENFANS_ALFAFRENS_WORK",
+            "HOW_TO_USE_DEGENFANS_ALFAFRENS"
+        ],
+        "isPremium": true,
+        "freeQueries": 3,
+        "skillCoinAddress": "0x112cf1cc540eadf234158c0e4044c3b5f2a33e5e",
+        "minimumSkillBalance": 5,
+        "status": "ACTIVE",
+        "isDefault": false,
+        "loaders": [
+            "Querying AlfaFrens",
+            "Waiting for response",
+            "Doing some DegenFans magic"
+        ],
+        "orderIndex": 7
     },
     {
-      "pluginId": "b30be45e-ff5a-4ef9-9674-7e27bdc8d1d8",
-      "name": "@moxie-protocol/plugin-senpi-sharing",
-      "displayName": "Cast on Farcaster",
-      "version": "0.1.0",
-      "author": "Senpi",
-      "description": "Have Senpi create casts for you and post them on Farcaster!",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-sharing",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-senpi-sharing/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Tap the Farcaster icon under any Senpi response to have Senpi create casts for you",
-        "Tap “Cast It!” to post the response on Farcaster! "
-      ],
-      "starterQuestions": [],
-      "mediaUrls": [
-        ""
-      ],
-      "actions": [
-        "POST_CONTENT"
-      ],
-      "isPremium": false,
-      "freeQueries": 10,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Reticulating splines"
-      ],
-      "orderIndex": 6
+        "pluginId": "b30be45e-ff5a-4ef9-9674-7e27bdc8d1d8",
+        "name": "@moxie-protocol/plugin-senpi-sharing",
+        "displayName": "Cast on Farcaster",
+        "version": "0.1.0",
+        "author": "Senpi",
+        "description": "Have Senpi create casts for you and post them on Farcaster!",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-sharing",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-senpi-sharing/images/logo.svg",
+        "settings": {},
+        "capabilities": [
+            "Tap the Farcaster icon under any Senpi response to have Senpi create casts for you",
+            "Tap “Cast It!” to post the response on Farcaster! "
+        ],
+        "starterQuestions": [],
+        "mediaUrls": [""],
+        "actions": ["POST_CONTENT"],
+        "isPremium": false,
+        "freeQueries": 10,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": ["Reticulating splines"],
+        "orderIndex": 6
     },
     {
-      "pluginId": "b7d89f23-1c35-4d78-9b44-7a3d2c79e8a9",
-      "name": "@moxie-protocol/plugin-profit-loss",
-      "displayName": "Profit and Loss",
-      "version": "0.1.0",
-      "author": null,
-      "description": "Analyze Profit and Loss on users and tokens",
-      "githubUrl": "https://github.com/Senpi-ai/senpi-agent-skills/tree/main/packages/plugin-profit-loss",
-      "logoUrl": "https://raw.githubusercontent.com/Senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-profit-loss/src/images/pnl.svg",
-      "settings": {},
-      "capabilities": [
-        "Total PnL of any user or wallet",
-        "PnL of top traders of any token",
-        "PnL of any user or wallet on a specific token",
-        "Filter PnL by time range: 1 day, 7 days, 30 days, or lifetime",
-        "PnL of your groups"
-      ],
-      "starterQuestions": [
-        {
-          "label": "What is my PNL?",
-          "value": "What is my PNL?"
-        },
-        {
-          "label": "What is 7-day PNL of my Senpi agent?",
-          "value": "What is 7-day PNL of my Senpi agent?"
-        },
-        {
-          "label": "Top PNL of $CLANKER",
-          "value": "Top PNL of $[CLANKER|0x1bc0c42215582d5A085795f4baDbaC3ff36d1Bcb]?"
-        },
-        {
-          "label": "What is PNL of @jessepollak last 30 days",
-          "value": "What is PNL of @[jessepollak|M1245] last 30 days?"
-        },
-        {
-          "label": "What is my PNL on $VVV?",
-          "value": "What is my PNL on $[VVV|0xacfE6019Ed1A7Dc6f7B508C02d1b04ec88cC21bf]?"
-        },
-        {
-          "label": "Top 1-day PNL of $WHIM traders",
-          "value": "Top 1-day PNL of $[WHIM|0x39a1cce09d7354ac2db86c6b02924360a10e4793] traders"
-        },
-        {
-          "label": "What is PnL for #Copytrade?",
-          "value": "What is PnL for #[copytrade|7b37936c-d06c-4b54-8179-3190ecc1f0b3]?"
-        },
-        {
-          "label": "Show 7 day PNL for #copytrade group",
-          "value": "Show 7 day PNL for #[copytrade|7b37936c-d06c-4b54-8179-3190ecc1f0b3] group"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/Senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-moxie-pnl-tracker/images/logo.svg"
-      ],
-      "actions": [
-        "PROFIT_LOSS"
-      ],
-      "isPremium": false,
-      "freeQueries": 5,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Running the numbers... tracking every trade and result.",
-        "Scanning wallets and trades… seeking clarity amidst chaos.",
-        "Reading the market memory… compiling PNL.",
-        "The dojo sees all — preparing your report now."
-      ],
-      "orderIndex": 13
+        "pluginId": "b7d89f23-1c35-4d78-9b44-7a3d2c79e8a9",
+        "name": "@moxie-protocol/plugin-profit-loss",
+        "displayName": "Profit and Loss",
+        "version": "0.1.0",
+        "author": null,
+        "description": "Analyze Profit and Loss on users and tokens",
+        "githubUrl": "https://github.com/Senpi-ai/senpi-agent-skills/tree/main/packages/plugin-profit-loss",
+        "logoUrl": "https://raw.githubusercontent.com/Senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-profit-loss/src/images/pnl.svg",
+        "settings": {},
+        "capabilities": [
+            "Total PnL of any user or wallet",
+            "PnL of top traders of any token",
+            "PnL of any user or wallet on a specific token",
+            "Filter PnL by time range: 1 day, 7 days, 30 days, or lifetime",
+            "PnL of your groups"
+        ],
+        "starterQuestions": [
+            {
+                "label": "What is my PNL?",
+                "value": "What is my PNL?"
+            },
+            {
+                "label": "What is 7-day PNL of my Senpi agent?",
+                "value": "What is 7-day PNL of my Senpi agent?"
+            },
+            {
+                "label": "Top PNL of $CLANKER",
+                "value": "Top PNL of $[CLANKER|0x1bc0c42215582d5A085795f4baDbaC3ff36d1Bcb]?"
+            },
+            {
+                "label": "What is PNL of @jessepollak last 30 days",
+                "value": "What is PNL of @[jessepollak|M1245] last 30 days?"
+            },
+            {
+                "label": "What is my PNL on $VVV?",
+                "value": "What is my PNL on $[VVV|0xacfE6019Ed1A7Dc6f7B508C02d1b04ec88cC21bf]?"
+            },
+            {
+                "label": "Top 1-day PNL of $WHIM traders",
+                "value": "Top 1-day PNL of $[WHIM|0x39a1cce09d7354ac2db86c6b02924360a10e4793] traders"
+            },
+            {
+                "label": "What is PnL for #Copytrade?",
+                "value": "What is PnL for #[copytrade|7b37936c-d06c-4b54-8179-3190ecc1f0b3]?"
+            },
+            {
+                "label": "Show 7 day PNL for #copytrade group",
+                "value": "Show 7 day PNL for #[copytrade|7b37936c-d06c-4b54-8179-3190ecc1f0b3] group"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/Senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-moxie-pnl-tracker/images/logo.svg"
+        ],
+        "actions": ["PROFIT_LOSS"],
+        "isPremium": false,
+        "freeQueries": 5,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Running the numbers... tracking every trade and result.",
+            "Scanning wallets and trades… seeking clarity amidst chaos.",
+            "Reading the market memory… compiling PNL.",
+            "The dojo sees all — preparing your report now."
+        ],
+        "orderIndex": 13
     },
     {
-      "pluginId": "767a9871-a8c6-51df-a4fd-f42c9e4f6d37",
-      "name": "@moxie-protocol/plugin-senpi-tutorial",
-      "displayName": "Senpi Tutorials",
-      "version": "0.0.1",
-      "author": null,
-      "description": "Watch video tutorials on how to trade like a pro with Senpi",
-      "githubUrl": "https://github.com/senpi-ai/senpi-agent-skills/tree/main/packages/plugin-senpi-tutorial",
-      "logoUrl": "https://raw.githubusercontent.com/senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-senpi-tutorial/images/logo.png",
-      "settings": {},
-      "capabilities": [
-        "Get a list of Senpi tutorial videos",
-        "Watch tutorial videos in Senpi",
-        "Get recommended tutorials based on your needs"
-      ],
-      "starterQuestions": [
-        {
-          "label": "How do I use Senpi?",
-          "value": "How do I use Senpi?"
-        },
-        {
-          "label": "How do I setup limit orders?",
-          "value": "How do I setup limit orders?"
-        },
-        {
-          "label": "How do I setup autonomous trading?",
-          "value": "How do I setup autonomous trading?"
-        },
-        {
-          "label": "How do I research tokens on Senpi?",
-          "value": "How do I research tokens on Senpi?"
-        }
-      ],
-      "mediaUrls": [
-        "https://raw.githubusercontent.com/senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-senpi-tutorial/images/logo.png"
-      ],
-      "actions": [
-        "TUTORIAL_YOUTUBE_HELP_SENPI",
-        "TUTORIAL_TO_USE_SENPI",
-        "TUTORIAL_TO_GET_STARTED_WITH_SENPI",
-        "TUTORIAL_TO_DO_TOKEN_RESEARCH_WITH_SENPI",
-        "TUTORIAL_TO_SETUP_A_LIMIT_ORDER_WITH_SENPI",
-        "TUTORIAL_TO_SETUP_AN_AUTONOMOUS_TRADE_WITH_SENPI",
-        "TUTORIAL_TO_AUTOMATE_TRADES_WITH_SENPI",
-        "HOW_DO_I_USE_SENPI",
-        "HOW_DO_I_GET_STARTED_WITH_SENPI",
-        "HOW_DO_I_DO_TOKEN_RESEARCH_WITH_SENPI",
-        "HOW_DO_I_SETUP_A_LIMIT_ORDER_WITH_SENPI",
-        "HOW_DO_I_SETUP_AN_AUTONOMOUS_TRADE_WITH_SENPI",
-        "HOW_DO_I_AUTOMATE_TRADES_WITH_SENPI",
-        "HOW_DO_I_SETUP_LIMIT_ORDERS",
-        "HOW_DO_I_SETUP_AUTONOMOUS_TRADING",
-        "HOW_DO_I_RESEARCH_TOKENS_ON_SENPI",
-        "SETUP_LIMIT_ORDERS",
-        "SETUP_AUTONOMOUS_TRADING",
-        "SETUP_LIMIT_ORDERS_TUTORIAL",
-        "SETUP_AUTONOMOUS_TRADING_TUTORIAL",
-        "SETUP_LIMIT_ORDERS_GUIDES",
-        "SETUP_AUTONOMOUS_TRADING_GUIDES",
-        "SETUP_LIMIT_ORDERS_INSTRUCTIONS",
-        "SETUP_AUTONOMOUS_TRADING_INSTRUCTIONS",
-        "SETUP_LIMIT_ORDERS_HELP",
-        "SETUP_AUTONOMOUS_TRADING_HELP",
-        "LEARN_SENPI",
-        "LEARN_SENPI",
-        "LEARN_SENPI_TUTORIAL",
-        "LEARN_SENPI_TUTORIALS",
-        "LEARN_SENPI_TUTORIAL_FOR_SENPI",
-        "WHAT_TUTORIALS_ARE_AVAILABLE_FOR_SENPI",
-        "MENTION_ALL_TUTORIALS_FOR_SENPI",
-        "LIST_ALL_TUTORIALS_FOR_SENPI",
-        "LIST_ALL_AVAILABLE_TUTORIALS_FOR_SENPI",
-        "LIST_ALL_AVAILABLE_TUTORIAL_HELP_SENPI"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Summoning the dojo scrolls",
-        "Fetching wisdom from the masters",
-        "Loading walkthroughs for your next move",
-        "Prepping the playbook to level you up"
-      ],
-      "orderIndex": 99
+        "pluginId": "767a9871-a8c6-51df-a4fd-f42c9e4f6d37",
+        "name": "@moxie-protocol/plugin-senpi-tutorial",
+        "displayName": "Senpi Tutorials",
+        "version": "0.0.1",
+        "author": null,
+        "description": "Watch video tutorials on how to trade like a pro with Senpi",
+        "githubUrl": "https://github.com/senpi-ai/senpi-agent-skills/tree/main/packages/plugin-senpi-tutorial",
+        "logoUrl": "https://raw.githubusercontent.com/senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-senpi-tutorial/images/logo.png",
+        "settings": {},
+        "capabilities": [
+            "Get a list of Senpi tutorial videos",
+            "Watch tutorial videos in Senpi",
+            "Get recommended tutorials based on your needs"
+        ],
+        "starterQuestions": [
+            {
+                "label": "How do I use Senpi?",
+                "value": "How do I use Senpi?"
+            },
+            {
+                "label": "How do I setup limit orders?",
+                "value": "How do I setup limit orders?"
+            },
+            {
+                "label": "How do I setup autonomous trading?",
+                "value": "How do I setup autonomous trading?"
+            },
+            {
+                "label": "How do I research tokens on Senpi?",
+                "value": "How do I research tokens on Senpi?"
+            }
+        ],
+        "mediaUrls": [
+            "https://raw.githubusercontent.com/senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-senpi-tutorial/images/logo.png"
+        ],
+        "actions": [
+            "TUTORIAL_YOUTUBE_HELP_SENPI",
+            "TUTORIAL_TO_USE_SENPI",
+            "TUTORIAL_TO_GET_STARTED_WITH_SENPI",
+            "TUTORIAL_TO_DO_TOKEN_RESEARCH_WITH_SENPI",
+            "TUTORIAL_TO_SETUP_A_LIMIT_ORDER_WITH_SENPI",
+            "TUTORIAL_TO_SETUP_AN_AUTONOMOUS_TRADE_WITH_SENPI",
+            "TUTORIAL_TO_AUTOMATE_TRADES_WITH_SENPI",
+            "HOW_DO_I_USE_SENPI",
+            "HOW_DO_I_GET_STARTED_WITH_SENPI",
+            "HOW_DO_I_DO_TOKEN_RESEARCH_WITH_SENPI",
+            "HOW_DO_I_SETUP_A_LIMIT_ORDER_WITH_SENPI",
+            "HOW_DO_I_SETUP_AN_AUTONOMOUS_TRADE_WITH_SENPI",
+            "HOW_DO_I_AUTOMATE_TRADES_WITH_SENPI",
+            "HOW_DO_I_SETUP_LIMIT_ORDERS",
+            "HOW_DO_I_SETUP_AUTONOMOUS_TRADING",
+            "HOW_DO_I_RESEARCH_TOKENS_ON_SENPI",
+            "SETUP_LIMIT_ORDERS",
+            "SETUP_AUTONOMOUS_TRADING",
+            "SETUP_LIMIT_ORDERS_TUTORIAL",
+            "SETUP_AUTONOMOUS_TRADING_TUTORIAL",
+            "SETUP_LIMIT_ORDERS_GUIDES",
+            "SETUP_AUTONOMOUS_TRADING_GUIDES",
+            "SETUP_LIMIT_ORDERS_INSTRUCTIONS",
+            "SETUP_AUTONOMOUS_TRADING_INSTRUCTIONS",
+            "SETUP_LIMIT_ORDERS_HELP",
+            "SETUP_AUTONOMOUS_TRADING_HELP",
+            "LEARN_SENPI",
+            "LEARN_SENPI",
+            "LEARN_SENPI_TUTORIAL",
+            "LEARN_SENPI_TUTORIALS",
+            "LEARN_SENPI_TUTORIAL_FOR_SENPI",
+            "WHAT_TUTORIALS_ARE_AVAILABLE_FOR_SENPI",
+            "MENTION_ALL_TUTORIALS_FOR_SENPI",
+            "LIST_ALL_TUTORIALS_FOR_SENPI",
+            "LIST_ALL_AVAILABLE_TUTORIALS_FOR_SENPI",
+            "LIST_ALL_AVAILABLE_TUTORIAL_HELP_SENPI"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Summoning the dojo scrolls",
+            "Fetching wisdom from the masters",
+            "Loading walkthroughs for your next move",
+            "Prepping the playbook to level you up"
+        ],
+        "orderIndex": 99
     },
     {
-      "pluginId": "5f823f62-19f7-460f-a05b-94351a07e00d",
-      "name": "@moxie-protocol/plugin-wallet-duster",
-      "displayName": "Wallet Duster",
-      "version": "0.0.1",
-      "author": null,
-      "description": "Swap low-value ERC-20 tokens (dust) into ETH in your agent wallet.",
-      "githubUrl": "https://github.com/senpi-ai/senpi-agent-skills/tree/main/packages/plugin-wallet-duster",
-      "logoUrl": "https://raw.githubusercontent.com/senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-wallet-duster/images/logo.png",
-      "settings": {},
-      "capabilities": [
-        "Swap low-value tokens in the agent wallet to ETH.",
-        "Simulate which tokens would be swapped without executing a transaction."
-      ],
-      "starterQuestions": [
-        {
-          "label": "How does wallet dusting work",
-          "value": "How does wallet dusting work?"
-        },
-        {
-          "label": "Preview dusting my wallet.",
-          "value": "Preview dusting my wallet."
-        },
-        {
-          "label": "Dust tokens under $5.",
-          "value": "Dust tokens under $5."
-        },
-        {
-          "label": "What's the value of dust in my agent wallet?",
-          "value": "What's the value of dust in my agent wallet?"
-        }
-      ],
-      "mediaUrls": [],
-      "actions": [
-        "DUST_WALLET_TO_ETH",
-        "CLEAN_WALLET",
-        "DUST_MY_TOKENS",
-        "REMOVE_DUST",
-        "SWAP_DUST_TO_ETH",
-        "CLEAR_LOW_VALUE_TOKENS",
-        "CLEAR_THE_DUST_OUT",
-        "SELL_ALL_TOKENS_UNDER",
-        "EXPLAIN_AI_DUSTING",
-        "EXPLAIN_WALLET_DUSTING",
-        "WHAT_IS_WALLET_DUSTING",
-        "HOW_DOES_WALLET_DUSTING_WORK",
-        "WHAT_DOES_THE_WALLET_DUSTING_SKILL_DO",
-        "EXPLAIN_WALLET_DUSTING",
-        "WHAT_IS_WALLET_DUSTING",
-        "SHOW_DUST_TOKENS",
-        "WHAT_TOKENS_WILL_BE_DUSTED",
-        "LIST_LOW_VALUE_TOKENS",
-        "SHOW_TOKENS_BELOW_USD",
-        "SHOW_TOKENS_BELOW_VALUE",
-        "SHOW_TOKENS_BELOW_THRESHOLD",
-        "PREVIEW_DUST_TOKENS",
-        "DUST_TOKENS",
-        "DUST_WALLET",
-        "DUST_TOKENS_UNDER_USD",
-        "DUST_TOKENS_BELOW_USD",
-        "HOW_MUCH_DUST_IN_WALLET",
-        "HOW_MANY_DUST_TOKENS_IN_WALLET",
-        "WHAT_VALUE_OF_DUST_IN_WALLET"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Dusting your wallet"
-      ],
-      "orderIndex": 14
+        "pluginId": "5f823f62-19f7-460f-a05b-94351a07e00d",
+        "name": "@moxie-protocol/plugin-wallet-duster",
+        "displayName": "Wallet Duster",
+        "version": "0.0.1",
+        "author": null,
+        "description": "Swap low-value ERC-20 tokens (dust) into ETH in your agent wallet.",
+        "githubUrl": "https://github.com/senpi-ai/senpi-agent-skills/tree/main/packages/plugin-wallet-duster",
+        "logoUrl": "https://raw.githubusercontent.com/senpi-ai/senpi-agent-skills/refs/heads/main/packages/plugin-wallet-duster/images/logo.png",
+        "settings": {},
+        "capabilities": [
+            "Swap low-value tokens in the agent wallet to ETH.",
+            "Simulate which tokens would be swapped without executing a transaction."
+        ],
+        "starterQuestions": [
+            {
+                "label": "How does wallet dusting work",
+                "value": "How does wallet dusting work?"
+            },
+            {
+                "label": "Preview dusting my wallet.",
+                "value": "Preview dusting my wallet."
+            },
+            {
+                "label": "Dust tokens under $5.",
+                "value": "Dust tokens under $5."
+            },
+            {
+                "label": "What's the value of dust in my agent wallet?",
+                "value": "What's the value of dust in my agent wallet?"
+            }
+        ],
+        "mediaUrls": [],
+        "actions": [
+            "DUST_WALLET_TO_ETH",
+            "CLEAN_WALLET",
+            "DUST_MY_TOKENS",
+            "REMOVE_DUST",
+            "SWAP_DUST_TO_ETH",
+            "CLEAR_LOW_VALUE_TOKENS",
+            "CLEAR_THE_DUST_OUT",
+            "SELL_ALL_TOKENS_UNDER",
+            "EXPLAIN_AI_DUSTING",
+            "EXPLAIN_WALLET_DUSTING",
+            "WHAT_IS_WALLET_DUSTING",
+            "HOW_DOES_WALLET_DUSTING_WORK",
+            "WHAT_DOES_THE_WALLET_DUSTING_SKILL_DO",
+            "EXPLAIN_WALLET_DUSTING",
+            "WHAT_IS_WALLET_DUSTING",
+            "SHOW_DUST_TOKENS",
+            "WHAT_TOKENS_WILL_BE_DUSTED",
+            "LIST_LOW_VALUE_TOKENS",
+            "SHOW_TOKENS_BELOW_USD",
+            "SHOW_TOKENS_BELOW_VALUE",
+            "SHOW_TOKENS_BELOW_THRESHOLD",
+            "PREVIEW_DUST_TOKENS",
+            "DUST_TOKENS",
+            "DUST_WALLET",
+            "DUST_TOKENS_UNDER_USD",
+            "DUST_TOKENS_BELOW_USD",
+            "HOW_MUCH_DUST_IN_WALLET",
+            "HOW_MANY_DUST_TOKENS_IN_WALLET",
+            "WHAT_VALUE_OF_DUST_IN_WALLET"
+        ],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": ["Dusting your wallet"],
+        "orderIndex": 14
     },
     {
-      "pluginId": "45e83c46-89cd-4ad4-9cbc-0764788839e7",
-      "name": "@moxie-protocol/plugin-senpi-discover",
-      "displayName": "Discover Groups",
-      "version": "0.0.1",
-      "author": null,
-      "description": "Discover top groups to copy trade on Senpi.",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-discover",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-discover/images/logo.png",
-      "settings": {},
-      "capabilities": [
-        "View the top 25 performing groups in copy trading from the past 1, 7, or 30 days."
-      ],
-      "starterQuestions": [
-        {
-          "label": "Who should I copy trade?",
-          "value": "Who should I copy trade?"
-        },
-        {
-          "label": "What are the top groups in the last 30 days to copy trade?",
-          "value": "What are the top groups in the last 30 days to copy trade?"
-        }
-      ],
-      "mediaUrls": [],
-      "actions": [
-        "DISCOVER_GROUPS",
-        "WHAT_GROUPS_TO_COPY_TRADE"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Scouting top trading clans",
-        "Tracking elite traders to shadow",
-        "Hunting copy trade senseis"
-      ],
-      "orderIndex": 15
+        "pluginId": "45e83c46-89cd-4ad4-9cbc-0764788839e7",
+        "name": "@moxie-protocol/plugin-senpi-discover",
+        "displayName": "Discover Groups",
+        "version": "0.0.1",
+        "author": null,
+        "description": "Discover top groups to copy trade on Senpi.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-discover",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-discover/images/logo.png",
+        "settings": {},
+        "capabilities": [
+            "View the top 25 performing groups in copy trading from the past 1, 7, or 30 days."
+        ],
+        "starterQuestions": [
+            {
+                "label": "Who should I copy trade?",
+                "value": "Who should I copy trade?"
+            },
+            {
+                "label": "What are the top groups in the last 30 days to copy trade?",
+                "value": "What are the top groups in the last 30 days to copy trade?"
+            }
+        ],
+        "mediaUrls": [],
+        "actions": ["DISCOVER_GROUPS", "WHAT_GROUPS_TO_COPY_TRADE"],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Scouting top trading clans",
+            "Tracking elite traders to shadow",
+            "Hunting copy trade senseis"
+        ],
+        "orderIndex": 15
     },
     {
-      "pluginId": "e0840f53-4663-4e75-8a5e-8311444ad296",
-      "name": "@moxie-protocol/plugin-trending-tokens",
-      "displayName": "Trending Tokens",
-      "version": "0.1.8+build.1",
-      "author": null,
-      "description": "Senpi analyzes real-time trending cryptocurrency data and identifies 5 top trending tokens on all of Base.",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-trending-tokens",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-trending-tokens/images/logo.svg",
-      "settings": {},
-      "capabilities": [
-        "Display top 5 trending tokens on Base with details"
-      ],
-      "starterQuestions": [
-        {
-          "label": "What's trending today on Base?",
-          "value": "What's trending today on Base?"
-        }
-      ],
-      "mediaUrls": [],
-      "actions": [
-        "TRENDING_TOKENS"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Scanning through trending tokens",
-        "Crunching the numbers",
-        "Analyzing performance metrics",
-        "Narrowing down to top 5"
-      ],
-      "orderIndex": 17
+        "pluginId": "e0840f53-4663-4e75-8a5e-8311444ad296",
+        "name": "@moxie-protocol/plugin-trending-tokens",
+        "displayName": "Trending Tokens",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Senpi analyzes real-time trending cryptocurrency data and identifies 5 top trending tokens on all of Base.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-trending-tokens",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-trending-tokens/images/logo.svg",
+        "settings": {},
+        "capabilities": ["Display top 5 trending tokens on Base with details"],
+        "starterQuestions": [
+            {
+                "label": "What's trending today on Base?",
+                "value": "What's trending today on Base?"
+            }
+        ],
+        "mediaUrls": [],
+        "actions": ["TRENDING_TOKENS"],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Scanning through trending tokens",
+            "Crunching the numbers",
+            "Analyzing performance metrics",
+            "Narrowing down to top 5"
+        ],
+        "orderIndex": 17
     },
     {
-      "pluginId": "f69f6073-50dd-40d6-805c-68ed2e242955",
-      "name": "@moxie-protocol/plugin-top-traders",
-      "displayName": "Top Traders",
-      "version": "0.1.8+build.1",
-      "author": null,
-      "description": "Discover the top traders followed by Senpi users. Have Senpi analyze their results, suggest users for you to copy trade, and setup auto-trading strategies.",
-      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-top-traders",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-top-traders/images/logo.png",
-      "settings": {},
-      "capabilities": [
-        "View the top 25 traders followed by Senpi users.",
-        "Analyze the top traders’ ROI, PNL, and scam rates.",
-        "Easily setup auto-trading strategies on the top traders."
-      ],
-      "starterQuestions": [
-        {
-          "label": "Who are the top traders?",
-          "value": "Who are the top traders?"
-        },
-        {
-          "label": "What traders should I copy trade?",
-          "value": "What traders should I copy trade?"
-        },
-        {
-          "label": "Show the top traders of the past 7 days",
-          "value": "Show the top traders of the past 7 days"
-        }
-      ],
-      "mediaUrls": [],
-      "actions": [
-        "TOP_TRADERS"
-      ],
-      "isPremium": false,
-      "freeQueries": 0,
-      "skillCoinAddress": "",
-      "minimumSkillBalance": 0,
-      "status": "ACTIVE",
-      "isDefault": true,
-      "loaders": [
-        "Unmasking top trading masters",
-        "Decoding theirs secrets",
-        "Listening for alpha",
-        "Sneaking into the market dojo"
-      ],
-      "orderIndex": 16
+        "pluginId": "f69f6073-50dd-40d6-805c-68ed2e242955",
+        "name": "@moxie-protocol/plugin-top-traders",
+        "displayName": "Top Traders",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "Discover the top traders followed by Senpi users. Have Senpi analyze their results, suggest users for you to copy trade, and setup auto-trading strategies.",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-top-traders",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-top-traders/images/logo.png",
+        "settings": {},
+        "capabilities": [
+            "View the top 25 traders followed by Senpi users.",
+            "Analyze the top traders’ ROI, PNL, and scam rates.",
+            "Easily setup auto-trading strategies on the top traders."
+        ],
+        "starterQuestions": [
+            {
+                "label": "Who are the top traders?",
+                "value": "Who are the top traders?"
+            },
+            {
+                "label": "What traders should I copy trade?",
+                "value": "What traders should I copy trade?"
+            },
+            {
+                "label": "Show the top traders of the past 7 days",
+                "value": "Show the top traders of the past 7 days"
+            }
+        ],
+        "mediaUrls": [],
+        "actions": ["TOP_TRADERS"],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [
+            "Unmasking top trading masters",
+            "Decoding theirs secrets",
+            "Listening for alpha",
+            "Sneaking into the market dojo"
+        ],
+        "orderIndex": 16
+    },
+    {
+        "pluginId": "5fb364b0-e326-4e88-954d-c2a432ebed02",
+        "name": "@moxie-protocol/plugin-senpi-orders-analysis",
+        "displayName": "Senpi Orders Analysis",
+        "version": "0.1.8+build.1",
+        "author": null,
+        "description": "A New skill",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-orders-analysis",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders-analysis/images/logo.png",
+        "settings": {},
+        "capabilities": [],
+        "starterQuestions": [],
+        "mediaUrls": [],
+        "actions": [],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": true,
+        "loaders": [],
+        "orderIndex": 18
     }
-  ]
+]

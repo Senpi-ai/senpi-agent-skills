@@ -171,6 +171,9 @@ importers:
       '@moxie-protocol/plugin-senpi-orders':
         specifier: workspace:*
         version: link:../packages/plugin-senpi-orders
+      '@moxie-protocol/plugin-senpi-orders-analysis':
+        specifier: workspace:*
+        version: link:../packages/plugin-senpi-orders-analysis
       '@moxie-protocol/plugin-senpi-sharing':
         specifier: workspace:*
         version: link:../packages/plugin-senpi-sharing
@@ -914,6 +917,28 @@ importers:
       whatwg-url:
         specifier: 7.1.0
         version: 7.1.0
+
+  packages/plugin-senpi-orders-analysis:
+    dependencies:
+      '@moxie-protocol/core':
+        specifier: workspace:*
+        version: link:../core
+      '@moxie-protocol/moxie-agent-lib':
+        specifier: workspace:*
+        version: link:../moxie-agent-lib
+      ethers:
+        specifier: ^6.0.0
+        version: 6.15.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      graphql-request:
+        specifier: ^7.1.2
+        version: 7.2.0(graphql@16.11.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.17.0
+      tsup:
+        specifier: 8.3.5
+        version: 8.3.5(@swc/core@1.13.3(@swc/helpers@0.5.17))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.6.3)(yaml@2.8.0)
 
   packages/plugin-senpi-sharing:
     dependencies:
