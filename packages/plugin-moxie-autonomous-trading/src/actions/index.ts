@@ -483,6 +483,22 @@ export const autonomousTradingAction: Action = {
                 };
             }
 
+            // A maximum of 4 limit orders and 4 stop loss orders can be created
+            if (Array.isArray(params.limitOrders) && params.limitOrders.length > 4) {
+                callback?.({
+                    text: `You can only create a maximum of 4 limit orders.`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+            if (Array.isArray(params.stopLossOrders) && params.stopLossOrders.length > 4) {
+                callback?.({
+                    text: `You can only create a maximum of 4 stop loss orders.`,
+                    action: "AUTONOMOUS_TRADING",
+                });
+                return true;
+            }
+
             if (
                 ruleType === "GROUP_COPY_TRADE_AND_PROFIT" ||
                 ruleType === "COPY_TRADE_AND_PROFIT"
