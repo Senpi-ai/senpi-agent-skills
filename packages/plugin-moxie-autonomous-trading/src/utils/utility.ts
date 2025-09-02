@@ -356,6 +356,8 @@ export async function createTradingRule(
         createRuleInput.ruleParameters.userTradeParams = userTradeParams;
     }
 
+    elizaLogger.debug(`createRuleInput:\n${JSON.stringify(createRuleInput, null, 4)}`);
+
     try {
         const response = await fetch(process.env.RULE_API_MOXIE_API_URL, {
             method: "POST",

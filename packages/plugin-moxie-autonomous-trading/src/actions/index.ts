@@ -488,31 +488,30 @@ export const autonomousTradingAction: Action = {
                 ruleType === "COPY_TRADE_AND_PROFIT"
             ) {
                 if (Array.isArray(params.limitOrders) && params.limitOrders.length > 0) {
-                    limitOrderParams = params.limitOrders.map((order) => ({
-                        sellConditions: [
-                            {
-                                ...(typeof order.priceChangePercentage === "number"
-                                    ? { priceChangePercentage: Math.abs(order.priceChangePercentage) }
-                                    : (() => {
-                                        callback?.({
-                                            text: `Missing required parameter: priceChangePercentage in limit order.`,
-                                            action: "AUTONOMOUS_TRADING",
-                                        });
-                                        throw new Error("Missing priceChangePercentage in limit order");
-                                    })()),
-                                ...(typeof order.sellPercentage === "number"
-                                    ? { sellPercentage: Math.abs(order.sellPercentage) }
-                                    : (() => {
-                                        callback?.({
-                                            text: `Missing required parameter: sellPercentage in limit order.`,
-                                            action: "AUTONOMOUS_TRADING",
-                                        });
-                                        throw new Error("Missing sellPercentage in limit order");
-                                    })()),
-                            },
-                        ],
+                    // Format as a single object with sellConditions: SellConditionInput[]
+                    limitOrderParams = {
+                        sellConditions: params.limitOrders.map((order) => {
+                            if (typeof order.priceChangePercentage !== "number") {
+                                callback?.({
+                                    text: `Missing required parameter: priceChangePercentage in limit order.`,
+                                    action: "AUTONOMOUS_TRADING",
+                                });
+                                throw new Error("Missing priceChangePercentage in limit order");
+                            }
+                            if (typeof order.sellPercentage !== "number") {
+                                callback?.({
+                                    text: `Missing required parameter: sellPercentage in limit order.`,
+                                    action: "AUTONOMOUS_TRADING",
+                                });
+                                throw new Error("Missing sellPercentage in limit order");
+                            }
+                            return {
+                                priceChangePercentage: Math.abs(order.priceChangePercentage),
+                                sellPercentage: Math.abs(order.sellPercentage),
+                            };
+                        }),
                         limitOrderValidityInSeconds: 7 * 24 * 60 * 60, // 7 days in seconds
-                    })) as unknown as LimitOrderParams;
+                    } as LimitOrderParams;
                 } else {
                     callback?.({
                         text: `Please specify at least one limit order for a profit rule.`,
@@ -523,34 +522,33 @@ export const autonomousTradingAction: Action = {
             }
 
             if (Array.isArray(params.stopLossOrders) && params.stopLossOrders.length > 0) {
-                stopLossParams = params.stopLossOrders.map((order) => ({
-                    sellConditions: [
-                        {
-                            ...(typeof order.dropPercentage === "number"
-                                ? { priceChangePercentage: Math.abs(order.dropPercentage) }
-                                : (() => {
-                                    callback?.({
-                                        text: `Missing required parameter: dropPercentage in stop loss order.`,
-                                        action: "AUTONOMOUS_TRADING",
-                                    });
-                                    throw new Error("Missing dropPercentage in stop loss order");
-                                })()),
-                            ...(typeof order.sellPercentage === "number"
-                                ? { sellPercentage: Math.abs(order.sellPercentage) }
-                                : (() => {
-                                    callback?.({
-                                        text: `Missing required parameter: sellPercentage in stop loss order.`,
-                                        action: "AUTONOMOUS_TRADING",
-                                    });
-                                    throw new Error("Missing sellPercentage in stop loss order");
-                                })()),
-                        },
-                    ],
+                stopLossParams = {
+                    sellConditions: params.stopLossOrders.map((order) => {
+                        if (typeof order.dropPercentage !== "number") {
+                            callback?.({
+                                text: `Missing required parameter: dropPercentage in stop loss order.`,
+                                action: "AUTONOMOUS_TRADING",
+                            });
+                            throw new Error("Missing dropPercentage in stop loss order");
+                        }
+                        if (typeof order.sellPercentage !== "number") {
+                            callback?.({
+                                text: `Missing required parameter: sellPercentage in stop loss order.`,
+                                action: "AUTONOMOUS_TRADING",
+                            });
+                            throw new Error("Missing sellPercentage in stop loss order");
+                        }
+                        return {
+                            priceChangePercentage: Math.abs(order.dropPercentage),
+                            sellPercentage: Math.abs(order.sellPercentage),
+                        };
+                    }),
                     stopLossValidityInSeconds: params.stopLossDurationInSec || 7 * 24 * 60 * 60,
-                })) as unknown as StopLossParams;
+                } as StopLossParams;
             }
 
             try {
+
                 const response = await createTradingRule(
                     state.authorizationHeader as string,
                     traceId,
