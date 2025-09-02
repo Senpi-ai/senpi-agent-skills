@@ -106,10 +106,10 @@ If all required parameters are present, use this format for the JSON output:
     "condition": "<GROUP_BUY_CONDITION_ANY_OR_ALL>",
     "conditionValue": "<NUMBER_OF_GROUP_MEMBERS_REQUIRED>",
     "minPurchaseAmount": "<MINIMUM_PURCHASE_AMOUNT_IN_USD>",
-    "sellTriggerType": "<TRIGGER_TYPE>", // LIMIT_ORDER, STOP_LOSS or BOTH
+    "sellTriggerType": "<TRIGGER_TYPE>", // LIMIT_ORDER, STOP_LOSS, COPY_SELL or BOTH
     "sellTriggerCondition": "<SELL_CONDITION_ANY_OR_ALL>",
     "sellTriggerCount": "<NUMBER_OF_GROUP_MEMBERS_REQUIRED_TO_SELL>",
-    "sellPercentage": "<PERCENTAGE_TO_SELL>",
+    "sellPercentage": "<PERCENTAGE_TO_SELL>", // required for COPY_SELL i.e sell when a member sells. default to 50 if not specified. 
     "tokenAge": {
       "min": "<MINIMUM_TOKEN_AGE_IN_SECONDS>",
       "max": "<MAXIMUM_TOKEN_AGE_IN_SECONDS>"
