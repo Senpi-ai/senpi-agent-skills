@@ -90,8 +90,8 @@ export interface CreateRuleInput {
     ruleType: RuleType;
     ruleParameters: {
         baseParams: BaseParams;
-        limitOrderParams?: LimitOrderParams | LimitOrderParams[];
-        stopLossParams?: StopLossParams | StopLossParams[];
+        limitOrderParams?: LimitOrderParams;
+        stopLossParams?: StopLossParams;
         groupTradeParams?: GroupTradeParams;
         userTradeParams?: UserTradeParams;
     };
