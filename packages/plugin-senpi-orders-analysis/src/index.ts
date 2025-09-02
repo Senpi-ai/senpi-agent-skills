@@ -1,11 +1,10 @@
 import type { Plugin } from "@moxie-protocol/core";
-import { transferAction } from "./actions/transferAction";
-import { balanceAction } from "./actions/balanceAction";
+import { senpiOrdersAnalysisAction } from "./actions/senpiOrdersAnalysisAction";
 
 const samplePlugin: Plugin = {
     name: "sample",
     description: "Execute sample onchain actions",
-    actions: [balanceAction, transferAction],
+    actions: [senpiOrdersAnalysisAction],
     providers: [],
     evaluators: [],
     services: [],
