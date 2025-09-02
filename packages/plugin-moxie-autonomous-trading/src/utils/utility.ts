@@ -58,19 +58,18 @@ export interface BaseParams {
     tokenMetrics?: TokenMetrics;
 }
 
+export interface SellConditionInput {
+    priceChangePercentage: number;
+    sellPercentage: number;
+}
+
 export interface LimitOrderParams {
-    sellConditions: {
-        sellPercentage: number;
-        priceChangePercentage: number;
-    };
+    sellConditions: SellConditionInput[];
     limitOrderValidityInSeconds: number;
 }
 
 export interface StopLossParams {
-    sellConditions: {
-        sellPercentage: number;
-        priceChangePercentage: number;
-    };
+    sellConditions: SellConditionInput[];
     stopLossValidityInSeconds: number;
 }
 
@@ -356,6 +355,8 @@ export async function createTradingRule(
     if (userTradeParams) {
         createRuleInput.ruleParameters.userTradeParams = userTradeParams;
     }
+
+    elizaLogger.debug(`createRuleInput:\n${JSON.stringify(createRuleInput, null, 4)}`);
 
     try {
         const response = await fetch(process.env.RULE_API_MOXIE_API_URL, {
