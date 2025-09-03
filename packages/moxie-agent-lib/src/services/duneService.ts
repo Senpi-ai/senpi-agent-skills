@@ -30,13 +30,15 @@ interface TokenBalance {
  * @param addresses - The addresses of the wallets to get the portfolio for
  * @param networks - The networks of the wallets to get the portfolio for
  * @param tokenAddresses - If added, will just return the portfolio for the given token addresses
+ * @param topTokens - If added, will return the n number of top tokens by balanceUSD
  * @returns The portfolio for the given addresses and networks
  */
 export async function getPortfolio(
     traceId: string,
     addresses: string[],
     networks: number[],
-    tokenAddresses?: string[]
+    tokenAddresses?: string[],
+    topTokens?: number
 ): Promise<Portfolio> {
     try {
         elizaLogger.debug(`[getPortfolio] [${traceId}] Fetching portfolio`, {
@@ -115,22 +117,24 @@ export async function getPortfolio(
 
         return {
             totalBalanceUSD: portfolio.totalBalanceUSD,
-            tokenBalances: portfolio.tokenBalances.map((token: any) => ({
-                address: token.tokenAddress,
-                network: token.chainId,
-                token: {
-                    balance: token.formattedBalance,
-                    balanceUSD: token.balanceInUSD,
-                    balanceRaw: token.balanceInWei,
-                    baseToken: {
-                        name: token.tokenName,
-                        symbol: token.tokenSymbol,
-                        address: token.tokenAddress,
-                        decimals: token.decimals,
-                        imgUrl: token.tokenImgUrl,
+            tokenBalances: portfolio.tokenBalances
+                ?.slice(0, topTokens)
+                .map((token: any) => ({
+                    address: token.tokenAddress,
+                    network: token.chainId,
+                    token: {
+                        balance: token.formattedBalance,
+                        balanceUSD: token.balanceInUSD,
+                        balanceRaw: token.balanceInWei,
+                        baseToken: {
+                            name: token.tokenName,
+                            symbol: token.tokenSymbol,
+                            address: token.tokenAddress,
+                            decimals: token.decimals,
+                            imgUrl: token.tokenImgUrl,
+                        },
                     },
-                },
-            })),
+                })),
         };
     } catch (e) {
         elizaLogger.error(

@@ -32,6 +32,7 @@ import {
     formatMessages,
 } from "../../util";
 import { PortfolioUserRequested } from "../../types";
+import { MAX_TOKEN_BALANCES_TO_FETCH } from "../../constants";
 
 export interface PortfolioSummary {
     [userName: string]: {
@@ -110,9 +111,13 @@ export async function handleMultipleUsers(
                 continue;
             }
 
-            const portfolioData = await getPortfolio(traceId, walletAddresses, [
-                8453,
-            ]);
+            const portfolioData = await getPortfolio(
+                traceId,
+                walletAddresses,
+                [8453],
+                undefined,
+                MAX_TOKEN_BALANCES_TO_FETCH
+            );
 
             if (!portfolioData || portfolioData?.tokenBalances.length === 0) {
                 continue;
@@ -377,9 +382,13 @@ export default {
             elizaLogger.log("[Portfolio] Fetching portfolio data");
 
             // Fetch fresh portfolio data
-            const portfolioData = await getPortfolio(traceId, walletAddresses, [
-                8453,
-            ]);
+            const portfolioData = await getPortfolio(
+                traceId,
+                walletAddresses,
+                [8453],
+                undefined,
+                MAX_TOKEN_BALANCES_TO_FETCH
+            );
 
             if (!portfolioData || portfolioData?.totalBalanceUSD === 0) {
                 elizaLogger.error(
