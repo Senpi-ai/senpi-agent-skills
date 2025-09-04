@@ -1,11 +1,11 @@
-import { elizaLogger, IAgentRuntime } from "@moxie-protocol/core";
+import { elizaLogger } from "@moxie-protocol/core";
 
 export interface Portfolio {
     totalBalanceUSD: number;
     tokenBalances: TokenBalance[];
 }
 
-interface BaseToken {
+export interface BaseToken {
     name: string;
     symbol: string;
     address: string;
@@ -13,14 +13,14 @@ interface BaseToken {
     imgUrl: string;
 }
 
-interface Token {
+export interface Token {
     balance: number;
     balanceUSD: number;
     balanceRaw: string;
     baseToken: BaseToken;
 }
 
-interface TokenBalance {
+export interface TokenBalance {
     address: string;
     network: string;
     token: Token;
@@ -35,6 +35,7 @@ interface TokenBalance {
  */
 export async function getPortfolio(
     traceId: string,
+    authorizationHeader: string,
     addresses: string[],
     networks: number[],
     tokenAddresses?: string[],
@@ -71,27 +72,25 @@ export async function getPortfolio(
             }
         `;
 
-        const response = await fetch(
-            process.env.MOXIE_API_URL_INTERNAL as string,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    query,
-                    variables: {
-                        input: {
-                            addresses,
-                            networks,
-                            ...(tokenAddresses && tokenAddresses?.length > 0
-                                ? { tokenAddresses }
-                                : {}),
-                        },
+        const response = await fetch(process.env.MOXIE_API_URL as string, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: authorizationHeader,
+            },
+            body: JSON.stringify({
+                query,
+                variables: {
+                    input: {
+                        addresses,
+                        networks,
+                        ...(tokenAddresses && tokenAddresses?.length > 0
+                            ? { tokenAddresses }
+                            : {}),
                     },
-                }),
-            }
-        );
+                },
+            }),
+        });
 
         if (!response.ok) {
             elizaLogger.error(

@@ -66,4 +66,10 @@ export {
     fetchWithRetries,
 } from "./utils";
 
-export { type Portfolio, getPortfolio } from "./services/duneService";
+export {
+    type Portfolio,
+    type TokenBalance,
+    type Token,
+    type BaseToken,
+    getPortfolio,
+} from "./services/portfolioService";
