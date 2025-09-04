@@ -194,6 +194,7 @@ export function createMoxieApiRouter(
                     // fetch the current balance of the agent wallet
                     currentWalletBalance = await getPortfolio(
                         traceId,
+                        req.header("Authorization"),
                         [agentWallet.address],
                         [8453] // BASE_MAINNET
                     );

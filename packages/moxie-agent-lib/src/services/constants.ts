@@ -1,7 +1,7 @@
 import { Fta } from "../services/fta";
 import { MoxieUser } from "../services/types";
 import { MoxieClientWallet } from "../wallet";
-import { Portfolio } from "./duneService";
+import { Portfolio } from "./portfolioService";
 
 /**
  * REUSABLE MOCK DATA STARTS BELOW

@@ -21,6 +21,7 @@ import {
     moxieUserService,
     Portfolio,
     getPortfolio,
+    TokenBalance,
 } from "@moxie-protocol/moxie-agent-lib";
 import {
     getCommonHoldings,
@@ -95,7 +96,8 @@ async function generatePortfolioSummary(
  */
 export async function handleMultipleUsers(
     moxieUserInfoMultiple: MoxieUser[],
-    traceId: string
+    traceId: string,
+    authorizationHeader: string
 ) {
     const portfolioSummaries: PortfolioSummary[] = [];
     const commonPortfolioHoldingsMetadata = {};
@@ -113,6 +115,7 @@ export async function handleMultipleUsers(
 
             const portfolioData = await getPortfolio(
                 traceId,
+                authorizationHeader as string,
                 walletAddresses,
                 [8453],
                 undefined,
@@ -213,6 +216,7 @@ export default {
     ): Promise<boolean> => {
         elizaLogger.log("[Portfolio] Starting portfolio fetch");
         const traceId = message.id;
+        const authorizationHeader = state.authorizationHeader as string;
 
         try {
             const moxieToUSD = await getMoxieToUSD();
@@ -295,7 +299,11 @@ export default {
                 moxieUserInfoMultiple.push(...userInfoResults);
 
                 const { portfolioSummaries, commonPortfolioHoldingsMetadata } =
-                    await handleMultipleUsers(moxieUserInfoMultiple, traceId);
+                    await handleMultipleUsers(
+                        moxieUserInfoMultiple,
+                        traceId,
+                        authorizationHeader as string
+                    );
                 const { filteredCommonTokenHoldings } = getCommonHoldings(
                     moxieUserInfoMultiple,
                     commonPortfolioHoldingsMetadata
@@ -384,6 +392,7 @@ export default {
             // Fetch fresh portfolio data
             const portfolioData = await getPortfolio(
                 traceId,
+                authorizationHeader as string,
                 walletAddresses,
                 [8453],
                 undefined,
