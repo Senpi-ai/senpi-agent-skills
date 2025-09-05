@@ -1,8 +1,8 @@
+import { z } from "zod";
 export interface GetUserGroupStatsOrRecommendationsInput {
     analysisType: AnalysisType;
     days: number;
     userOrGroupId?: string;
-    userOrGroupName?: string;
     orderBy: GetUserGroupStatsOrRecommendationsOrderBy;
     skip?: number;
     take?: number;
@@ -48,3 +48,24 @@ export interface GetUserGroupStatsOrRecommendationsItem {
     avgPnl: number;
     winRate: number;
 }
+
+export interface SenpiOrdersAnalysisResponse {
+    data: {
+        analysisType: AnalysisType;
+        days: number;
+        userOrGroupId: string | null;
+        orderBy: GetUserGroupStatsOrRecommendationsOrderBy;
+    };
+    error: {
+        prompt_message: string;
+    } | null;
+}
+
+export const SenpiOrdersAnalysisResponseSchema = z.object({
+    data: z.object({
+        analysisType: z.enum(["USER", "GROUP"]),
+        days: z.number(),
+        userOrGroupId: z.string().nullable(),
+        orderBy: z.enum(["AVG_PNL", "TOTAL_PNL", "WIN_RATE", "TRADE_COUNT"]),
+    }),
+});

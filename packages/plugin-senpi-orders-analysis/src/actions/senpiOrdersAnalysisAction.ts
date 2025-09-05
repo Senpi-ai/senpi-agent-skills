@@ -8,18 +8,18 @@ import {
     type ActionExample,
     composeContext,
     ModelClass,
-    generateObjectDeprecated,
-    ModelProviderName,
-    streamText,
+    generateObject,
+    // streamText,
 } from "@moxie-protocol/core";
 import { getSenpiOrdersAnalysis } from "../utils/ordersAnalysis";
 import { MoxieUser } from "@moxie-protocol/moxie-agent-lib/src/services/types";
 import {
-    AnalysisType,
-    GetUserGroupStatsOrRecommendationsOrderBy,
+    // GetUserGroupStatsOrRecommendationsOrderBy,
+    SenpiOrdersAnalysisResponse,
+    SenpiOrdersAnalysisResponseSchema,
 } from "../types";
 import {
-    analysisOrRecommendTemplate,
+    // analysisOrRecommendTemplate,
     senpiOrdersAnalysisTemplate,
 } from "../templates";
 
@@ -32,7 +32,7 @@ export const senpiOrdersAnalysisAction: Action = {
         "RECOMMEND_TOP_GROUPS",
     ],
     description:
-        "Analyze the senpi orders or recommend the top traders and groups",
+        "Analyze the trades and groups from a user's senpi orders or recommend the top traders and groups",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (
@@ -47,32 +47,31 @@ export const senpiOrdersAnalysisAction: Action = {
             const moxieUserInfo = state.moxieUserInfo as MoxieUser;
             const moxieUserId = moxieUserInfo.id;
             // Analyze user's message w/ AI
-            const swapContext = composeContext({
-                state,
+            const context = composeContext({
+                state: {
+                    ...state,
+                    userData: JSON.stringify(moxieUserInfo),
+                },
                 template: senpiOrdersAnalysisTemplate,
             });
 
-            // Generate swap content
-            const senpiOrdersAnalysisResponse = await generateObjectDeprecated({
+            const senpiOrdersAnalysisResponse = await generateObject({
                 runtime,
-                context: swapContext,
-                modelClass: ModelClass.LARGE,
-                modelConfigOptions: {
-                    temperature: 0.1,
-                    maxOutputTokens: 8192,
-                    modelProvider: ModelProviderName.ANTHROPIC,
-                    apiKey: process.env.ANTHROPIC_API_KEY,
-                    modelClass: ModelClass.LARGE,
-                },
+                context,
+                modelClass: ModelClass.MEDIUM,
+                schema: SenpiOrdersAnalysisResponseSchema,
             });
 
-            if (!senpiOrdersAnalysisResponse.success) {
+            const { data, error } =
+                senpiOrdersAnalysisResponse.object as SenpiOrdersAnalysisResponse;
+
+            if (error?.prompt_message) {
                 elizaLogger.warn(
                     traceId,
-                    `[${traceId}] [senpiOrdersAnalysisAction] [${moxieUserId}] [SENPI_ORDERS_ANALYSIS] error occured while performing senpi orders analysis operation: ${JSON.stringify(senpiOrdersAnalysisResponse.error)}`
+                    `[${traceId}] [senpiOrdersAnalysisAction] [${moxieUserId}] [SENPI_ORDERS_ANALYSIS] error occured while performing senpi orders analysis operation: ${JSON.stringify(error.prompt_message)}`
                 );
-                callback?.({
-                    text: senpiOrdersAnalysisResponse.error.prompt_message,
+                await callback?.({
+                    text: "Error occured while performing senpi orders analysis operation. Please try again later.",
                     action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
                 });
                 return true;
@@ -87,9 +86,9 @@ export const senpiOrdersAnalysisAction: Action = {
 
             const senpiOrdersAnalysis = await getSenpiOrdersAnalysis(
                 {
-                    analysisType: AnalysisType.USER,
-                    days: 30,
-                    orderBy: GetUserGroupStatsOrRecommendationsOrderBy.AVG_PNL,
+                    ...data,
+                    skip: 0,
+                    take: 10,
                 },
                 state.authorizationHeader as string
             );
