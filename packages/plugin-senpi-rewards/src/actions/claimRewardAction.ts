@@ -94,6 +94,7 @@ export const claimRewardsAction: Action = {
             });
     
             const { hash } = await wallet.sendTransaction("85432", {
+                fromAddress: address as `0x${string}`,
                 toAddress: "0x4a7f3C6E390A24d655cb72a3DAafEba0cd3327a9",
                 value: null,
                 data: data,
