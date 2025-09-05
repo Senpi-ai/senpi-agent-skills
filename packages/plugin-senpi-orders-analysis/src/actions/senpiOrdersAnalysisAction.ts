@@ -9,17 +9,16 @@ import {
     composeContext,
     ModelClass,
     generateObject,
-    // streamText,
+    streamText,
 } from "@moxie-protocol/core";
 import { getSenpiOrdersAnalysis } from "../utils/ordersAnalysis";
 import { MoxieUser } from "@moxie-protocol/moxie-agent-lib/src/services/types";
 import {
-    // GetUserGroupStatsOrRecommendationsOrderBy,
     SenpiOrdersAnalysisResponse,
     SenpiOrdersAnalysisResponseSchema,
 } from "../types";
 import {
-    // analysisOrRecommendTemplate,
+    analysisOrRecommendTemplate,
     senpiOrdersAnalysisTemplate,
 } from "../templates";
 
