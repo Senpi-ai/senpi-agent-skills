@@ -28,8 +28,7 @@ import { traceIdMiddleware } from "./middleware/traceId.ts";
 import {
     ftaService,
     type Portfolio,
-    getPortfolioV2Data,
-    TokenNode,
+    getPortfolio,
 } from "@moxie-protocol/moxie-agent-lib";
 import { walletService, MoxieUser } from "@moxie-protocol/moxie-agent-lib";
 import { MoxieWalletClient } from "@moxie-protocol/moxie-agent-lib/src/wallet";
@@ -193,33 +192,12 @@ export function createMoxieApiRouter(
                 // If Zapper API key is set, fetch the current balance of the agent wallet
                 if (process.env.ZAPPER_API_KEY) {
                     // fetch the current balance of the agent wallet
-                    currentWalletBalance = {
-                        tokenBalances: (
-                            await getPortfolioV2Data(
-                                [agentWallet.address],
-                                ["BASE_MAINNET"],
-                                moxieUserId,
-                                runtime
-                            )
-                        ).tokenBalances.byToken.edges // format the portfolioV2Data to the portfolio format
-                            .map((edge: { node: TokenNode }) => ({
-                                address:
-                                    edge.node?.accountBalances?.edges[0]?.node
-                                        ?.accountAddress,
-                                network: "BASE_MAINNET",
-                                token: {
-                                    balance: edge.node.balance,
-                                    balanceUSD: edge.node.balanceUSD,
-                                    balanceRaw: edge.node.balanceRaw,
-                                    baseToken: {
-                                        name: edge.node.name,
-                                        symbol: edge.node.symbol,
-                                        address: edge.node.tokenAddress,
-                                        decimals: edge.node.decimals,
-                                    },
-                                },
-                            })),
-                    };
+                    currentWalletBalance = await getPortfolio(
+                        traceId,
+                        req.header("Authorization"),
+                        [agentWallet.address],
+                        [8453] // BASE_MAINNET
+                    );
                     elizaLogger.info(traceId, `currentWalletBalance`, {
                         currentWalletBalance,
                     });

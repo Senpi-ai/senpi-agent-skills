@@ -49,14 +49,7 @@ export {
     MoxieWalletClient,
 } from "./wallet";
 
-export {
-    type Portfolio,
-    getPortfolioV2Data,
-    type PortfolioV2Data,
-    getPortfolioV2DataByTokenAddress,
-    type TokenNode,
-    getTokenMetadata,
-} from "./services/zapperService";
+export { type TokenNode, getTokenMetadata } from "./services/zapperService";
 
 export {
     validateMoxieUserTokens,
@@ -66,4 +59,17 @@ export {
 
 export { deleteLimitOrders } from "./services/cowService";
 
-export { formatUserMention, formatGroupMention, formatTokenMention, fetchWithRetries } from "./utils";
+export {
+    formatUserMention,
+    formatGroupMention,
+    formatTokenMention,
+    fetchWithRetries,
+} from "./utils";
+
+export {
+    type Portfolio,
+    type TokenBalance,
+    type Token,
+    type BaseToken,
+    getPortfolio,
+} from "./services/portfolioService";
