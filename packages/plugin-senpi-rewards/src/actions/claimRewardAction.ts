@@ -11,6 +11,7 @@ import { MoxieWalletClient } from "@moxie-protocol/moxie-agent-lib/src/wallet";
 import { encodeFunctionData} from "viem";
 
 import { getRewardBalance } from "../utils/balance";
+import { ethers } from "ethers";
 
 export const claimRewardsAction: Action = {
     name: "CLAIM_REWARDS",
@@ -33,6 +34,7 @@ export const claimRewardsAction: Action = {
             elizaLogger.log("Starting CLAIM_REWARDS handler...");
 
             const { address } = state.agentWallet as MoxieWalletClient;
+            const traceId = message.id;
 
             const balance = await getRewardBalance(address as `0x${string}`);
 
@@ -47,9 +49,14 @@ export const claimRewardsAction: Action = {
 
             console.log("---- balance", balance);
 
+            const balanceAsEther = ethers.formatEther(balance as bigint);
+
             await callback?.({
-                text: `Preparing rewards payout of ${balance} ETH`,
-                action: "CLAIM_REWARDS",
+                text: `Preparing rewards payout of ${balanceAsEther} ETH\n\n`,
+                content: {
+                    action: "CLAIM_REWARDS",
+                    inReplyTo: traceId,
+                },
             });
 
             const data = encodeFunctionData({
@@ -76,9 +83,14 @@ export const claimRewardsAction: Action = {
             });
             const wallet = state.moxieWalletClient as MoxieWalletClient;
 
+            console.log("---- wallet", wallet);
+
             await callback?.({
-                text: `Sending ETH to your Senpi wallet`,
-                action: "CLAIM_REWARDS",
+                text: `Sending ETH to your Senpi wallet... \n\n`,
+                content: {
+                    action: "CLAIM_REWARDS",
+                    inReplyTo: traceId,
+                },
             });
     
             const { hash } = await wallet.sendTransaction("85432", {
@@ -93,7 +105,10 @@ export const claimRewardsAction: Action = {
             await callback?.(
                 {
                     text: `Confirmed: paid out ${balance} ETH! Transaction hash: ${hash}`,
-                    action: "CLAIM_REWARDS",
+                    content: {
+                        action: "CLAIM_REWARDS",
+                        inReplyTo: traceId,
+                    },
                 },
                 []
             );
