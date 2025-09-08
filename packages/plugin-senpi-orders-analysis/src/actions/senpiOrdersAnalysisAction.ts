@@ -10,6 +10,7 @@ import {
     ModelClass,
     generateObject,
     streamText,
+    ModelProviderName,
 } from "@moxie-protocol/core";
 import { getSenpiOrdersAnalysis } from "../utils/ordersAnalysis";
 import { MoxieUser } from "@moxie-protocol/moxie-agent-lib/src/services/types";
@@ -82,12 +83,13 @@ export const senpiOrdersAnalysisAction: Action = {
             );
 
             // Deconstruct result from AI for input to getSenpiOrdersAnalysis
-
+            const { userOrGroupId } = data ?? {};
             const senpiOrdersAnalysis = await getSenpiOrdersAnalysis(
                 {
                     ...data,
                     skip: 0,
-                    take: 10,
+                    // If stats analysis, get all 100, otherwise recommendation just give top 10
+                    take: userOrGroupId ? 100 : 10,
                 },
                 state.authorizationHeader as string
             );
@@ -95,7 +97,7 @@ export const senpiOrdersAnalysisAction: Action = {
             const newContext = composeContext({
                 state: {
                     ...state,
-                    orders: senpiOrdersAnalysis,
+                    orders: JSON.stringify(senpiOrdersAnalysis),
                 },
                 template: analysisOrRecommendTemplate,
             });
@@ -104,12 +106,12 @@ export const senpiOrdersAnalysisAction: Action = {
             const analysisOrRecommendStream = streamText({
                 runtime,
                 context: newContext,
-                modelClass: ModelClass.LARGE,
+                modelClass: ModelClass.MEDIUM,
                 modelConfigOptions: {
                     temperature: 1.0,
-                    modelProvider: ModelProviderName.OPENAI,
-                    apiKey: process.env.OPENAI_API_KEY!,
-                    modelClass: ModelClass.LARGE,
+                    modelProvider: ModelProviderName.ANTHROPIC,
+                    apiKey: process.env.ANTHROPIC_API_KEY!,
+                    modelClass: ModelClass.MEDIUM,
                 },
             });
 
