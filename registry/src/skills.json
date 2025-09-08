@@ -947,7 +947,7 @@
       "author": null,
       "description": "Check and claim your earned rewards from Senpi to your wallet",
       "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-rewards",
-      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-rewards/images/logo.png",
+      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-rewards/images/logo.svg",
       "settings": {},
       "capabilities": [
         "View your earned rewards from Senpi to your wallet",

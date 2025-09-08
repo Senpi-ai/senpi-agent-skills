@@ -101,11 +101,11 @@ export const claimRewardsAction: Action = {
             });
 
             elizaLogger.success(
-                `Confirmed: paid out ${balance} ETH! Transaction hash: ${hash}`
+                `Confirmed: paid out ${balanceAsEther} ETH! Transaction hash: ${hash}`
             );
             await callback?.(
                 {
-                    text: `Confirmed: paid out ${balance} ETH! Transaction hash: ${hash}`,
+                    text: `Confirmed: paid out ${balanceAsEther} ETH! Transaction hash: ${hash}`,
                     content: {
                         action: "CLAIM_REWARDS",
                         inReplyTo: traceId,
