@@ -1,5 +1,4 @@
 import { elizaLogger } from "@moxie-protocol/core";
-import { ETH_ADDRESS, WETH_ADDRESS } from "./constants";
 import { getTokenDetails } from "@moxie-protocol/moxie-agent-lib";
 import { ethers } from "ethers";
 import { Decimal } from "decimal.js";
