@@ -93,7 +93,7 @@ export const claimRewardsAction: Action = {
                 },
             });
     
-            const { hash } = await wallet.sendTransaction("84532", {
+            const { hash } = await wallet.sendTransaction("8453", {
                 fromAddress: address as `0x${string}`,
                 toAddress: process.env.SENPI_REWARDS_CONTRACT_ADDRESS as `0x${string}`,
                 value: null,
