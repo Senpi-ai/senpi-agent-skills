@@ -938,5 +938,57 @@
         "Sneaking into the market dojo"
       ],
       "orderIndex": 16
+    },
+    {
+      "pluginId": "da18ea8d-0df2-0dd4-8f4d-a5aa67265fe7",
+      "name": "@moxie-protocol/plugin-senpi-rewards",
+      "displayName": "Senpi Rewards",
+      "version": "0.1.8+build.1",
+      "author": null,
+      "description": "Check and claim your earned rewards from Senpi to your wallet",
+      "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-rewards",
+      "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-rewards/images/logo.svg",
+      "settings": {},
+      "capabilities": [
+        "View your earned rewards from Senpi to your wallet",
+        "Claim your earned rewards from Senpi to your wallet",
+        "Check your earned rewards from Senpi to your wallet"
+      ],
+      "starterQuestions": [
+        {
+          "label": "What rewards have I earned?",
+          "value": "What rewards have I earned?"
+        },
+        {
+          "label": "What's my rewards balance?",
+          "value": "What's my rewards balance?"
+        },
+        {
+          "label": "Pay out my rewards balance",
+          "value": "Pay out my rewards balance"
+        },
+        {
+          "label": "Cash out my rewards balance",
+          "value": "Cash out my rewards balance"
+        }
+      ],
+      "mediaUrls": [],
+      "actions": [
+        "CHECK_REWARDS",
+        "CLAIM_REWARDS"
+      ],
+      "isPremium": false,
+      "freeQueries": 0,
+      "skillCoinAddress": "",
+      "minimumSkillBalance": 0,
+      "status": "ACTIVE",
+      "isDefault": true,
+      "loaders": [
+        "Unmasking top trading masters",
+        "Decoding theirs secrets",
+        "Listening for alpha",
+        "Sneaking into the market dojo"
+      ],
+      "orderIndex": 18
     }
   ]
