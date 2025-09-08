@@ -5,10 +5,11 @@ import {
     type HandlerCallback,
     type State,
     type ActionExample,
+    elizaLogger,
 } from "@moxie-protocol/core";
 import { MoxieWalletClient } from "@moxie-protocol/moxie-agent-lib/src/wallet";
 import { formatEther } from "viem";
-import {getPrice} from "../utils/codexApis";
+import { getPrice } from "../utils/codexApis";
 import { ETH, ETH_ADDRESS, ETH_TOKEN_DECIMALS, USDC, USDC_ADDRESS, USDC_TOKEN_DECIMALS } from "../utils/constants";
 import { ethers } from "ethers";
 import { getRewardBalance } from "../utils/balance";
@@ -36,7 +37,7 @@ export const checkRewardsAction: Action = {
   
         const { address } = state.agentWallet as MoxieWalletClient;
 
-        console.log("address", address);
+        elizaLogger.info(`[checkRewardsAction] Checking rewards for address ${address}. traceId: ${message.id}`);
 
         const balance = await getRewardBalance(address as `0x${string}`);
    
