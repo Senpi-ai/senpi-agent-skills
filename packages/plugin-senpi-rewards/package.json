@@ -7,8 +7,7 @@
     "dependencies": {
         "@moxie-protocol/core": "workspace:*",
         "@moxie-protocol/moxie-agent-lib": "workspace:*",
-        "ethers": "^6.0.0",
-        "graphql-request": "^7.1.2"
+        "ethers": "^6.0.0"
     },
     "devDependencies": {
         "@types/node": "^22.10.5",

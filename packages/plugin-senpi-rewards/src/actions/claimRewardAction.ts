@@ -31,7 +31,7 @@ export const claimRewardsAction: Action = {
         callback: HandlerCallback
     ) => {
         try {
-            elizaLogger.log("Starting CLAIM_REWARDS handler...");
+            elizaLogger.log("Starting CLAIM_REWARDS handler... Trace ID: " + message.id);
 
             const { address } = state.agentWallet as MoxieWalletClient;
             const traceId = message.id;
@@ -47,7 +47,7 @@ export const claimRewardsAction: Action = {
             }
 
 
-            console.log("---- balance", balance);
+            elizaLogger.log(`Reward Balance of ${address} is ${balance}. Trace ID: ${traceId}`);
 
             const balanceAsEther = ethers.formatEther(balance as bigint);
 
@@ -83,7 +83,7 @@ export const claimRewardsAction: Action = {
             });
             const wallet = state.moxieWalletClient as MoxieWalletClient;
 
-            console.log("---- wallet", wallet);
+            elizaLogger.log(`Redeeming rewards of ${balanceAsEther} ETH to ${address}. Trace ID: ${traceId}`);
 
             await callback?.({
                 text: `Sending ETH to your Senpi wallet... \n\n`,
@@ -95,7 +95,7 @@ export const claimRewardsAction: Action = {
     
             const { hash } = await wallet.sendTransaction("84532", {
                 fromAddress: address as `0x${string}`,
-                toAddress: "0x4a7f3C6E390A24d655cb72a3DAafEba0cd3327a9",
+                toAddress: process.env.SENPI_REWARDS_CONTRACT_ADDRESS as `0x${string}`,
                 value: null,
                 data: data,
             });

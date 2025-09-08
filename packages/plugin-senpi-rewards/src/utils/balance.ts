@@ -12,7 +12,7 @@ export const getRewardBalance = async (
         });
         
         const balance = await publicClient.readContract({
-            address: "0x4a7f3C6E390A24d655cb72a3DAafEba0cd3327a9" as `0x${string}`,
+            address: process.env.SENPI_REWARDS_CONTRACT_ADDRESS as `0x${string}`,
             abi: [
                 {
                     name: "balanceOf",
