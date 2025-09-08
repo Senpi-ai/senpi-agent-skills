@@ -38,16 +38,6 @@ export async function getPrice(
             `[targetTokenSymbol]: ${targetTokenSymbol}`
         );
 
-       // check if the source token is ETH
-       if (sourceTokenAddress === ETH_ADDRESS) {
-        sourceTokenAddress = WETH_ADDRESS;
-
-       }
-       // check if the target token is ETH
-        if (targetTokenAddress === ETH_ADDRESS) {
-            targetTokenAddress = WETH_ADDRESS;
-        }
-
         const tokenDetails = await getTokenDetails([sourceTokenAddress, targetTokenAddress]);
         elizaLogger.debug(
             traceId,
