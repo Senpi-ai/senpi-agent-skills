@@ -10,7 +10,6 @@ import { MoxieWalletClient } from "@moxie-protocol/moxie-agent-lib/src/wallet";
 import { formatEther } from "viem";
 import {getPrice} from "../utils/codexApis";
 import { ETH, ETH_ADDRESS, ETH_TOKEN_DECIMALS, USDC, USDC_ADDRESS, USDC_TOKEN_DECIMALS } from "../utils/constants";
-import { v4 as uuidv4 } from "uuid";
 import { ethers } from "ethers";
 import { getRewardBalance } from "../utils/balance";
 
@@ -51,8 +50,9 @@ export const checkRewardsAction: Action = {
 
         const balanceAsEther = formatEther(BigInt(balance.toString()));
 
+        const traceId = message.id;
         const rewardsInUSDCWei = await getPrice(
-            uuidv4(),
+            traceId,
             state.userId,
             balance.toString(),
             ETH_ADDRESS,
