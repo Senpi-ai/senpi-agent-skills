@@ -819,7 +819,7 @@
         "freeQueries": 0,
         "skillCoinAddress": "",
         "minimumSkillBalance": 0,
-        "status": "ACTIVE",
+        "status": "INACTIVE",
         "isDefault": true,
         "loaders": [
             "Scouting top trading clans",
