@@ -1,6 +1,6 @@
 import { createPublicClient } from "viem";
 import { http } from "viem";
-import { base } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 
 
 export const getRewardBalance = async (
@@ -8,7 +8,7 @@ export const getRewardBalance = async (
 ) => {
     try {
         const publicClient = createPublicClient({
-            chain: base,
+            chain: baseSepolia,
             transport: http(),
         });
 
