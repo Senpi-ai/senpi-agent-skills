@@ -58,7 +58,7 @@ export const senpiOrdersAnalysisAction: Action = {
             const senpiOrdersAnalysisResponse = await generateObject({
                 runtime,
                 context,
-                modelClass: ModelClass.MEDIUM,
+                modelClass: ModelClass.LARGE,
                 schema: SenpiOrdersAnalysisResponseSchema,
             });
 
@@ -109,8 +109,8 @@ export const senpiOrdersAnalysisAction: Action = {
                 modelClass: ModelClass.MEDIUM,
                 modelConfigOptions: {
                     temperature: 1.0,
-                    modelProvider: ModelProviderName.ANTHROPIC,
-                    apiKey: process.env.ANTHROPIC_API_KEY!,
+                    modelProvider: ModelProviderName.OPENAI,
+                    apiKey: process.env.OPENAI_API_KEY!,
                     modelClass: ModelClass.MEDIUM,
                 },
             });
