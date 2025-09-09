@@ -919,7 +919,9 @@
         "capabilities": [],
         "starterQuestions": [],
         "mediaUrls": [],
-        "actions": [],
+        "actions": [
+            "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS"
+        ],
         "isPremium": false,
         "freeQueries": 0,
         "skillCoinAddress": "",
@@ -927,6 +929,6 @@
         "status": "ACTIVE",
         "isDefault": true,
         "loaders": [],
-        "orderIndex": 18
+        "orderIndex": 19
     }
 ]

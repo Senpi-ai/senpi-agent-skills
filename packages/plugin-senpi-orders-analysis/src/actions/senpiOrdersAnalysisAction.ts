@@ -70,10 +70,41 @@ export const senpiOrdersAnalysisAction: Action = {
                     traceId,
                     `[${traceId}] [senpiOrdersAnalysisAction] [${moxieUserId}] [SENPI_ORDERS_ANALYSIS] error occured while performing senpi orders analysis operation: ${JSON.stringify(error.prompt_message)}`
                 );
-                await callback?.({
-                    text: "Error occured while performing senpi orders analysis operation. Please try again later.",
-                    action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
-                });
+
+                if (error.prompt_message.includes("INVALID_USER_GROUP_ID")) {
+                    // Currently only happens for scenario 3 when a group is tagged, so only referencing group
+                    await callback?.({
+                        text: "Looks like the group you mentioned is not valid. Can you try again with a different group?",
+                        action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    });
+                } else if (error.prompt_message.includes("GROUP_NOT_FOUND")) {
+                    await callback?.({
+                        text: "Looks like the user you mentioned does not exist. Can you try again with a different user?",
+                        action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    });
+                } else if (error.prompt_message.includes("USER_NO_ACCESS")) {
+                    await callback?.({
+                        text: "Looks like the user you're trying to access other user's data. Unfortunately, you're not allowed to do that. Can you try again with asking to analyze your own trades/groups?",
+                        action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    });
+                } else if (
+                    error.prompt_message.includes("GROUP_NO_ACCESS_TO_USER")
+                ) {
+                    await callback?.({
+                        text: "Looks like the group you mentioned does not belong to you. Can you try again with a different group that you own?",
+                        action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    });
+                } else if (error.prompt_message.includes("INVALID_REQUEST")) {
+                    await callback?.({
+                        text: "Sorry, there was an error processing your request. Please try again.",
+                        action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    });
+                } else {
+                    await callback?.({
+                        text: "Error occured while performing senpi orders analysis operation. Please try again later.",
+                        action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    });
+                }
                 return true;
             }
 
@@ -82,7 +113,6 @@ export const senpiOrdersAnalysisAction: Action = {
                 `[${traceId}] [senpiOrdersAnalysisAction] [${moxieUserId}] [SENPI_ORDERS_ANALYSIS] senpi orders analysis response: ${JSON.stringify(senpiOrdersAnalysisResponse)}`
             );
 
-            // Deconstruct result from AI for input to getSenpiOrdersAnalysis
             const { userOrGroupId } = data ?? {};
             const senpiOrdersAnalysis = await getSenpiOrdersAnalysis(
                 {
@@ -116,7 +146,10 @@ export const senpiOrdersAnalysisAction: Action = {
             });
 
             for await (const textPart of analysisOrRecommendStream) {
-                callback({ text: textPart });
+                callback({
+                    text: textPart,
+                    action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                });
             }
 
             return true;
@@ -135,14 +168,14 @@ export const senpiOrdersAnalysisAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Can you check my token balance on Base?",
+                    text: "Analyze my trades/auto-trades/ senpi trades from last 3 days",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "The balance of your agent wallet is 0.01 ETH",
-                    action: "TOKEN_BALANCE_ON_BASE",
+                    text: "The trades/auto-trades/ senpi trades from last 3 days are as follows:\n | Trade | PNL | Win Rate | Trade Count |\n |---|---|---|---| \n | Trade 1 | 100 | 0.5 | 100 |",
+                    action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
                 },
             },
         ],
