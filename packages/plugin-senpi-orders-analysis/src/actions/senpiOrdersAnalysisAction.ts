@@ -32,7 +32,7 @@ export const senpiOrdersAnalysisAction: Action = {
         "RECOMMEND_TOP_GROUPS",
     ],
     description:
-        "Analyze the trades and groups from a user's senpi orders or recommend the top traders and groups",
+        "Use for analyzing user's trades/groups/group members or recommending traders/groups by performance metrics (win rate, PNL, trade count, success ratio). Example: “top traders”, “best groups”. ❌ Not for social posts or news.",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (
@@ -132,15 +132,14 @@ export const senpiOrdersAnalysisAction: Action = {
                 template: analysisOrRecommendTemplate,
             });
 
-            // Stream Text using anthropic model
             const analysisOrRecommendStream = streamText({
                 runtime,
                 context: newContext,
                 modelClass: ModelClass.MEDIUM,
                 modelConfigOptions: {
                     temperature: 1.0,
-                    modelProvider: ModelProviderName.OPENAI,
-                    apiKey: process.env.OPENAI_API_KEY!,
+                    modelProvider: ModelProviderName.ANTHROPIC,
+                    apiKey: process.env.ANTHROPIC_API_KEY!,
                     modelClass: ModelClass.MEDIUM,
                 },
             });
