@@ -67,7 +67,7 @@ export const checkRewardsAction: Action = {
         const rewardsInUSDC = ethers.formatUnits(rewardsInUSDCWei, USDC_TOKEN_DECIMALS);
         
         await callback?.({
-            text: `Your Senpi rewards balance from referrals and copy trades is ${balanceAsEther} ETH, currently worth $${Number(rewardsInUSDC)}. Would you like me to send it to your Senpi wallet?`,
+            text: `🎉 Congratulations! Your Senpi rewards balance from referrals and copy trades has grown to ${balanceAsEther} ETH, currently worth $${Number(rewardsInUSDC)}. Shall I go ahead and send it to your Senpi wallet?`,
             action: "CHECK_REWARDS",
         });
         
