@@ -85,7 +85,7 @@ export const claimRewardsAction: Action = {
 
             elizaLogger.log(`Redeeming rewards of ${balanceAsEther} ETH to ${address}. Trace ID: ${traceId}`);
     
-            const { hash } = await wallet.sendTransaction("8453", {
+            const { hash } = await wallet.sendTransaction("84532", {
                 fromAddress: address as `0x${string}`,
                 toAddress: process.env.SENPI_REWARDS_CONTRACT_ADDRESS as `0x${string}`,
                 value: null,
