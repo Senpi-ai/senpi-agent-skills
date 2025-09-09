@@ -126,7 +126,7 @@ export const creatorFarcasterSummary: Action = {
         "FARCASTER_CASTS",
     ],
     description:
-        "Retrieves and summarizes recent Farcaster posts (casts), providing insights into individual activity, trending topics, and creator updates. Use this when the request specifically mentions Farcaster or casts.",
+        "Retrieves and summarizes recent Farcaster posts (casts), providing insights into individual activity on Farcaster, trending topics, and creator updates. Use this when the request specifically mentions Farcaster or casts. ❌ Not for trader rankings or performance.",
     validate: async function (
         runtime: IAgentRuntime,
         message: Memory,
