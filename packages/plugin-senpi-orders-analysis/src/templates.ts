@@ -57,7 +57,7 @@ Here are example requests and their corresponding responses:
   "data": {
     "analysisType": "GROUP",
     "days": 7,
-    "orderBy": "TOTAL_PNL",
+    "orderBy": "WIN_RATE",
     "userOrGroupId": "userId"
   },
   "error": null
@@ -71,7 +71,7 @@ Here are example requests and their corresponding responses:
     "analysisType": "GROUP",
     "userOrGroupId": "groupId",
     "days": 7,
-    "orderBy": "TOTAL_PNL"
+    "orderBy": "WIN_RATE"
   },
   "error": null
 }
@@ -98,7 +98,7 @@ Here are example requests and their corresponding responses:
   "data": {
     "analysisType": "USER",
     "days": 7,
-    "orderBy": "TOTAL_PNL",
+    "orderBy": "WIN_RATE",
     "userOrGroupId": null
   },
   "error": null
@@ -112,7 +112,7 @@ Here are example requests and their corresponding responses:
   "data": {
     "analysisType": "USER",
     "days": 3,
-    "orderBy": "TOTAL_PNL",
+    "orderBy": "WIN_RATE",
     "userOrGroupId": "userId"
   },
   "error": null
