@@ -43,6 +43,7 @@ export interface GetUserGroupStatsOrRecommendationsItem {
     groupId: string;
     groupName: string;
     groupCreatedBy: string; //mid
+    groupCreatorName: string;
     tradeCount: number;
     totalPnl: number;
     avgPnl: number;

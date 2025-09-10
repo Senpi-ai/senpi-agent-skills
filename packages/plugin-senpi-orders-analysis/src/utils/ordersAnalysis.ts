@@ -23,6 +23,7 @@ export const getSenpiOrdersAnalysis = async (
                     GetUserGroupStatsOrRecommendations(input: $input) {
                         items {
                             avgPnl
+                            groupCreatorName
                             groupCreatedBy
                             groupId
                             groupName
