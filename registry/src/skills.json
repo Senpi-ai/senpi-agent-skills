@@ -912,11 +912,15 @@
         "displayName": "Trading Intelligence",
         "version": "0.1.8+build.1",
         "author": null,
-        "description": "A New skill",
+        "description": "Intelligently analyze your trading performance and discover top-performing traders and groups to enhance your copy-trading success.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-orders-analysis",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/order-analysis-skill/packages/plugin-senpi-orders-analysis/images/logo.png",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders-analysis/images/logo.png",
         "settings": {},
-        "capabilities": [],
+        "capabilities": [
+            "Evaluate copy-trading performance of traders and groups that you copy trade",
+            "Discover top-performing leaders to enhance your copy-trading success",
+            "Easily setup new auto-trading strategies based on analysis and recommendations"
+        ],
         "starterQuestions": [
             {
                 "label": "What groups should I copy trade?",
@@ -949,7 +953,12 @@
         "minimumSkillBalance": 0,
         "status": "ACTIVE",
         "isDefault": true,
-        "loaders": [],
+        "loaders": [
+            "Unmasking top trading masters",
+            "Scouting top trading clans",
+            "Analyzing trading performances",
+            "Listening for alpha"
+        ],
         "orderIndex": 19
     },
     {
