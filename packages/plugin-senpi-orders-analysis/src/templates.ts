@@ -178,7 +178,7 @@ Make sure to rank the groups/traders based on {{orderBy}}.
 - All rankings and lists must be displayed in **Markdown table format**.
 - For any user mention in the response, ALWAYS strictly use the format with square brackets exactly as shown in the example: @[userName|userId], e.g. @[Senpi|M123]
 - For any group mention in the response, ALWAYS strictly use the format with square brackets exactly as shown in the example: #[groupName|groupId], e.g. #[Senpi Group|groupId]
-    - If the group is NOT created by the requesting user, then mention the group creator name in the group tagging in the format as follows: #[groupName (by groupCreatorName)|groupId], e.g. #[Senpi Group by vitalik|groupId] in #[app-testing
+    - ONLY FOR GROUP FORMATTING: If the group is NOT created by the requesting user, then mention the group creator name in the group tagging in the format as follows: #[groupName (by groupCreatorName)|groupId], e.g. #[Senpi Group by vitalik|groupId] in #[app-testing
 - NOT TO DO: Do not add random characters to the formatting on the table, e.g. @[BronzeCrab\\|M170974] this is incorrect.
 
 ### Guidelines:
