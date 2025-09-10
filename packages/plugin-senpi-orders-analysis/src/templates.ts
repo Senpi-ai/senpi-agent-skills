@@ -184,10 +184,45 @@ Your task is to interpret the user request and generate a **clear, concise summa
   - *“✅ Good for copy trading”* (stable and consistent)
   - *“⚠️ Too early to tell”* (low trade count, not enough data)
   - *“🛑  Not working”* (consistent losses, avoid)
-- Skip status column for analysis type 4 and 5.
-- Add a reasoning column for answer to analysis type 1, 2, and 3 to explicitly comment on performance patterns. Skip this for analysis type 4 and 5.
-- Be clear, structured, and concise (short intro + markdown tables). Make sure to also use the format mentioned for user or group mentions correctly and strictly as mentioned in the formatting rules.
+- For analysis type 4 and 5, only includes users or groups that are ✅ Good for copy trading (stable and consistent)
+- Add a reasoning column for answer to analysis type 1, 2, and 3 to explicitly comment on performance patterns.
+- Be clear, structured, and concise (H1 title + intro + bullet points + key takeaways) with all formatted in markdown. Make sure to also use the format mentioned for user or group mentions correctly and strictly as mentioned in the formatting rules.
 - At the end of analysis response, mention which users or groups to keep and which to discard. If a user belongs to a group, then mention the group name in the response.
 - Default to top **5** for analysis requests and top **10** for recommendations if no number is given. If the data is LESS than 10, then for analysis type 1, 2, and 3, provide all the data without segregating by best and worst.
 - For context, in analysis type 1, 2, and 3, keep in mind that user has already copy traded with the users/groups mentioned in the response. For recommendation requests, user might not have copy traded with the users/groups mentioned in the response.
+
+## Examples
+
+### Example 1
+
+"""
+# Top Traders to Copy (Based on Senpi User Results)
+
+⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the target traders.
+- @[BlueBridge|M123] is the strongest copy-trade signal so far, with 4 successful trades and a perfect win rate by Senpi users.
+- @[AshCentipede|M123] and @[BlueCd|M123] show early promise with 2 successful trades each by Senpi users.
+absurdsenpai, AmberBuoy, asen.eth, BerylTimer, bigfarthead.eth, BoleSpoon, and BuffHoney have each been copy traded once successfully by Senpi users.
+
+## Key Takeaways
+- @[BlueBridge|M123] is the primary recommendation due to a higher number of successful trades while maintaining a perfect win rate.
+- @[AshCentipede|M123] and @[BlueCd|M123] are promising secondary signals worth monitoring as their trade histories grow.
+Traders with only one recorded copy trade should be treated as early signals until more data accumulates.
+"""
+
+### Example 2
+
+"""
+# Top Groups to Copy (Based on Senpi User Results)
+
+⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the groups themselves.
+- #[matsuko group (by matsukooni77)|M123] shows early strength with 3 successful trades and a 100% win rate by Senpi users.
+- #[copytrade (by FuchsiaTulip)|M123] also stands out with 3 successful trades and a perfect win rate by Senpi users.
+- #[hammer_time (by opstudios)|M123], #[copytrade (by masaki-)|M123], and #[copytrade (by naaate)|M123] each have 2 successful trades at 100% win rate, but with limited history so far.
+Additional groups — 1 Day $100 by JP Crypto, AAA trades Top Performances by JP Crypto, byr (by brykayne), copytrade (by ginyo), and do be knowing (by qt) — have each been copy traded once successfully by Senpi users.
+
+## Key Takeaways
+- #[matsuko group (by matsukooni77)|M123] and #[copytrade (by FuchsiaTulip)|M123] are the strongest early signals, each with three successful trades.
+- Groups with only 2 trades are promising but need more history before being reliable.
+-Groups with a single successful copy trade should be treated as early signals to monitor rather than firm recommendations.
+"""
 `;
