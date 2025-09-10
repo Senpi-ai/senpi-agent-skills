@@ -61,6 +61,5 @@ export const SenpiOrdersAnalysisResponseSchema = z.object({
         analysisType: z.enum(["USER", "GROUP"]),
         days: z.number(),
         userOrGroupId: z.string().nullable(),
-        orderBy: z.enum(["WIN_RATE"]),
     }),
 });
