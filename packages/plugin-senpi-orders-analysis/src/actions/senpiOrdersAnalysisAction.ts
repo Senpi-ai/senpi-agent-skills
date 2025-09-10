@@ -144,6 +144,8 @@ export const senpiOrdersAnalysisAction: Action = {
                 state: {
                     ...state,
                     orders: JSON.stringify(senpiOrdersAnalysis),
+                    userData: JSON.stringify(moxieUserInfo),
+                    orderBy: data?.orderBy,
                 },
                 template: analysisOrRecommendTemplate,
             });

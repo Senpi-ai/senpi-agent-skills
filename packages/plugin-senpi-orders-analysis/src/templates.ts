@@ -155,6 +155,8 @@ Here is the user data that requests the message:
 
 Your task is to interpret the user request and generate a **clear, concise summary text** as the response.
 
+Make sure to rank the groups/traders based on {{orderBy}}.
+
 ### Supported Analysis Types:
 1. **Analyze user trades**
    - Summarize traders who perform the top 5 best and worst. Add a group column with that mentions the group if the trader is from a group.
