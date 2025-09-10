@@ -215,7 +215,7 @@ export const creatorTweetSummary: Action = {
     suppressInitialMessage: true,
     similes: ["TWEET_HISTORY", "TWITTER_ACTIVITY", "TWITTER_UPDATES"],
     description:
-        "Retrieves and summarizes recent tweets (posts from Twitter/X), highlighting user activity, trending topics, and creator updates. Use this when the request explicitly mentions Twitter or X.",
+        "Retrieves and summarizes recent tweets (posts from Twitter/X), highlighting user activity on Twitter/X, trending topics, and creator updates. Use this when the request explicitly mentions Twitter or X. ❌ Not for trader rankings or performance.",
     validate: async function (
         runtime: IAgentRuntime,
         message: Memory,
