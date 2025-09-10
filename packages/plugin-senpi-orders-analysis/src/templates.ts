@@ -19,7 +19,7 @@ You are an AI assistant. Your task is to take the conversation history and other
 
 1. Defaults
    - If no time period is given → "days": 7.
-   - If no sorting preference is given → "orderBy": "TOTAL_PNL".
+   - If no sorting preference is given → "orderBy": "WIN_RATE".
 2. Scope Detection
    - If the request is about groups (mentions group(s) or uses #[] tag) → "analysisType": "GROUP".
    - Otherwise default to "USER".
