@@ -9,10 +9,7 @@ export interface GetUserGroupStatsOrRecommendationsInput {
 }
 
 export enum GetUserGroupStatsOrRecommendationsOrderBy {
-    AVG_PNL = "AVG_PNL",
-    TOTAL_PNL = "TOTAL_PNL",
     WIN_RATE = "WIN_RATE",
-    TRADE_COUNT = "TRADE_COUNT",
 }
 
 /**
@@ -45,17 +42,14 @@ export interface GetUserGroupStatsOrRecommendationsItem {
     groupCreatedBy: string; //mid
     groupCreatorName: string;
     tradeCount: number;
-    totalPnl: number;
-    avgPnl: number;
     winRate: number;
 }
 
 export interface SenpiOrdersAnalysisResponse {
     data: {
-        analysisType: AnalysisType;
         days: number;
         userOrGroupId: string | null;
-        orderBy: GetUserGroupStatsOrRecommendationsOrderBy;
+        analysisType: AnalysisType;
     };
     error: {
         prompt_message: string;
@@ -67,6 +61,6 @@ export const SenpiOrdersAnalysisResponseSchema = z.object({
         analysisType: z.enum(["USER", "GROUP"]),
         days: z.number(),
         userOrGroupId: z.string().nullable(),
-        orderBy: z.enum(["AVG_PNL", "TOTAL_PNL", "WIN_RATE", "TRADE_COUNT"]),
+        orderBy: z.enum(["WIN_RATE"]),
     }),
 });

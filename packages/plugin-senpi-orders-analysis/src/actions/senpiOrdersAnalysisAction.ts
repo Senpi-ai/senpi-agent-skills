@@ -19,6 +19,7 @@ import {
 import { MoxieUser } from "@moxie-protocol/moxie-agent-lib/src/services/types";
 import { generateUniqueGroupName } from "@moxie-protocol/plugin-moxie-groups/src/utils";
 import {
+    GetUserGroupStatsOrRecommendationsOrderBy,
     SenpiOrdersAnalysisResponse,
     SenpiOrdersAnalysisResponseSchema,
 } from "../types";
@@ -36,7 +37,7 @@ export const senpiOrdersAnalysisAction: Action = {
         "RECOMMEND_TOP_GROUPS",
     ],
     description:
-        "Use for analyzing user's trades/groups/group members or recommending which top traders/groups by performance metrics (win rate, PNL, trade count, success ratio) to copy trade/add to their groups. Example: “top traders”, “best groups”. ❌ Not for social posts or news.",
+        "Use for analyzing user's trades/groups/group members or recommending which top traders/groups by performance metrics (win rate and trade count) to copy trade/add to their groups. Example: “top traders”, “best groups”. ❌ Not for social posts or news.",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (
@@ -121,6 +122,7 @@ export const senpiOrdersAnalysisAction: Action = {
             const senpiOrdersAnalysis = await getSenpiOrdersAnalysis(
                 {
                     ...data,
+                    orderBy: GetUserGroupStatsOrRecommendationsOrderBy.WIN_RATE,
                     skip: 0,
                     // If stats analysis, get all 100, otherwise recommendation just give top 10
                     take: userOrGroupId ? 100 : 10,
@@ -220,7 +222,7 @@ export const senpiOrdersAnalysisAction: Action = {
             {
                 user: "{{user2}}",
                 content: {
-                    text: "The trades/auto-trades/ senpi trades from last 3 days are as follows:\n | Trade | PNL | Win Rate | Trade Count |\n |---|---|---|---| \n | Trade 1 | 100 | 0.5 | 100 |",
+                    text: "The trades/auto-trades/ senpi trades from last 3 days are as follows:\n | Trade | Win Rate | Trade Count |\n |---|---|---| \n | Trade 1 | 0.5 | 100 |",
                     action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
                 },
             },
