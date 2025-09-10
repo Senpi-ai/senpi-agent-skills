@@ -917,7 +917,28 @@
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders-analysis/images/logo.png",
         "settings": {},
         "capabilities": [],
-        "starterQuestions": [],
+        "starterQuestions": [
+            {
+                "label": "What groups should I copy trade?",
+                "value": "What groups should I copy trade?"
+            },
+            {
+                "label": "What traders should I copy trade?",
+                "value": "What traders should I copy trade?"
+            },
+            {
+                "label": "Who should I add to my groups?",
+                "value": "Who should I add to my groups?"
+            },
+            {
+                "label": "Analyze my groups",
+                "value": "Analyze my groups"
+            },
+            {
+                "label": "Analyze my trades",
+                "value": "Analyze my trades"
+            }
+        ],
         "mediaUrls": [],
         "actions": [
             "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS"
