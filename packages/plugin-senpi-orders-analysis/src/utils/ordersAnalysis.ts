@@ -6,7 +6,8 @@ import {
 
 export const getSenpiOrdersAnalysis = async (
     input: GetUserGroupStatsOrRecommendationsInput,
-    authorizationHeader: string
+    authorizationHeader: string,
+    traceId: string
 ) => {
     const maxRetries = 3;
     let lastError: Error | null = null;
@@ -37,6 +38,11 @@ export const getSenpiOrdersAnalysis = async (
                     }
                 }
             `;
+
+            elizaLogger.debug(
+                `[${traceId}] [getSenpiOrdersAnalysis] query input: ${JSON.stringify(input)}`
+            );
+
             const response = await fetch(process.env.MOXIE_API_URL, {
                 method: "POST",
                 headers: {
@@ -47,7 +53,7 @@ export const getSenpiOrdersAnalysis = async (
             });
 
             if (!response.ok) {
-                const errorMessage = `[getSenpiOrdersAnalysis] Error fetching senpi orders analysis status: ${response.status} ${response.statusText}`;
+                const errorMessage = `[${traceId}] [getSenpiOrdersAnalysis] Error fetching senpi orders analysis status: ${response.status} ${response.statusText}`;
                 elizaLogger.error(errorMessage);
                 throw new Error(errorMessage);
             }
@@ -58,12 +64,16 @@ export const getSenpiOrdersAnalysis = async (
             if (errors) {
                 const errorMessage = errors[0].message;
                 elizaLogger.error(
-                    `[getSenpiOrdersAnalysis] Error fetching senpi orders analysis: ${errorMessage}`
+                    `[${traceId}] [getSenpiOrdersAnalysis] Error fetching senpi orders analysis: ${errorMessage}`
                 );
                 throw new Error(
-                    `[getSenpiOrdersAnalysis] Error fetching senpi orders analysis: ${errorMessage}`
+                    `[${traceId}] [getSenpiOrdersAnalysis] Error fetching senpi orders analysis: ${errorMessage}`
                 );
             }
+
+            elizaLogger.debug(
+                `[${traceId}] [getSenpiOrdersAnalysis] senpi orders analysis response: ${JSON.stringify(data)}`
+            );
 
             return data?.GetUserGroupStatsOrRecommendations?.items;
         } catch (error) {

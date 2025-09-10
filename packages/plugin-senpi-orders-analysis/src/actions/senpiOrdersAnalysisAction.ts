@@ -121,8 +121,24 @@ export const senpiOrdersAnalysisAction: Action = {
                     // If stats analysis, get all 100, otherwise recommendation just give top 10
                     take: userOrGroupId ? 100 : 10,
                 },
-                state.authorizationHeader as string
+                state.authorizationHeader as string,
+                traceId
             );
+
+            if (senpiOrdersAnalysis.length === 0) {
+                if (userOrGroupId) {
+                    await callback?.({
+                        text: "Looks like you have not done any auto trades yet on Senpi. Please try again later after doing some auto trades.",
+                        action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    });
+                } else {
+                    await callback?.({
+                        text: `Sorry, looks like there is no recommendations found for the given request. Please try again later. \nIf the issue persists, tap the 👎 button to report this issue, or contact our team in the [Senpi Dojo Telegram Group](${process.env.SENPI_TELEGRAM_GROUP_URL}) for further assistance. 🙏`,
+                        action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    });
+                }
+                return true;
+            }
 
             const newContext = composeContext({
                 state: {
