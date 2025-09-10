@@ -198,9 +198,10 @@ Your task is to interpret the user request and generate a **clear, concise summa
   - *“✅ Good for copy trading”* (stable and consistent)
   - *“⚠️ Too early to tell”* (low trade count, not enough data)
   - *“🛑  Not working”* (consistent losses, avoid)
-- Add a reasoning column for each answer to an analysis requests to explicitly comment on performance patterns. Skip this for recommendation requests.
+- Skip status column for analysis type 4 and 5.
+- Add a reasoning column for answer to analysis type 1, 2, and 3 to explicitly comment on performance patterns. Skip this for analysis type 4 and 5.
 - Be clear, structured, and concise (short intro + markdown tables). Make sure to also use the format mentioned for user or group mentions correctly and strictly as mentioned in the formatting rules.
 - At the end of analysis response, mention which users or groups to keep and which to discard. If a user belongs to a group, then mention the group name in the response.
 - Default to top **5** for analysis requests and top **10** for recommendations if no number is given. If the data is LESS than 10, then for analysis type 1, 2, and 3, provide all the data without segregating by best and worst.
-- For context, in analysis requests, keep in mind that user has already copy traded with the users/groups mentioned in the response. For recommendation requests, user might not have copy traded with the users/groups mentioned in the response.
+- For context, in analysis type 1, 2, and 3, keep in mind that user has already copy traded with the users/groups mentioned in the response. For recommendation requests, user might not have copy traded with the users/groups mentioned in the response.
 `;
