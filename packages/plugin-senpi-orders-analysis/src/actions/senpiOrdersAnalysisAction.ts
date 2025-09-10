@@ -33,7 +33,7 @@ export const senpiOrdersAnalysisAction: Action = {
         "RECOMMEND_TOP_GROUPS",
     ],
     description:
-        "Use for analyzing user's trades/groups/group members or recommending traders/groups by performance metrics (win rate, PNL, trade count, success ratio). Example: “top traders”, “best groups”. ❌ Not for social posts or news.",
+        "Use for analyzing user's trades/groups/group members or recommending which top traders/groups by performance metrics (win rate, PNL, trade count, success ratio) to copy trade/add to their groups. Example: “top traders”, “best groups”. ❌ Not for social posts or news.",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (
@@ -146,7 +146,6 @@ export const senpiOrdersAnalysisAction: Action = {
                     ...state,
                     orders: JSON.stringify(senpiOrdersAnalysis),
                     userData: JSON.stringify(moxieUserInfo),
-                    orderBy: data?.orderBy,
                 },
                 template: analysisOrRecommendTemplate,
             });
@@ -165,7 +164,7 @@ export const senpiOrdersAnalysisAction: Action = {
 
             let groupName;
 
-            if (!userOrGroupId && data?.analysisType === "GROUP") {
+            if (!userOrGroupId && data?.analysisType === "USER") {
                 const groupBaseName = `top_traders_${new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }).replace(/,/g, "").replace(/ /g, "_")}`;
 
                 groupName = await generateUniqueGroupName(
@@ -178,7 +177,7 @@ export const senpiOrdersAnalysisAction: Action = {
                 callback({
                     text: textPart,
                     action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
-                    ...(!userOrGroupId && data?.analysisType === "GROUP"
+                    ...(!userOrGroupId && data?.analysisType === "USER"
                         ? {
                               cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
                               metadata: {
