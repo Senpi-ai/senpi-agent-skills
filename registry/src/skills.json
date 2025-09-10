@@ -909,12 +909,12 @@
     {
         "pluginId": "5fb364b0-e326-4e88-954d-c2a432ebed02",
         "name": "@moxie-protocol/plugin-senpi-orders-analysis",
-        "displayName": "Senpi Orders Analysis",
+        "displayName": "Trading Intelligence",
         "version": "0.1.8+build.1",
         "author": null,
         "description": "A New skill",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-senpi-orders-analysis",
-        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-senpi-orders-analysis/images/logo.png",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/order-analysis-skill/packages/plugin-senpi-orders-analysis/images/logo.png",
         "settings": {},
         "capabilities": [],
         "starterQuestions": [
