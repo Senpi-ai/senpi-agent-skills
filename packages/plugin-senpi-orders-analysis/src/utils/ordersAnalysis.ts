@@ -4,6 +4,8 @@ import {
     GetUserGroupStatsOrRecommendationsResponse,
 } from "../types";
 
+const API_URL = process.env.MOXIE_API_PROD_URL ?? process.env.MOXIE_API_URL;
+
 export const getSenpiOrdersAnalysis = async (
     input: GetUserGroupStatsOrRecommendationsInput,
     authorizationHeader: string,
@@ -43,7 +45,7 @@ export const getSenpiOrdersAnalysis = async (
                 `[${traceId}] [getSenpiOrdersAnalysis] query input: ${JSON.stringify(input)}`
             );
 
-            const response = await fetch(process.env.MOXIE_API_URL, {
+            const response = await fetch(API_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
