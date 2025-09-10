@@ -14,6 +14,7 @@ import {
 } from "@moxie-protocol/core";
 import { getSenpiOrdersAnalysis } from "../utils/ordersAnalysis";
 import { MoxieUser } from "@moxie-protocol/moxie-agent-lib/src/services/types";
+import { generateUniqueGroupName } from "@moxie-protocol/plugin-moxie-groups/src/utils";
 import {
     SenpiOrdersAnalysisResponse,
     SenpiOrdersAnalysisResponseSchema,
@@ -153,19 +154,38 @@ export const senpiOrdersAnalysisAction: Action = {
             const analysisOrRecommendStream = streamText({
                 runtime,
                 context: newContext,
-                modelClass: ModelClass.MEDIUM,
+                modelClass: ModelClass.LARGE,
                 modelConfigOptions: {
                     temperature: 1.0,
                     modelProvider: ModelProviderName.ANTHROPIC,
                     apiKey: process.env.ANTHROPIC_API_KEY!,
-                    modelClass: ModelClass.MEDIUM,
+                    modelClass: ModelClass.LARGE,
                 },
             });
+
+            let groupName;
+
+            if (!userOrGroupId && data?.analysisType === "GROUP") {
+                const groupBaseName = `top_traders_${new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }).replace(/,/g, "").replace(/ /g, "_")}`;
+
+                groupName = await generateUniqueGroupName(
+                    state.authorizationHeader as string,
+                    groupBaseName
+                );
+            }
 
             for await (const textPart of analysisOrRecommendStream) {
                 callback({
                     text: textPart,
                     action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
+                    ...(!userOrGroupId && data?.analysisType === "GROUP"
+                        ? {
+                              cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
+                              metadata: {
+                                  callbackPrompt: `Create the ${groupName} group and add all of the above users to it.`,
+                              },
+                          }
+                        : {}),
                 });
             }
 
