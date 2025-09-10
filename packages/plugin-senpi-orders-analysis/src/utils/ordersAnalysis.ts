@@ -2,7 +2,24 @@ import { elizaLogger } from "@moxie-protocol/core";
 import {
     GetUserGroupStatsOrRecommendationsInput,
     GetUserGroupStatsOrRecommendationsResponse,
+    AnalysisType,
 } from "../types";
+
+export interface CTAConfig {
+    userOrGroupId?: string | null;
+    analysisType?: AnalysisType;
+    groupName?: string;
+    groupId?: string;
+}
+
+export interface CTAResult {
+    cta?: string;
+    metadata?: {
+        callbackPrompt?: string;
+        groupId?: string;
+        groupName?: string;
+    };
+}
 
 const API_URL = process.env.MOXIE_API_PROD_URL ?? process.env.MOXIE_API_URL;
 
@@ -103,4 +120,38 @@ export const getSenpiOrdersAnalysis = async (
     throw new Error(
         `Error fetching senpi orders analysis after ${maxRetries} attempts: ${lastError?.message}`
     );
+};
+
+/**
+ * Generates CTA (Call To Action) configuration based on analysis type and user/group context
+ * @param config - Configuration object containing userOrGroupId, analysisType, and groupName
+ * @returns CTA result object with cta and metadata properties
+ */
+export const generateCTAConfig = (config: CTAConfig): CTAResult => {
+    const { userOrGroupId, analysisType, groupName, groupId } = config;
+
+    // If userOrGroupId exists, no CTA is needed (user is analyzing their own data)
+    if (userOrGroupId) {
+        return {};
+    }
+
+    // For recommendations without specific user/group, determine CTA based on analysis type
+    switch (analysisType) {
+        case AnalysisType.USER:
+            return {
+                cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
+                metadata: {
+                    callbackPrompt: `Create the ${groupName} group and add all of the above users to it.`,
+                },
+            };
+        case AnalysisType.GROUP:
+        default:
+            return {
+                cta: "RULE_TEMPLATE_CARDS",
+                metadata: {
+                    groupId,
+                    groupName,
+                },
+            };
+    }
 };

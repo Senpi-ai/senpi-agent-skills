@@ -12,7 +12,10 @@ import {
     streamText,
     ModelProviderName,
 } from "@moxie-protocol/core";
-import { getSenpiOrdersAnalysis } from "../utils/ordersAnalysis";
+import {
+    getSenpiOrdersAnalysis,
+    generateCTAConfig,
+} from "../utils/ordersAnalysis";
 import { MoxieUser } from "@moxie-protocol/moxie-agent-lib/src/services/types";
 import { generateUniqueGroupName } from "@moxie-protocol/plugin-moxie-groups/src/utils";
 import {
@@ -173,18 +176,25 @@ export const senpiOrdersAnalysisAction: Action = {
                 );
             }
 
+            // Generate CTA configuration using the reusable function
+            const ctaConfig = generateCTAConfig({
+                userOrGroupId,
+                analysisType: data?.analysisType,
+                groupName:
+                    data?.analysisType === "USER"
+                        ? groupName
+                        : senpiOrdersAnalysis?.[0]?.groupName,
+                groupId:
+                    data?.analysisType === "USER"
+                        ? null
+                        : senpiOrdersAnalysis?.[0]?.groupId,
+            });
+
             for await (const textPart of analysisOrRecommendStream) {
                 callback({
                     text: textPart,
                     action: "ANALYZE_TRADES_AND_GROUPS_OR_RECOMMEND_TOP_TRADERS_AND_GROUPS",
-                    ...(!userOrGroupId && data?.analysisType === "USER"
-                        ? {
-                              cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
-                              metadata: {
-                                  callbackPrompt: `Create the ${groupName} group and add all of the above users to it.`,
-                              },
-                          }
-                        : {}),
+                    ...ctaConfig,
                 });
             }
 
