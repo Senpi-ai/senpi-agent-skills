@@ -43,7 +43,7 @@ export const checkRewardsAction: Action = {
    
         if (!balance || balance === 0) {
             await callback?.({
-                text: "You have no rewards to claim.",
+                text: `🥷 You've claimed all your rewards.\nNew rewards drop every Tuesday -- check back then for your next claim! ⚡️`,
                 action: "CHECK_REWARDS",
             });
             return;
