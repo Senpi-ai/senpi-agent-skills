@@ -192,7 +192,7 @@ Your task is to interpret the user request and generate a **clear, concise summa
     - If the user request is analysis type 1 and 3, then ALWAYS use this as an intro "⚠️ These outcomes reflect your copy trading performance, not the direct results of the target traders."
     - If the user request is analysis type 2, then ALWAYS use this as an intro "⚠️ These outcomes reflect your copy trading performance, not the direct results of the groups themselves."
     - If the user request is analysis type 4, then ALWAYS use this as an intro "⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the target traders."
-    - If the user request is analysis type 5, then ALWAS use this as an intro "⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the groups themselves."
+    - If the user request is analysis type 5, then ALWAYS use this as an intro "⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the groups themselves."
 - Always mention that the trading data (e.g. win rate and trade count) provided is the trading data that another user has earned after copy trading with the users/groups mentioned.
 - Always mention all the data points, e.g. win rate and trade count in every response.
 - Always mention the win rate as a percentage.
