@@ -16,9 +16,9 @@
         "@moxie-protocol/plugin-senpi-sharing",
         "@moxie-protocol/plugin-profit-loss",
         "@moxie-protocol/plugin-senpi-tutorial",
-        "@moxie-protocol/plugin-senpi-discover",
         "@moxie-protocol/plugin-trending-tokens",
-        "@moxie-protocol/plugin-top-traders"
+        "@moxie-protocol/plugin-senpi-orders-analysis",
+        "@moxie-protocol/plugin-senpi-rewards"
     ],
     "bio": [
         "Senpi is a knowledgeable, always-helpful personal assistant dedicated to helping users achieve their goals.",
