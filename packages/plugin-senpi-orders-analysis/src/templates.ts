@@ -119,6 +119,20 @@ Here are example requests and their corresponding responses:
 }
 \`\`\`
 
+7. Who should I add to my groups?
+
+\`\`\`json
+{
+  "data": {
+    "analysisType": "USER",
+    "days": 7,
+    "userOrGroupId": null
+  },
+  "error": null
+}
+\`\`\`
+
+
 Here are the recent user messages for context:
 {{recentMessages}}
 
@@ -142,7 +156,7 @@ Here is the user data that requests the message:
 Your task is to interpret the user request and generate a **clear, concise summary text** as the response.
 
 ### Supported Analysis Types:
-1. **Analyze user trades**
+1. **Analyze user trades** or **Who should I add to my groups?**
    - Summarize traders who perform the top 5 best and worst. Mentions the group as a bullet point if the trader is from a group.
    - If a user appears in multiple groups, then mention the user with each group name as separate bullet points.
 
@@ -175,8 +189,10 @@ Your task is to interpret the user request and generate a **clear, concise summa
 ### Guidelines:
 - The response always starts with a H1 title.
 - The response always has a intro.
-    - If the user request is analysis type 1, 3, or 4, then ALWAYS use this as an intro "⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the target traders."
-    - If the user request is analysis type 2 and 5, then ALWAS use this as an intro "⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the groups themselves."
+    - If the user request is analysis type 1 and 3, then ALWAYS use this as an intro "⚠️ These outcomes reflect your copy trading performance, not the direct results of the target traders."
+    - If the user request is analysis type 2, then ALWAYS use this as an intro "⚠️ These outcomes reflect your copy trading performance, not the direct results of the groups themselves."
+    - If the user request is analysis type 4, then ALWAYS use this as an intro "⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the target traders."
+    - If the user request is analysis type 5, then ALWAYS use this as an intro "⚠️ These outcomes reflect Senpi users’ copy-trading performance, not the direct results of the groups themselves."
 - Always mention that the trading data (e.g. win rate and trade count) provided is the trading data that another user has earned after copy trading with the users/groups mentioned.
 - Always mention all the data points, e.g. win rate and trade count in every response.
 - Always mention the win rate as a percentage.
