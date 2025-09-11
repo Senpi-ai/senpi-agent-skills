@@ -88,7 +88,6 @@ Before providing the final JSON output, break down your reasoning process inside
 17. Pay close attention to the sellPercentage parameter, especially in COPY_SELL scenarios. This parameter defines the proportion of tokens the copied traders or group members should sell to trigger COPY_SELL.  sellTriggerCondition and sellTriggerCondition are required with it.
 
 
-
 After completing the rule analysis, provide the JSON output based on your analysis.
 
 If all required parameters are present, use this format for the JSON output:
@@ -107,7 +106,7 @@ If all required parameters are present, use this format for the JSON output:
     "conditionValue": "<NUMBER_OF_GROUP_MEMBERS_REQUIRED>",
     "minPurchaseAmount": "<MINIMUM_PURCHASE_AMOUNT_IN_USD>",
     "sellTriggerType": "<TRIGGER_TYPE>", // LIMIT_ORDER, STOP_LOSS, COPY_SELL or BOTH
-    "sellTriggerCondition": "<SELL_CONDITION_ANY_OR_ALL>",
+    "sellTriggerCondition": "<SELL_CONDITION_ANY_OR_ALL>", 
     "sellTriggerCount": "<NUMBER_OF_GROUP_MEMBERS_REQUIRED_TO_SELL>",
     "sellPercentage": "<PERCENTAGE_TO_SELL>", // required for COPY_SELL i.e sell when a member sells. default to 50 if not specified. 
     "tokenAge": {
@@ -135,6 +134,9 @@ If all required parameters are present, use this format for the JSON output:
   "error": null
 }
 \`\`\`
+
+Note: The sellTriggerCondition parameter is mandatory whenever the rule involves selling based on other members' actions, such as "sell when they sell," "sell when any 2 members sell," or "sell when all members sell." Always ensure this parameter is specified in such scenarios.
+
 
 If any required parameters are missing or if there's an invalid input (such as a negative profit percentage), use this format:
 
