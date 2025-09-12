@@ -43,7 +43,7 @@ export const checkRewardsAction: Action = {
    
         if (!balance || balance === 0) {
             await callback?.({
-                text: `🥷 You've claimed all your rewards.\nNew rewards drop every Tuesday -- check back then for your next claim! ⚡️`,
+                text: `🥷 Check back every Tuesday to claim your rewards! Earn more rewards by inviting friends and creating top performing groups. ⚡️`,
                 action: "CHECK_REWARDS",
             });
             return;
