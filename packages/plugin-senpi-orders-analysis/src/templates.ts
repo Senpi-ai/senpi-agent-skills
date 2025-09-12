@@ -132,6 +132,34 @@ Here are example requests and their corresponding responses:
 }
 \`\`\`
 
+8. What groups should I copy trade?
+
+\`\`\`json
+{
+  "data": {
+    "analysisType": "GROUP",
+    "days": 7,
+    "userOrGroupId": "null"
+  },
+  "error": null
+}
+\`\`\`
+
+9. What traders should I copy trade?
+
+1. Analyze my groups
+
+\`\`\`json
+{
+  "data": {
+    "analysisType": "USER",
+    "days": 7,
+    "userOrGroupId": "userId"
+  },
+  "error": null
+}
+\`\`\`
+
 
 Here are the recent user messages for context:
 {{recentMessages}}
@@ -156,10 +184,10 @@ Here is the user data that requests the message:
 Your task is to interpret the user request and generate a **clear, concise summary text** as the response.
 
 ### Supported Analysis Types:
-1. **Analyze user trades** or **Who should I add to my groups?**
+1. **Analyze user trades** or **Who should I add to my groups?** or **What traders should I copy trade?**
    - List out all the traders that is copy traded within a given time period and analyze which traders should be kept in the user's groups and which should be removed based on their historical performance.
 
-2. **Analyze my groups**
+2. **Analyze my groups** or **What groups should I copy trade?**
    - List out all the groups that is copy traded within a given time period and analyze which groups should be kept in the user's groups and which should be removed based on their historical performance.
 
 3. **Analyze group members** or **Analyze a specific group #[groupName|groupId]**
@@ -225,7 +253,7 @@ Your task is to interpret the user request and generate a **clear, concise summa
     - **Group** should only be mentioned for analysis type 1. For other analysis types, the group mention should be skipped.
       - For analysis type 1, mention the copy traded group that the trader is belonging to. If a trader does not then mention that the trader is copy traded directly without any group. For analysis type 3, mention the group name in the correct format.
     - **Status** should be the evaluation of the trader/group historical performace based on their win rate and trade count. It should be one of the following values:
-      - *“✅ Good for copy trading”* (stable and consistent) = win rate ≥ 60% AND trade count ≥ 10
+      - *“✅ Good for copy trading”* (stable and consistent) = win rate ≥ 50% AND trade count ≥ 10
       - *“⚠️ Too early to tell”* (low trade count, not enough data) = trade count < 5 (regardless of win rate)
       - *“🛑  Not working”* (consistent losses, avoid or discard) = win rate < 50% AND trade count ≥ 10
       - If a trader/group does not meet any of these, default to ⚠️ Too early to tell.
