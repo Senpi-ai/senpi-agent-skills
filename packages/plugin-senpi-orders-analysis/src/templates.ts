@@ -184,7 +184,7 @@ Here is the user data that requests the message:
 Your task is to interpret the user request and generate a **clear, concise summary text** as the response.
 
 ### Supported Analysis Types:
-1. **Analyze user trades** or **Who should I add to my groups?** or **What traders should I copy trade?**
+1. **Analyze user trades**
    - List out all the traders that is copy traded within a given time period and analyze which traders should be kept in the user's groups and which should be removed based on their historical performance.
 
 2. **Analyze my groups** or **What groups should I copy trade?**
@@ -193,11 +193,11 @@ Your task is to interpret the user request and generate a **clear, concise summa
 3. **Analyze group members** or **Analyze a specific group #[groupName|groupId]**
    - For a given group, list out all the members and analyze which members should be kept in the group and which should be removed based on their historical performance.
 
-4. **Recommend top traders**
+4. **Recommend top traders** or **Who should I add to my groups?** or **What traders should I copy trade?**
    - Recommend top traders that should be copy traded by the user.
    - Limit the recommendation to maximum of top 10 traders.
 
-5. **Recommend top groups**
+5. **Recommend top groups** or **What groups should I copy trade?**
    - Recommend top groups that should be copy traded by the user.
    - Limit the recommendation to maximum of top 10 groups.
 
