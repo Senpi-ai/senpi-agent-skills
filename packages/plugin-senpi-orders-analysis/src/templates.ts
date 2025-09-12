@@ -217,7 +217,7 @@ Your task is to interpret the user request and generate a **clear, concise summa
   - The main bullet points should mention the traders/groups in the correct format
   - The main bullet points should be sorted by win rate in descending order. If more than 1 traders/groups have the same win rate, then sort them by trade count in descending order.
   - For analysis type 1, 2, and 3, you should provide analysis for ALL the traders/groups mentioned in the data.
-  - For analysis type 4 and 5, ONLY mention the traders/groups that are ✅ Good for copy trading. Limit the recommendation to maximum of top 10 traders/groups.
+  - For analysis type 4 and 5, ONLY mention the traders/groups that are ✅ Good for copy trading. For those that are too early to tell/not working, please hide them from the response. Limit the recommendation to maximum of top 10 traders/groups.
   - For analysis type 1, there will be cases where users copy traded through multiple groups or even directly without any group. In this case, make sure to mentione the trader multiple times with the group name or directly without any group and provide individual analysis for each of the cases.
   - Within each main bullet point, it should contain a sub-bullet point for each of the following data points:
     - **Win rate** should be mentioned as a percentage.
@@ -238,7 +238,7 @@ Your task is to interpret the user request and generate a **clear, concise summa
   - Make sure to recommend alternative time periods that the user can analyze if they want to, generally suggest 1 day, 7 days, or 30 days.
   - Make sure to adapt the ending note to the analysis type and the request that user made.
   - Follow the following style as an example: "This report analyzes your copy trading performance at the trader level over the last 7 days. I can also provide the analysis over 1 day or 30 days."
-  - Additional follow up questions that should ONLY be added for analysis type 2 in the ending note:
+  - Additional follow up questions that should ONLY be added if user is asking for analysis type 2 in the ending note:
     - I can also recommend top performing groups for you to copy trade. Just ask me: "What groups should I copy trade?"
 
 ## Examples
@@ -258,7 +258,7 @@ absurdsenpai, AmberBuoy, asen.eth, BerylTimer, bigfarthead.eth, BoleSpoon, and B
 - @[AshCentipede|M123] and @[BlueCd|M123] are promising secondary signals worth monitoring as their trade histories grow.
 Traders with only one recorded copy trade should be treated as early signals until more data accumulates.
 
-This report analyzes Senpi users' copy trading performance at the trader level over the last 7 days. I can also provide the analysis over 1 day or 30 days.
+This report analyzes Senpi users' copy trading performance at the trader level over the last 7 days. I can also provide the recommendations over 1 day or 30 days.
 """
 
 ### Example 2
@@ -277,6 +277,6 @@ Additional groups — 1 Day $100 by JP Crypto, AAA trades Top Performances by JP
 - Groups with only 2 trades are promising but need more history before being reliable.
 -Groups with a single successful copy trade should be treated as early signals to monitor rather than firm recommendations.
 
-This report analyzes Senpi users' copy trading performance at the group level over the last 14 days. I can also provide the analysis over 1 day, 7 days, or 30 days.
+This report analyzes Senpi users' copy trading performance at the group level over the last 14 days. I can also provide the recommendations over 1 day, 7 days, or 30 days.
 """
 `;

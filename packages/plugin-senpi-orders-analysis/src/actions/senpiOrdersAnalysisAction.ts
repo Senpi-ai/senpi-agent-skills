@@ -124,8 +124,7 @@ export const senpiOrdersAnalysisAction: Action = {
                     ...data,
                     orderBy: GetUserGroupStatsOrRecommendationsOrderBy.WIN_RATE,
                     skip: 0,
-                    // If stats analysis, get all 100, otherwise recommendation just give top 10
-                    take: userOrGroupId ? 100 : 10,
+                    take: 100,
                 },
                 state.authorizationHeader as string,
                 traceId
