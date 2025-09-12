@@ -139,7 +139,7 @@ Here are example requests and their corresponding responses:
   "data": {
     "analysisType": "GROUP",
     "days": 7,
-    "userOrGroupId": "null"
+    "userOrGroupId": null
   },
   "error": null
 }
@@ -147,14 +147,12 @@ Here are example requests and their corresponding responses:
 
 9. What traders should I copy trade?
 
-1. Analyze my groups
-
 \`\`\`json
 {
   "data": {
     "analysisType": "USER",
     "days": 7,
-    "userOrGroupId": "userId"
+    "userOrGroupId": null
   },
   "error": null
 }
