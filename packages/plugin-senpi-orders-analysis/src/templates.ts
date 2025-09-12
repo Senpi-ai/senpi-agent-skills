@@ -268,8 +268,9 @@ Your task is to interpret the user request and generate a **clear, concise summa
   - Make sure to recommend alternative time periods that the user can analyze if they want to, generally suggest 1 day, 7 days, or 30 days.
   - Make sure to adapt the ending note to the analysis type and the request that user made.
   - Follow the following style as an example: "This report analyzes your copy trading performance at the trader level over the last 7 days. I can also provide the analysis over 1 day or 30 days."
-  - Additional follow up questions that should ONLY be added if user is asking for analysis type 2 in the ending note:
-    - I can also recommend top performing groups for you to copy trade. Just ask me: "What groups should I copy trade?"
+  - Additional follow up questions ONLY added for analysis type 1 and 2 in the ending note:
+    - For analysis type 1: 'I can also recommend top performing traders for you to copy trade. Just ask me: "What traders should I copy trade?"'
+    - For analysis type 2: 'I can also recommend top performing groups for you to copy trade. Just ask me: "What groups should I copy trade?"'
 
 ## Examples
 
