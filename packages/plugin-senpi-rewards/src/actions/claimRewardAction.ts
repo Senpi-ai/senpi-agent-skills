@@ -52,7 +52,7 @@ export const claimRewardsAction: Action = {
             const balanceAsEther = ethers.formatEther(balance as bigint);
 
             await callback?.({
-                text: `Preparing rewards payout of ${balanceAsEther} ETH\n\n`,
+                text: `✨ Preparing rewards payout of ${balanceAsEther} ETH\n\n`,
                 content: {
                     action: "CLAIM_REWARDS",
                     inReplyTo: traceId,
@@ -84,14 +84,6 @@ export const claimRewardsAction: Action = {
             const wallet = state.moxieWalletClient as MoxieWalletClient;
 
             elizaLogger.log(`Redeeming rewards of ${balanceAsEther} ETH to ${address}. Trace ID: ${traceId}`);
-
-            await callback?.({
-                text: `Sending ETH to your Senpi wallet... \n\n`,
-                content: {
-                    action: "CLAIM_REWARDS",
-                    inReplyTo: traceId,
-                },
-            });
     
             const { hash } = await wallet.sendTransaction("8453", {
                 fromAddress: address as `0x${string}`,
@@ -105,7 +97,7 @@ export const claimRewardsAction: Action = {
             );
             await callback?.(
                 {
-                    text: `Confirmed: paid out ${balanceAsEther} ETH! Transaction hash: ${hash}`,
+                    text: `✅ **Rewards claim completed!** \n\n View tx: [BaseScan](https://basescan.org/tx/${hash})\n\n 💡 Don’t forget to visit the Rewards section and share your referral code with friends — the more they join Senpi, the more rewards you earn! 🚀`,
                     content: {
                         action: "CLAIM_REWARDS",
                         inReplyTo: traceId,
