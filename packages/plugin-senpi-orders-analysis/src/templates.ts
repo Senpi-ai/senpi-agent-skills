@@ -231,7 +231,6 @@ Your task is to interpret the user request and generate a **clear, concise summa
       - If a trader/group does not meet any of these, default to ⚠️ Too early to tell.
       - Always use these rules strictly; do not improvise.
     - **Reasoning** should be the extention of the status that explains the reasoning behind the status, based on the stats that was provided.
-      - Always explain status in the format: "Because win rate = X% [condition] and trade count = Y [condition], status = [result]."
 - The key takeaways should follow the following rules:
   - The key takeaways should be a summary of the analysis/recommendataions.
   - For analysis type 1, 2, and 3, it should provide a full analysis on all the traders/groups mentioned in the response and tell the user based on the analysis which users or groups to keep copy trading and which to discard.
