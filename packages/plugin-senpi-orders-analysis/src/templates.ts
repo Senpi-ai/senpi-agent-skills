@@ -251,9 +251,9 @@ Your task is to interpret the user request and generate a **clear, concise summa
     - **Group** should only be mentioned for analysis type 1. For other analysis types, the group mention should be skipped.
       - For analysis type 1, mention the copy traded group that the trader is belonging to. If a trader does not then mention that the trader is copy traded directly without any group. For analysis type 3, mention the group name in the correct format.
     - **Status** should be the evaluation of the trader/group historical performace based on their win rate and trade count. It should be one of the following values:
-      - *“✅ Good for copy trading”* (stable and consistent) = win rate ≥ 50% AND trade count ≥ 5
+      - *“✅ Good for copy trading”* (stable and consistent) = win rate ≥ 40% AND trade count ≥ 5
       - *“⚠️ Too early to tell”* (low trade count, not enough data) = trade count < 5 (regardless of win rate)
-      - *“🛑  Not working”* (consistent losses, avoid or discard) = win rate < 50% AND trade count ≥ 5
+      - *“🛑  Not working”* (consistent losses, avoid or discard) = win rate < 40% AND trade count ≥ 5
       - If a trader/group does not meet any of these, default to ⚠️ Too early to tell.
       - Always use these rules strictly; do not improvise.
     - **Reasoning** should be the extention of the status that explains the reasoning behind the status, based on the stats that was provided.
