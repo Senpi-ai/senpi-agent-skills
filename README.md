@@ -31,7 +31,7 @@
 
 First, fork the repository and then clone it locally to your machine.
 
-Once you cloned the repository, you can setup your environment with the following scripts:
+Once you cloned the repository, you can set up your environment with the following scripts:
 
 ```bash
 cd moxie-agent-skills
@@ -40,7 +40,7 @@ pnpm install --no-frozen-lockfile && pnpm run && pnpm start
 ```
 
 Once the agent is running, you should see the message to run "pnpm start:client" at the end.
-Open another terminal and move to same directory and then run below command and follow the URL to chat to your agent.
+Open another terminal and move to the same directory and then run command below and follow the URL to chat to your agent.
 
 ```bash
 pnpm start:client
@@ -62,7 +62,7 @@ Then, using the template under the `packages/_examples/plugin` folder, you can c
 pnpm create:skills plugin-<skills-name>
 ```
 
-To learn more on how to create your first skill, you can follow this tutorial [here](https://developer.moxie.xyz/creator-agents-and-skills-marketplace/quickstart/create-your-first-skill).
+To learn more about how to create your first skill, you can follow this tutorial [here](https://developer.moxie.xyz/creator-agents-and-skills-marketplace/quickstart/create-your-first-skill).
 
 For further customization, you can refer to the Eliza docs [here](https://elizaos.github.io/eliza/docs/packages/plugins/#available-plugins) as AI Agent Skills are simply Eliza Plugins with additional functionalities.
 
@@ -78,11 +78,11 @@ For further customization, you can refer to the Eliza docs [here](https://elizao
 }
 ```
 
-3. Place image for your AI Agent Skill to be displayed Skills Marketplace under `packages/plugin-<skills-name>/images/logo.png` with size 400x400 px.
+3. Place an image for your AI Agent Skill to be displayed Skills Marketplace under `packages/plugin-<skills-name>/images/logo.png` with size 400x400 px.
 
 ### Register Your Skills to Senpi
 
-Once you completed development on your skills, you can register your skills to the Skills Marketplace by the following steps:
+Once you've completed development on your skills, you can register your skills in the Skills Marketplace by following these steps:
 
 1. Add your AI Agent Skills to the Skills Registry in [`registry/src/skills.json`](./registry/src/skills.json) with the following fields and corresponding types:
 
@@ -114,7 +114,7 @@ interface Skills {
 }
 ```
 
-2.  If your AI Agent Skill require environment variable for production purpose, then fill in [this form](https://forms.gle/8hzDyCVKKLs4MkTEA) to request submission. The Senpi team shall directly reach out to you either through **Email** ([support@airstack.xyz](mailto:support@airstack.xyz)) or **Farcaster** (group chat) for submission.
+2.  If your AI Agent Skill requires an environment variable for production purposes, then fill in [this form](https://forms.gle/8hzDyCVKKLs4MkTEA) to request submission. The Senpi team shall directly reach out to you either through **Email** ([support@airstack.xyz](mailto:support@airstack.xyz)) or **Farcaster** (group chat) for submission.
 
 3.  Lastly, commit all the changes you made on your branches and create a new [PR](https://github.com/moxie-protocol/moxie-agent-skills/pulls) to the repository's `main` branch. <br /><br />Before requesting for review, make sure that you have fulfilled all the requirements in the [pre-launch checklist](./PRELAUNCH_CHECKLIST.md).<br/><br />The Senpi team will review the newly created AI Agent Skills and once merged, your Skills will automatically be registered to the Skills Marketplace where it's accessible for Senpi users to use.
 
@@ -128,3 +128,4 @@ interface Skills {
 <a href="https://github.com/moxie-protocol/moxie-agent-skills/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=moxie-protocol/moxie-agent-skills" />
 </a>
+
