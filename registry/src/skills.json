@@ -5,53 +5,32 @@
         "displayName": "Autonomous Trading",
         "version": "0.1.8+build.1",
         "author": "Senpi",
-        "description": "Have Senpi automatically buy and sell tokens for you when specific conditions are met!",
+        "description": "Have Senpi automatically buy and sell tokens for you when specific conditions are met! Set profit and loss targets with ladders.",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-moxie-autonomous-trading",
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/feat/trading-automations/packages/plugin-moxie-autonomous-trading/images/logo.svg",
         "settings": {},
         "capabilities": [
+            "Copy Trade a group of traders",
             "Copy Trade specific user(s)",
-            "Copy Trade a group",
             "Buy when they buy + Sell when they sell",
-            "Buy when they buy + Sell when price achieved",
+            "Buy when they buy + Sell on price targets",
+            "Buy when they buy + Sell on price targets + Stop Loss",
+            "Buy when they buy + Sell on price targets + Stop Loss + Ladders",
             "Buy when they buy, but only if marketcap is within specific range",
-            "Buy when they buy, buy only if token was created within specific range",
-            "**New! Set stop loss!**",
-            "Sophisticated combinations",
-            "Notes:",
-            "You can view all your open Auto-Trade rules in the Autonomous Trades section of the dashboard",
-            "The Orders page also includes a tab for executed Auto-Trades",
-            "“Sell when they sell” will currently sell 100% of your tokens purchased in the auto-trade when they sell 50% of theirs. You’ll be able to adjust these settings in a future release.",
-            "Stop loss will attempt to sell 5 times once the target is achieved. Actual sale price may vary somewhat from target on extremely volatile tokens."
+            "Buy when they buy, buy only if token was created within specific range"
         ],
         "starterQuestions": [
             {
-                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%.",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, buy me $100 of it. Set stop loss to 10%."
+                "label": "If anyone in #copytrade buys a token for >$500, buy me $50 of it. Then sell 20% for 10% gain, sell 20% for 25% gain, sell 20% for 50% gain, sell 20% for 75% gain. Set stop loss at -30%. Marketcap between $50k and $500M.",
+                "value": "If anyone in #[copytrade|COPYTRADE_ID] buys a token for >$500, buy me $50 of it. Then sell 20% for 10% gain, sell 20% for 25% gain, sell 20% for 50% gain, sell 20% for 75% gain. Set stop loss at -30%. Marketcap between $50k and $500M."
             },
             {
-                "label": "If any 2 people in #copytrade buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%.",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it for 30% profit. Set stop loss at 10%."
+                "label": "If any 2 people in #copytrade buys >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell 50% for 30% profit, sell 50% for 100% profit. Set stop loss at -30%.  Minimum marketcap of $50k. ",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buys >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell 50% for 30% profit, sell 50% for 100% profit. Set stop loss at -30%.  Minimum marketcap of $50k. "
             },
             {
-                "label": "If any 2 people in #copytrade buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%.",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$2000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when 1 of them sell 50%. Set stop loss to 10%."
-            },
-            {
-                "label": "If any 2 people in #copytrade buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set stop loss to 10%.",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$4000 of a token within 10 minutes of each other, buy me $100 of it, and then sell all of it when any 1 of them sell 50% OR when it increases by 50%. Set stop loss to 10%. Set target to 0%."
-            },
-            {
-                "label": "If any 3 people in #copytrade buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%.",
-                "value": "If any 3 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 15 minutes of each other, and it is <$1M marketcap, buy me $100 of it, and then sell all of it when any 2 of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
-            },
-            {
-                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it is between $100k-$500k marketcap, buy me $100 of it, and then sell all of it when any of them sell 50% OR when it increases by 50%. Set stop loss to 10%."
-            },
-            {
-                "label": "If any 2 people in #copytrade buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buy >$500 of a token within 10 minutes of each other, and it was created <24 hours ago, buy me $100 of it, and then sell when they sell. Set stop loss to 10%"
+                "label": "If @jessepollak buys a token for >$1000, buy me $100 of it. Then sell when they sell. Sell 50% for 50% profit, sell 50% for 100% profit. Set stop loss at -40%.",
+                "value": "If @[jessepollak|M1245] buys a token for >$1000, buy me $100 of it. Then sell when they sell. Sell 50% for 50% profit, sell 50% for 100% profit. Set stop loss at -40%."
             }
         ],
         "mediaUrls": [
