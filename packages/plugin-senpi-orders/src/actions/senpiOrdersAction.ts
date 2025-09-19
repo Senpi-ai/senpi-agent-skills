@@ -1216,6 +1216,7 @@ async function handleSellQuantity(
             );
             await callback({
                 text: `⚠️ Insufficient ${extractedSellTokenSymbol} balance. \n Current balance: ${ethers.formatUnits(currentSellTokenBalanceInWEI, extractedSellTokenDecimals)} ${extractedSellTokenSymbol} \n Required amount: ${ethers.formatUnits(sellQuantityInWEI, extractedSellTokenDecimals)} ${extractedSellTokenSymbol} \n Please top up with ${ethers.formatUnits(sellQuantityInWEI - BigInt(currentSellTokenBalanceInWEI), extractedSellTokenDecimals)} ${extractedSellTokenSymbol} to proceed.\n`,
+                cta: "FUND_WALLET",
             });
             return {swapInput: undefined, error: true};
         }
@@ -1261,6 +1262,7 @@ async function handleSellQuantity(
             );
             await callback({
                 text: `⚠️ Insufficient ${extractedSellTokenSymbol} balance. \n Current balance: ${ethers.formatUnits(currentSellTokenBalanceInWEI, extractedSellTokenDecimals)} ${extractedSellTokenSymbol} \n Required amount: ${ethers.formatUnits(sellQuantityInWEI, extractedSellTokenDecimals)} ${extractedSellTokenSymbol} \n Please top up with ${ethers.formatUnits(sellQuantityInWEI - BigInt(currentSellTokenBalanceInWEI), extractedSellTokenDecimals)} ${extractedSellTokenSymbol} to proceed.\n`,
+                cta: "FUND_WALLET",
             });
             return {swapInput: undefined, error: true};
         }
@@ -2166,6 +2168,7 @@ async function performBalanceCheck(
         );
         await callback?.({
             text: `⚠️ Insufficient ${extractedSellTokenSymbol} balance for ${sellOrderType} order.\n`,
+            cta: "FUND_WALLET",
         });
         return true;
     } else if (transaction.balance.type === BalanceType.QUANTITY && triggerBalanceValue > formattedTokenBalance) {
@@ -2175,6 +2178,7 @@ async function performBalanceCheck(
         );
         await callback?.({
             text: `⚠️ Insufficient ${extractedSellTokenSymbol} balance for ${sellOrderType} order. \n&nbsp;\nBalance: ${formattedTokenBalance} ${extractedSellTokenSymbol}\nRequired amount: ${triggerBalanceValue} ${extractedSellTokenSymbol}\n`,
+            cta: "FUND_WALLET",
         });
         return true;
     }
