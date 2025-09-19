@@ -501,3 +501,6 @@ export async function getGroupDetails(
         throw new Error(`AERR201: Error fetching groups: ${error.message}`);
     }
 }
+
+export const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
