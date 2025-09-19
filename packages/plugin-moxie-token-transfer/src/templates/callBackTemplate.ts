@@ -28,6 +28,7 @@ export const APPLICATION_ERROR_WITH_ERR_MESSAGE = (error: string) => {
         content: {
             action: "TOKEN_TRANSFER",
         },
+        cta: "FUND_WALLET",
     };
 }
 
