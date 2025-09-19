@@ -125,7 +125,7 @@ export const autonomousTradingAction: Action = {
             // read moxieUserInfo from state
             const agentWallet = state.agentWallet as MoxieClientWallet;
 
-            if (!agentWallet) {
+            if (!agentWallet || !agentWallet?.delegated) {
                 elizaLogger.error(
                     traceId,
                     `[AUTONOMOUS_TRADING] [${moxieUserId}] [AUTONOMOUS_TRADING] agentWallet not found`
