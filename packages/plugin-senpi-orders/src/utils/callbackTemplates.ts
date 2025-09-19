@@ -3,6 +3,7 @@ import { formatTokenMention } from "@moxie-protocol/moxie-agent-lib";
 
 export const insufficientEthBalanceTemplate = {
     text: `\nInsufficient ETH balance to complete this transaction. Please add more ETH to your wallet to cover gas fees.`,
+    cta: "FUND_WALLET",
 };
 
 export const swapOperationFailedTemplate = (error: Error) => ({

@@ -28,8 +28,9 @@ export const APPLICATION_ERROR_WITH_ERR_MESSAGE = (error: string) => {
         content: {
             action: "TOKEN_TRANSFER",
         },
+        cta: "FUND_WALLET",
     };
-}
+};
 
 export const CREATOR_NOT_FOUND = (creatorId: string) => {
     return {
@@ -81,6 +82,9 @@ export const TRANSACTION_VERIFICATION_TIMEOUT = (txnHash: string) => {
 };
 
 export const TRANSACTION_SUBMISSION_FAILED = (reason?: string) => {
+    const isInsufficientFunds = reason
+        ?.toLowerCase()
+        .includes("insufficient funds");
     return {
         text: reason
             ? `\nTransaction submission failed. Reason: ${reason}. Please try again.`
@@ -88,5 +92,10 @@ export const TRANSACTION_SUBMISSION_FAILED = (reason?: string) => {
         content: {
             action: "TOKEN_TRANSFERS",
         },
+        ...(isInsufficientFunds
+            ? {
+                  cta: "FUND_WALLET",
+              }
+            : {}),
     };
 };
