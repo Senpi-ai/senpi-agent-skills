@@ -33,6 +33,7 @@ import {
     checkUserCommunicationPreferences,
     Condition,
     ETH_ADDRESS,
+    ZERO_ADDRESS,
 } from "../utils/utility";
 import { autonomousTradingTemplate } from "../templates";
 import { validate } from "uuid";
@@ -588,11 +589,10 @@ export const autonomousTradingAction: Action = {
                 const { tokenBalances }: Portfolio =
                     state?.agentWalletBalance as Portfolio;
                 const ethBalance = tokenBalances.filter(
-                    (t) =>
-                        t.token.baseToken.address.toLowerCase() ===
-                            "0x0000000000000000000000000000000000000000".toLowerCase() ||
-                        t.token.baseToken.address.toLowerCase() ===
-                            ETH_ADDRESS.toLowerCase()
+                    (t) => [
+                        ZERO_ADDRESS.toLowerCase(),
+                        ETH_ADDRESS.toLowerCase()
+                    ].includes(t.token.baseToken.address.toLowerCase())       
                 );
 
                 const totalEthBalanceUSD = ethBalance.reduce(
