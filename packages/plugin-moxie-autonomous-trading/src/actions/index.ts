@@ -115,6 +115,7 @@ export const autonomousTradingAction: Action = {
         const traceId = message.id;
         const moxieUserInfo = state.moxieUserInfo as MoxieUser;
         const moxieUserId = moxieUserInfo.id;
+        const cta = [];
 
         try {
             elizaLogger.debug(
@@ -130,8 +131,7 @@ export const autonomousTradingAction: Action = {
                     traceId,
                     `[AUTONOMOUS_TRADING] [${moxieUserId}] [AUTONOMOUS_TRADING] agentWallet not found`
                 );
-                await callback?.(agentWalletNotFound);
-                return true;
+                cta.push("FUND_WALLET");
             }
 
             const walletClient = state.moxieWalletClient as MoxieWalletClient;
@@ -577,13 +577,14 @@ export const autonomousTradingAction: Action = {
                     stopLossParams
                 );
 
+                if (communicationPreference === null) {
+                    cta.push("SETUP_ALERTS");
+                }
+
                 await callback?.({
                     text: `✅ Automation Rule Created Successfully!\n\n📌 Instruction: ${response.instructions}`,
                     action: "AUTONOMOUS_TRADING",
-                    cta:
-                        communicationPreference === null
-                            ? "SETUP_ALERTS"
-                            : null,
+                    cta,
                 });
             } catch (error) {
                 elizaLogger.error(
