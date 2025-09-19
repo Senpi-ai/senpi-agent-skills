@@ -16,6 +16,7 @@ import {
     MoxieUser,
     MoxieWalletClient,
     formatUserMention,
+    Portfolio,
 } from "@moxie-protocol/moxie-agent-lib";
 import {
     BaseParams,
@@ -31,6 +32,7 @@ import {
     moxieWalletClientNotFound,
     checkUserCommunicationPreferences,
     Condition,
+    ETH_ADDRESS,
 } from "../utils/utility";
 import { autonomousTradingTemplate } from "../templates";
 import { validate } from "uuid";
@@ -577,13 +579,35 @@ export const autonomousTradingAction: Action = {
                     stopLossParams
                 );
 
+                const cta = [];
+
+                if (communicationPreference === null) {
+                    cta.push("SETUP_ALERTS");
+                }
+
+                const { tokenBalances }: Portfolio =
+                    state?.agentWalletBalance as Portfolio;
+                const ethBalance = tokenBalances.filter(
+                    (t) =>
+                        t.token.baseToken.address.toLowerCase() ===
+                            "0x0000000000000000000000000000000000000000".toLowerCase() ||
+                        t.token.baseToken.address.toLowerCase() ===
+                            ETH_ADDRESS.toLowerCase()
+                );
+
+                const totalEthBalanceUSD = ethBalance.reduce(
+                    (sum, token) => sum + token.token.balanceUSD,
+                    0
+                );
+
+                if (totalEthBalanceUSD < params.amountInUSD) {
+                    cta.push("FUND_WALLET");
+                }
+
                 await callback?.({
                     text: `✅ Automation Rule Created Successfully!\n\n📌 Instruction: ${response.instructions}`,
                     action: "AUTONOMOUS_TRADING",
-                    cta:
-                        communicationPreference === null
-                            ? "SETUP_ALERTS"
-                            : null,
+                    cta,
                 });
             } catch (error) {
                 elizaLogger.error(
