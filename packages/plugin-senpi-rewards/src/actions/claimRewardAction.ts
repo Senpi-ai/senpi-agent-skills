@@ -10,7 +10,7 @@ import {
 import { MoxieWalletClient } from "@moxie-protocol/moxie-agent-lib/src/wallet";
 import { encodeFunctionData} from "viem";
 
-import { getRewardBalance } from "../utils/balance";
+import { getNativeTokenBalance, getRewardBalance } from "../utils/balance";
 import { ethers } from "ethers";
 
 export const claimRewardsAction: Action = {
@@ -41,6 +41,16 @@ export const claimRewardsAction: Action = {
             if (!balance || balance === 0) {
                 await callback?.({
                     text: `🥷 Check back every Tuesday to claim your rewards! Earn more rewards by inviting friends and creating top performing groups. ⚡️`,
+                    action: "CLAIM_REWARDS",
+                });
+                return;
+            }
+
+            // get eth balance of the wallet
+            const ethBalance = await getNativeTokenBalance(address as `0x${string}`);
+            if (!ethBalance) {
+                await callback?.({
+                    text: `⚠️ Failed to claim rewards - please fund your wallet with Base ETH and try again.`,
                     action: "CLAIM_REWARDS",
                 });
                 return;

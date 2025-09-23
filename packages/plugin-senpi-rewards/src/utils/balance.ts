@@ -1,7 +1,8 @@
 import { createPublicClient } from "viem";
 import { http } from "viem";
 import { base } from "viem/chains";
-
+import { elizaLogger } from "@moxie-protocol/core";
+import { ethers } from "ethers";
 
 export const getRewardBalance = async (
     address: `0x${string}`
@@ -45,3 +46,16 @@ export const getRewardBalance = async (
         return null;
     }
 };
+
+
+export async function getNativeTokenBalance(walletAddress: string) {
+    try {
+        // Using Base mainnet RPC URL
+        const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
+        const balanceWEI = await provider.getBalance(walletAddress);
+        return balanceWEI.toString()
+    } catch (error) {
+        elizaLogger.error('Error fetching native token balance:', error);
+        throw error;
+    }
+}
