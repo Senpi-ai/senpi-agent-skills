@@ -48,7 +48,7 @@ export const claimRewardsAction: Action = {
 
             // get eth balance of the wallet
             const ethBalance = await getNativeTokenBalance(address as `0x${string}`);
-            if (!ethBalance) {
+            if (!ethBalance || ethBalance === "0") {
                 await callback?.({
                     text: `⚠️ Failed to claim rewards - please fund your wallet with Base ETH and try again.`,
                     action: "CLAIM_REWARDS",
