@@ -17,7 +17,9 @@ Please analyze the user's request and provide a detailed breakdown of the transa
    - Note any specific quantities, percentages, or dollar amounts mentioned
    - Highlight any ambiguities or potential misunderstandings
 
-3. Token Identification: List all tokens mentioned, including both symbol and address (if available) for each token. Specify their roles (sell/buy) and any associated quantities or percentages.
+3. Token Identification: List all tokens mentioned, including both symbol and address (if available) for each token. Specify their roles (sell/buy) and any associated quantities or percentages. 
+   - If the action involves a swap and the intent is to buy a token but no sell token is specified, default the sell token to ETH.
+   - If the action involves a swap and the intent is to sell a token but no buy token is specified, default the buy token to ETH.
 
 4. Action Type Classification: Categorize the main action(s) into one or more of the following:
    - SWAP: Immediate buy or sell of token(s)
