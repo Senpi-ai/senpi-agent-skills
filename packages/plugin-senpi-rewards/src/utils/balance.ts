@@ -49,7 +49,7 @@ export const getRewardBalance = async (
 };
 
 
-export async function getNativeTokenBalance(walletAddress: string) {
+export async function getNativeTokenBalance(walletAddress: string): Promise<bigint> {
     try {
         // Using Base mainnet RPC URL
         const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
@@ -59,7 +59,7 @@ export async function getNativeTokenBalance(walletAddress: string) {
                 elizaLogger.debug(`[getNativeTokenBalance] Attempt ${attempt} of 3`);
                 const balanceWEI = await provider.getBalance(walletAddress);
                 elizaLogger.debug(`[getNativeTokenBalance] Balance of ${walletAddress} is ${balanceWEI.toString()}`);
-                return balanceWEI.toString();
+                return balanceWEI;
             } catch (error) {
                 elizaLogger.error(`[getNativeTokenBalance] Error: ${error}`);
                 throw error;
