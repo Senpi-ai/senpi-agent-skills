@@ -1,39 +1,60 @@
-# Sample Plugin for Eliza
+# Earlybirds Plugin for Eliza
 
-The Sample Plugin for Eliza extends the functionality of the Eliza platform by providing additional actions, providers, evaluators, and more. This plugin is designed to be easily extendable and customizable to fit various use cases.
+The Earlybirds Plugin for Eliza identifies early buyers of specified tokens and creates groups to track their trading activity. This plugin helps users discover and monitor the trading patterns of early adopters across multiple tokens.
 
 ## Description
 
-The Sample Plugin offers a set of features that can be integrated into the Eliza platform to enhance its capabilities. Below is a high-level overview of the different components available in this plugin.
+The Earlybirds Plugin analyzes token trading data to find users who were among the first to buy specific tokens. It uses Dune Analytics to query blockchain data and identify early buyers, then creates groups to track their future trading activity for strategy triggers.
+
+## Features
+
+- **Token Analysis**: Accepts 2-4 Ethereum token addresses for analysis
+- **Early Buyer Detection**: Identifies the first 200 buyers of specified tokens
+- **Group Creation**: Automatically creates groups of early buyers for monitoring
+- **Trading Strategy Integration**: Enables watching early buyer trades to trigger strategies
 
 ## Actions
 
-- **createResourceAction**: This action enables the creation and management of generic resources. It can be customized to handle different types of resources and integrate with various data sources.
+- **EARLYBIRD**: The main action that identifies early buyers of specified tokens and creates monitoring groups
 
-## Providers
+### Action Details
 
-- **sampleProvider**: This provider offers a mechanism to supply data or services to the plugin. It can be extended to include additional providers as needed.
+The `EARLYBIRD` action:
+1. Accepts 2-4 token addresses in the format `$[tokenSymbol|0x...]`
+2. Queries Dune Analytics to find the first 200 buyers of each token
+3. Identifies mutual early buyers across the specified tokens
+4. Creates a group with these early buyers for ongoing monitoring
+5. Provides a callback to add all identified early buyers to the group
 
-## Evaluators
+### Usage Examples
 
-- **sampleEvaluator**: This evaluator provides a way to assess or analyze data within the plugin. It can be extended to include additional evaluators as needed.
+```
+What are the earlybirds of the tokens $[WETH|0x4200000000000000000000000000000000000006] and $[USDC|0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48]?
+```
 
-## Services
+## Dependencies
 
-- **[ServiceName]**: Description of the service and its functionality. This can be extended to include additional services as needed.
+- **Dune Analytics**: For querying blockchain trading data
+- **OpenAI**: For processing and formatting responses
+- **Ethers**: For Ethereum address validation
+- **GraphQL Request**: For API communications
 
-## Clients
+## Configuration
 
-- **[ClientName]**: Description of the client and its functionality. This can be extended to include additional clients as needed.
+The plugin requires the following environment variables:
+- `DUNE_API_KEY`: API key for Dune Analytics
+- `OPENAI_API_KEY`: API key for OpenAI
 
-## How to Extend
+## Integration
 
-To extend the Sample Plugin, you can add new actions, providers, evaluators, services, and clients by following the structure provided in the plugin. Each component can be customized to fit your specific requirements.
+This plugin integrates with:
+- **Moxie Groups Plugin**: For creating and managing early buyer groups
+- **Moxie Agent Library**: For user management and state handling
+- **Eliza Core**: For action processing and response generation
 
-1. **Actions**: Add new actions by defining them in the `actions` array.
-2. **Providers**: Add new providers by defining them in the `providers` array.
-3. **Evaluators**: Add new evaluators by defining them in the `evaluators` array.
-4. **Services**: Add new services by defining them in the `services` array.
-5. **Clients**: Add new clients by defining them in the `clients` array.
+## Technical Details
 
-For more detailed information on how to extend the plugin, refer to the documentation provided in the Eliza platform.
+- Processes up to 200 early buyers per token
+- Supports 2-4 tokens per analysis
+- Creates uniquely named groups based on token symbols
+- Provides real-time callback responses for group creation
