@@ -7,6 +7,7 @@
     "dependencies": {
         "@moxie-protocol/core": "workspace:*",
         "@moxie-protocol/moxie-agent-lib": "workspace:*",
+        "async-retry": "^1.3.3",
         "ethers": "^6.0.0"
     },
     "devDependencies": {
