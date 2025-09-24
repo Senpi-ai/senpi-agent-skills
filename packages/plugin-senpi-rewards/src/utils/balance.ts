@@ -52,8 +52,23 @@ export async function getNativeTokenBalance(walletAddress: string) {
     try {
         // Using Base mainnet RPC URL
         const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
-        const balanceWEI = await provider.getBalance(walletAddress);
-        return balanceWEI.toString()
+
+        let retries = 3;
+        let delay = 1000;
+        
+        while (retries > 0) {
+            try {
+                const balanceWEI = await provider.getBalance(walletAddress);
+                return balanceWEI.toString();
+            } catch (error) {
+                retries--;
+                if (retries === 0) throw error;
+
+                // Wait with exponential backoff before retrying
+                await new Promise((resolve) => setTimeout(resolve, delay));
+                delay *= 2; // Double the delay for next retry
+            }
+        }
     } catch (error) {
         elizaLogger.error('Error fetching native token balance:', error);
         throw error;
