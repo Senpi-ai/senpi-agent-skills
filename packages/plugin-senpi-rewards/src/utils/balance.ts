@@ -3,6 +3,7 @@ import { http } from "viem";
 import { base } from "viem/chains";
 import { elizaLogger } from "@moxie-protocol/core";
 import { ethers } from "ethers";
+import retry from "async-retry";
 
 export const getRewardBalance = async (
     address: `0x${string}`
@@ -53,22 +54,21 @@ export async function getNativeTokenBalance(walletAddress: string) {
         // Using Base mainnet RPC URL
         const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
 
-        let retries = 3;
-        let delay = 1000;
-        
-        while (retries > 0) {
+        const result = await retry(async (_, attempt) => {
             try {
+                elizaLogger.debug(`[getNativeTokenBalance] Attempt ${attempt} of 3`);
                 const balanceWEI = await provider.getBalance(walletAddress);
+                elizaLogger.debug(`[getNativeTokenBalance] Balance of ${walletAddress} is ${balanceWEI.toString()}`);
                 return balanceWEI.toString();
             } catch (error) {
-                retries--;
-                if (retries === 0) throw error;
-
-                // Wait with exponential backoff before retrying
-                await new Promise((resolve) => setTimeout(resolve, delay));
-                delay *= 2; // Double the delay for next retry
+                elizaLogger.error(`[getNativeTokenBalance] Error: ${error}`);
+                throw error;
+            }}, {
+                retries: 3,
+                factor: 2,
             }
-        }
+        );
+        return result;
     } catch (error) {
         elizaLogger.error('Error fetching native token balance:', error);
         throw error;
