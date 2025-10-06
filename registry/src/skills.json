@@ -988,5 +988,27 @@
             "Sneaking into the market dojo"
         ],
         "orderIndex": 18
+    },
+    {
+        "pluginId": "e7cec202-7d63-4f19-aa1e-d7543e87c05c",
+        "name": "plugin-earlybirds",
+        "displayName": "plugin-earlybirds",
+        "version": "0.0.1",
+        "author": null,
+        "description": "Execute earlybird action to get the early buyers of a set of tokens",
+        "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-earlybirds",
+        "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-earlybirds/images/logo.png",
+        "settings": {},
+        "capabilities": [],
+        "starterQuestions": [],
+        "mediaUrls": [],
+        "actions": [],
+        "isPremium": false,
+        "freeQueries": 0,
+        "skillCoinAddress": "",
+        "minimumSkillBalance": 0,
+        "status": "ACTIVE",
+        "isDefault": false,
+        "loaders": []
     }
 ]
