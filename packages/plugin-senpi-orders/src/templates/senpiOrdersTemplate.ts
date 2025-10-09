@@ -17,7 +17,7 @@ Please analyze the user's request and provide a detailed breakdown of the transa
    - Note any specific quantities, percentages, or dollar amounts mentioned
    - Highlight any ambiguities or potential misunderstandings
 
-3. Token Identification: List all tokens mentioned, including both symbol and address (if available) for each token. Specify their roles (sell/buy) and any associated quantities or percentages. 
+3. Token Identification: List all tokens mentioned, including both symbol and address (if available) for each token. Specify their roles (sell/buy) and any associated quantities or percentages.
    - If the action involves a swap and the intent is to buy a token but no sell token is specified, default the sell token to ETH.
    - If the action involves a swap and the intent is to sell a token but no buy token is specified, default the buy token to ETH.
 
@@ -25,10 +25,14 @@ Please analyze the user's request and provide a detailed breakdown of the transa
    - SWAP: Immediate buy or sell of token(s)
    - SWAP_SL: Execute a swap and set a stop-loss simultaneously (only for buy operations)
    - SWAP_LO: Execute a swap and set a sell limit order (only for buy operations)
+   - SWAP_DYNAMIC_SL: Execute a swap and set a dynamic stop-loss (only for buy operations)
    - SWAP_SL_LO: Execute a swap, set a stop-loss, and a limit order (only for buy operations)
+   - SWAP_DYNAMIC_SL_LO: Execute a swap, set a dynamic stop-loss, and a limit order (only for buy operations)
    - LO: Limit Order (buy at a lower price or sell at a higher target price)
    - SL: Stop-Loss (sell if price drops below a threshold)
    - SL_LO: Set both stop-loss and limit order on currently held token
+   - SL_DYNAMIC_SL: Set both stop-loss and dynamic stop-loss on currently held token
+   - SL_DYNAMIC_SL_LO: Set both stop-loss, dynamic stop-loss, and limit order on currently held token
 
 5. Transaction Detail Extraction: Extract all relevant information, including:
    - Token symbols and addresses
@@ -91,7 +95,7 @@ For successful interpretation:
 \`\`\`json
 {
   "success": true,
-  "action": "SWAP" | "SWAP_SL" | "SWAP_LO" | "SWAP_SL_LO" | "LO" | "SL" | "SL_LO",
+  "action": "SWAP" | "SWAP_SL" | "SWAP_LO" | "SWAP_SL_LO" | "SWAP_DYNAMIC_SL" | "SWAP_DYNAMIC_SL_LO" | "LO" | "SL" | "SL_LO" | "SL_DYNAMIC_SL" | "SL_DYNAMIC_SL_LO",
   "is_followup": true | false,
   "transactions": [
     {
