@@ -142,7 +142,7 @@ export const senpiOrdersAction = {
                     `[senpiOrders] [${moxieUserId}] [senpiOrdersAction] Processing transactions for tokenAddress: ${tokenAddress}`
                 );
 
-                const { extractedTokenSymbol, extractedTokenAddress, extractedTokenDecimals } = await extractTokenDetailsAndDecimalsWithCache(
+                const { extractedTokenSymbol, extractedTokenAddress } = await extractTokenDetailsAndDecimalsWithCache(
                     tokenAddress,
                     traceId,
                     moxieUserId,
@@ -388,7 +388,7 @@ async function handleAgentWalletErrors(agentWallet: MoxieClientWallet | undefine
 
 async function generateSenpiOrders(runtime: IAgentRuntime, context: any, traceId: string, moxieUserId: string, callback?: any, messageId?: string): Promise<{senpiOrders: SenpiOrdersResponse | null, error: boolean}> {
 
-    let error = false;
+    const error = false;
 
     const senpiOrders = (await generateObjectDeprecated({
         runtime,
@@ -602,7 +602,7 @@ async function handleOrderCreationResult(
     let hadSwapErrors = false;
     let hadStopLossErrors = false;
     let hadLimitOrderErrors = false;
-    let errors = [];
+    const errors = [];
 
     if (!result.success) {
         hadErrors = true;
@@ -684,7 +684,7 @@ async function handleOrderCreationResult(
                     `[senpiOrders] [${moxieUserId}] [handleOrderCreationResult] Stop loss order not created: ${JSON.stringify(output)}`
                 );
             }
-            
+
         });
 
         await callback?.({
@@ -861,7 +861,7 @@ async function handleBuyQuantity(
         `[senpiOrders] [${moxieUserId}] [handleBuyQuantity] buyQuantity: ${buyQuantity}`
     );
 
-    let error = false;
+    const error = false;
     let swapInput: SwapInput | undefined;
 
     let buyQuantityInWEI = ethers.parseUnits(buyQuantity.toString(), extractedBuyTokenDecimals);
@@ -1168,7 +1168,7 @@ async function handleSellQuantity(
         `[senpiOrders] [${moxieUserId}] [handleSellQuantity] sellQuantity: ${sellQuantity}`
     );
 
-    let error = false;
+    const error = false;
     let swapInput: SwapInput | undefined;
 
     if (valueType && valueType == USD && extractedSellTokenAddress != USDC_ADDRESS) {
@@ -1369,7 +1369,7 @@ async function handleBalanceBasedSwap(
     );
 
     let swapInput: SwapInput | undefined;
-    let error = false;
+    const error = false;
     let quantityInWEI: bigint;
 
     try {
@@ -1708,9 +1708,9 @@ async function handleSellOrder(
     callback?: any,
 ): Promise<{stopLossInput: OpenOrderInput[], limitOrderInput: OpenOrderInput[], error: boolean}> {
 
-    let stopLossInput: OpenOrderInput[] = [];
-    let limitOrderInput: OpenOrderInput[] = [];
-    let error = false;
+    const stopLossInput: OpenOrderInput[] = [];
+    const limitOrderInput: OpenOrderInput[] = [];
+    const error = false;
 
     const valid = await validateSellOrder(transaction, traceId, moxieUserId, callback);
     if (!valid) {
@@ -1721,8 +1721,8 @@ async function handleSellOrder(
         return {stopLossInput: [], limitOrderInput: [], error: true};
     }
 
-    let triggerPrice = Math.abs(Number(transaction.triggerPrice));
-    let triggerBalanceValue = Number(transaction.balance.value);
+    const triggerPrice = Math.abs(Number(transaction.triggerPrice));
+    const triggerBalanceValue = Number(transaction.balance.value);
 
     if ((extractedSellTokenSymbol === ETH && transaction.orderType !== OrderType.LIMIT_ORDER_BUY) ||
             (extractedBuyTokenSymbol === ETH && transaction.orderType === OrderType.LIMIT_ORDER_BUY)) {
@@ -2227,8 +2227,8 @@ function validatePriceConditions(transaction: any, triggerPrice: number, sellTok
             errorMessage = "⚠️ Limit Sell order price is lower than current price. Please set a higher value and try again.\n";
         }
     } else if (transaction.triggerType == TriggerType.VALUE_PRICE_DROP || transaction.triggerType == TriggerType.VALUE_PRICE_INCREASE) {
-        let stopLossPrice = sellTokenPriceInUSD - Number(transaction.triggerPrice);
-        let limitOrderPrice = sellTokenPriceInUSD + Number(transaction.triggerPrice);
+        const stopLossPrice = sellTokenPriceInUSD - Number(transaction.triggerPrice);
+        const limitOrderPrice = sellTokenPriceInUSD + Number(transaction.triggerPrice);
 
         if (stopLossPrice <= 0 && transaction.orderType == OrderType.STOP_LOSS) {
             errorMessage = "⚠️ Stop Loss higher than the current price. Please set a lower value and try again. \n";

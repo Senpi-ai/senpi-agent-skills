@@ -76,6 +76,7 @@ export interface AutonomousTradingRuleParams {
     stopLossDurationInSec?: number;
     stopLossOrders?: StopLossOrder[];
     limitOrders?: LimitOrder[];
+    isDynamicStopLossEnabled?: boolean;
 }
 
 export interface AutonomousTradingError {
@@ -236,7 +237,7 @@ export const autonomousTradingAction: Action = {
                     }
                 }
                 if (totalSellPercentage > 100) {
-                    callback?.({ 
+                    callback?.({
                         text: `The sum of sell percentages in stop loss orders must not exceed 100%.`,
                         action: "AUTONOMOUS_TRADING",
                     });
@@ -362,7 +363,7 @@ export const autonomousTradingAction: Action = {
             }
 
             if (params?.sellTriggerCondition || params?.sellTriggerCount) {
-                let sellCondition = params.sellTriggerCondition === "ANY" ? Condition.ANY : Condition.ALL;
+                const sellCondition = params.sellTriggerCondition === "ANY" ? Condition.ANY : Condition.ALL;
 
                 // If sellCondition is ANY while params.condition is ALL, and sellTriggerCount is not set, default to 1
                 if (
@@ -560,6 +561,14 @@ export const autonomousTradingAction: Action = {
                         };
                     }),
                     stopLossValidityInSeconds: params.stopLossDurationInSec || 7 * 24 * 60 * 60,
+                    ...(
+                        params.isDynamicStopLossEnabled ? {
+                            dynamicStopLossParams: {
+                                isEnabled: params.isDynamicStopLossEnabled,
+                                triggerPercentage: 5
+                            }
+                        } : {}
+                    ),
                 } as StopLossParams;
             }
 
