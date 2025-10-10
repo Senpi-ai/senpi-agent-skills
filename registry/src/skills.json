@@ -14,8 +14,8 @@
             "Copy Trade specific user(s)",
             "Buy when they buy + Sell when they sell",
             "Buy when they buy + Sell on price targets",
-            "Buy when they buy + Sell on price targets + Stop Loss",
-            "Buy when they buy + Sell on price targets + Stop Loss + Ladders",
+            "Buy when they buy + Sell on price targets + Dynamic Stop Loss",
+            "Buy when they buy + Sell on price targets + Dynamic Stop Loss + Ladders",
             "Buy when they buy, but only if marketcap is within specific range",
             "Buy when they buy, buy only if token was created within specific range"
         ],

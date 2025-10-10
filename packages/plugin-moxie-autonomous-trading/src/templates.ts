@@ -50,7 +50,7 @@ Please follow these steps to process the user input and generate the appropriate
        - dropPercentage: Allowed price decrease percentage.
        - sellPercentage: Portion of current position to sell when triggered (default to 100 if not specified).
   - stopLossDurationInSec (optional): Find the duration for which the stop loss should be active. Convert to seconds.
-  - isDynamicStopLossEnabled: Boolean true/false whether the stop loss should be dynamic.
+  - isDynamicStopLossEnabled: Boolean true/false whether the stop loss should be dynamic. Set to true if there is only one stop loss, even if user didn't explicitly mention it as dynamic. If "DSL" is mentioned, also set to true.
   For PROFIT rules (COPY_TRADE_AND_PROFIT and GROUP_COPY_TRADE_AND_PROFIT):
     - limitOrders: An array with one object containing:
       - priceChangePercentage: Target price increase percentage.
