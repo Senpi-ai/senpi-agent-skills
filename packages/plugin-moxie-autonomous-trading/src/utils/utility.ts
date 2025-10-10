@@ -70,13 +70,13 @@ export interface LimitOrderParams {
 
 export interface DynamicStopLossParams {
     isEnabled: boolean;
-    triggerPercentage?: number;
+    triggerPercentage: number;
 }
 
 export interface StopLossParams {
     sellConditions: SellConditionInput[];
     stopLossValidityInSeconds: number;
-    dynamicStopLossParams: DynamicStopLossParams;
+    dynamicStopLossParams?: DynamicStopLossParams;
 }
 
 export interface GroupTradeParams {
