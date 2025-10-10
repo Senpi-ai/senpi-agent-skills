@@ -237,7 +237,7 @@ export const autonomousTradingAction: Action = {
                     }
                 }
                 if (totalSellPercentage > 100) {
-                    callback?.({
+                    callback?.({ 
                         text: `The sum of sell percentages in stop loss orders must not exceed 100%.`,
                         action: "AUTONOMOUS_TRADING",
                     });
@@ -363,7 +363,7 @@ export const autonomousTradingAction: Action = {
             }
 
             if (params?.sellTriggerCondition || params?.sellTriggerCount) {
-                const sellCondition = params.sellTriggerCondition === "ANY" ? Condition.ANY : Condition.ALL;
+                let sellCondition = params.sellTriggerCondition === "ANY" ? Condition.ANY : Condition.ALL;
 
                 // If sellCondition is ANY while params.condition is ALL, and sellTriggerCount is not set, default to 1
                 if (
