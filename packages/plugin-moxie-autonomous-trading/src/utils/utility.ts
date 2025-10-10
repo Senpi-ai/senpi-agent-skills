@@ -68,9 +68,15 @@ export interface LimitOrderParams {
     limitOrderValidityInSeconds: number;
 }
 
+export interface DynamicStopLossParams {
+    isEnabled: boolean;
+    triggerPercentage: number;
+}
+
 export interface StopLossParams {
     sellConditions: SellConditionInput[];
     stopLossValidityInSeconds: number;
+    dynamicStopLossParams?: DynamicStopLossParams;
 }
 
 export interface GroupTradeParams {
@@ -278,6 +284,7 @@ const errorMessages: Record<string, string> = {
         "Hi, I'd be happy to help you setup that auto-trade but there are less members in the group than the copy traded users count. You can ask me to add more members by typing: add [user] to [groupname]",
     AERR204:
         "Hi, I'd be happy to help you setup that auto-trade but there are less members in the group than the sell condition value. You can ask me to add more members by typing: add [user] to [groupname]",
+    AERR207: "You can only setup one dynamic stop loss for each rule. Please try again with only one dynamic stop loss added to the rule.",
 };
 
 export function getErrorMessageFromCode(error: Error | string): string {
