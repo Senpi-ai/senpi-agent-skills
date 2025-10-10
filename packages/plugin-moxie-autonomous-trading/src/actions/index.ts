@@ -27,7 +27,6 @@ import {
     RuleType,
     StopLossParams,
     UserTradeParams,
-    agentWalletNotFound,
     moxieWalletClientNotFound,
     checkUserCommunicationPreferences,
     Condition,
@@ -540,6 +539,14 @@ export const autonomousTradingAction: Action = {
             }
 
             if (Array.isArray(params.stopLossOrders) && params.stopLossOrders.length > 0) {
+                // Prompt user to set only 1 dynamic stop loss if more than 1 is set
+                if (params.isDynamicStopLossEnabled && params.stopLossOrders.length > 1) {
+                    callback?.({
+                        text: `You can only setup one dynamic stop loss for each rule. Please try again with only one dynamic stop loss added to the rule.`,
+                        action: "AUTONOMOUS_TRADING",
+                    });
+                    return true;
+                }
                 stopLossParams = {
                     sellConditions: params.stopLossOrders.map((order) => {
                         if (typeof order.dropPercentage !== "number") {
