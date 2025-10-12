@@ -14,23 +14,23 @@
             "Copy Trade specific user(s)",
             "Buy when they buy + Sell when they sell",
             "Buy when they buy + Sell on price targets",
-            "Buy when they buy + Sell on price targets + Stop Loss",
-            "Buy when they buy + Sell on price targets + Stop Loss + Ladders",
+            "Buy when they buy + Sell on price targets + Dynamic Stop Loss",
+            "Buy when they buy + Sell on price targets + Dynamic Stop Loss + Ladders",
             "Buy when they buy, but only if marketcap is within specific range",
             "Buy when they buy, buy only if token was created within specific range"
         ],
         "starterQuestions": [
             {
-                "label": "If anyone in #copytrade buys a token for >$500, buy me $50 of it. Then sell 20% for 10% gain, sell 20% for 25% gain, sell 20% for 50% gain, sell 20% for 75% gain. Set stop loss at -30%. Marketcap between $50k and $500M.",
-                "value": "If anyone in #[copytrade|COPYTRADE_ID] buys a token for >$500, buy me $50 of it. Then sell 20% for 10% gain, sell 20% for 25% gain, sell 20% for 50% gain, sell 20% for 75% gain. Set stop loss at -30%. Marketcap between $50k and $500M."
+                "label": "If anyone in #copytrade buys a token for >$500, buy me $50 of it. Then sell 20% for 10% gain, sell 20% for 25% gain, sell 20% for 50% gain, sell 20% for 75% gain. Set dynamic stop loss at -30%. Marketcap between $50k and $500M.",
+                "value": "If anyone in #[copytrade|COPYTRADE_ID] buys a token for >$500, buy me $50 of it. Then sell 20% for 10% gain, sell 20% for 25% gain, sell 20% for 50% gain, sell 20% for 75% gain. Set dynamic stop loss at -30%. Marketcap between $50k and $500M."
             },
             {
-                "label": "If any 2 people in #copytrade buys >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell 50% for 30% profit, sell 50% for 100% profit. Set stop loss at -30%.  Minimum marketcap of $50k. ",
-                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buys >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell 50% for 30% profit, sell 50% for 100% profit. Set stop loss at -30%.  Minimum marketcap of $50k. "
+                "label": "If any 2 people in #copytrade buys >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell 50% for 30% profit, sell 50% for 100% profit. Set dynamic stop loss at -30%.  Minimum marketcap of $50k. ",
+                "value": "If any 2 people in #[copytrade|COPYTRADE_ID] buys >$1000 of a token within 10 minutes of each other, buy me $100 of it, and then sell 50% for 30% profit, sell 50% for 100% profit. Set dynamic stop loss at -30%.  Minimum marketcap of $50k. "
             },
             {
-                "label": "If @jessepollak buys a token for >$1000, buy me $100 of it. Then sell when they sell. Sell 50% for 50% profit, sell 50% for 100% profit. Set stop loss at -40%.",
-                "value": "If @[jessepollak|M1245] buys a token for >$1000, buy me $100 of it. Then sell when they sell. Sell 50% for 50% profit, sell 50% for 100% profit. Set stop loss at -40%."
+                "label": "If @jessepollak buys a token for >$1000, buy me $100 of it. Then sell when they sell. Sell 50% for 50% profit, sell 50% for 100% profit. Set dynamic stop loss at -40%.",
+                "value": "If @[jessepollak|M1245] buys a token for >$1000, buy me $100 of it. Then sell when they sell. Sell 50% for 50% profit, sell 50% for 100% profit. Set dynamic stop loss at -40%."
             }
         ],
         "mediaUrls": [

@@ -39,7 +39,7 @@ Please follow these steps to process the user input and generate the appropriate
    - amountInUSD: Find the dollar amount mentioned to "buy" (not sell).
    - condition: Determine if it's "ANY" or "ALL" based on the input for buying.
    - conditionValue: For "ANY" condition, extract the number of people mentioned for buying (default to 1 if not specified).
-   
+
   Common parameters (for all rule types):
   - minPurchaseAmount: Look for any mention of a minimum purchase amount in USD.
   - sellTriggerType: Set to "LIMIT_ORDER" for profit-taking, "STOP_LOSS" for loss-limiting, or "BOTH" if both profit and loss conditions are explicitly mentioned.
@@ -50,7 +50,7 @@ Please follow these steps to process the user input and generate the appropriate
        - dropPercentage: Allowed price decrease percentage.
        - sellPercentage: Portion of current position to sell when triggered (default to 100 if not specified).
   - stopLossDurationInSec (optional): Find the duration for which the stop loss should be active. Convert to seconds.
-
+  - isDynamicStopLossEnabled: Boolean true/false whether the stop loss should be dynamic. Set to true if there is only one stop loss, even if user didn't explicitly mention it as dynamic. If "DSL" is mentioned, also set to true.
   For PROFIT rules (COPY_TRADE_AND_PROFIT and GROUP_COPY_TRADE_AND_PROFIT):
     - limitOrders: An array with one object containing:
       - priceChangePercentage: Target price increase percentage.
@@ -106,9 +106,9 @@ If all required parameters are present, use this format for the JSON output:
     "conditionValue": "<NUMBER_OF_GROUP_MEMBERS_REQUIRED>",
     "minPurchaseAmount": "<MINIMUM_PURCHASE_AMOUNT_IN_USD>",
     "sellTriggerType": "<TRIGGER_TYPE>", // LIMIT_ORDER, STOP_LOSS, COPY_SELL or BOTH
-    "sellTriggerCondition": "<SELL_CONDITION_ANY_OR_ALL>", 
+    "sellTriggerCondition": "<SELL_CONDITION_ANY_OR_ALL>",
     "sellTriggerCount": "<NUMBER_OF_GROUP_MEMBERS_REQUIRED_TO_SELL>",
-    "sellPercentage": "<PERCENTAGE_TO_SELL>", // required for COPY_SELL i.e sell when a member sells. default to 50 if not specified. 
+    "sellPercentage": "<PERCENTAGE_TO_SELL>", // required for COPY_SELL i.e sell when a member sells. default to 50 if not specified.
     "tokenAge": {
       "min": "<MINIMUM_TOKEN_AGE_IN_SECONDS>",
       "max": "<MAXIMUM_TOKEN_AGE_IN_SECONDS>"
@@ -129,7 +129,8 @@ If all required parameters are present, use this format for the JSON output:
         "priceChangePercentage": "<PRICE_INCREASE_TRIGGER_PERCENTAGE>",
         "sellPercentage": "<PERCENTAGE_TO_SELL_ON_PROFIT>"
       }
-    ]
+    ],
+    "isDynamicStopLossEnabled": "<IS_DYNAMIC_STOP_LOSS_ENABLED>",
   },
   "error": null
 }

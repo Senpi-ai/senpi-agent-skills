@@ -27,13 +27,13 @@ import {
     RuleType,
     StopLossParams,
     UserTradeParams,
-    agentWalletNotFound,
     moxieWalletClientNotFound,
     checkUserCommunicationPreferences,
     Condition,
 } from "../utils/utility";
 import { autonomousTradingTemplate } from "../templates";
 import { validate } from "uuid";
+import { DYNAMIC_STOP_LOSS_TRIGGER_PERCENTAGE } from "../constants";
 
 export type TokenAge = number | {
     min?: number;
@@ -76,6 +76,7 @@ export interface AutonomousTradingRuleParams {
     stopLossDurationInSec?: number;
     stopLossOrders?: StopLossOrder[];
     limitOrders?: LimitOrder[];
+    isDynamicStopLossEnabled?: boolean;
 }
 
 export interface AutonomousTradingError {
@@ -236,7 +237,7 @@ export const autonomousTradingAction: Action = {
                     }
                 }
                 if (totalSellPercentage > 100) {
-                    callback?.({ 
+                    callback?.({
                         text: `The sum of sell percentages in stop loss orders must not exceed 100%.`,
                         action: "AUTONOMOUS_TRADING",
                     });
@@ -362,7 +363,7 @@ export const autonomousTradingAction: Action = {
             }
 
             if (params?.sellTriggerCondition || params?.sellTriggerCount) {
-                let sellCondition = params.sellTriggerCondition === "ANY" ? Condition.ANY : Condition.ALL;
+                const sellCondition = params.sellTriggerCondition === "ANY" ? Condition.ANY : Condition.ALL;
 
                 // If sellCondition is ANY while params.condition is ALL, and sellTriggerCount is not set, default to 1
                 if (
@@ -538,6 +539,14 @@ export const autonomousTradingAction: Action = {
             }
 
             if (Array.isArray(params.stopLossOrders) && params.stopLossOrders.length > 0) {
+                // Prompt user to set only 1 dynamic stop loss if more than 1 is set
+                if (params.isDynamicStopLossEnabled && params.stopLossOrders.length > 1) {
+                    callback?.({
+                        text: `You can only setup one dynamic stop loss for each rule. Please try again with only one dynamic stop loss added to the rule.`,
+                        action: "AUTONOMOUS_TRADING",
+                    });
+                    return true;
+                }
                 stopLossParams = {
                     sellConditions: params.stopLossOrders.map((order) => {
                         if (typeof order.dropPercentage !== "number") {
@@ -560,6 +569,14 @@ export const autonomousTradingAction: Action = {
                         };
                     }),
                     stopLossValidityInSeconds: params.stopLossDurationInSec || 7 * 24 * 60 * 60,
+                    ...(
+                        params.isDynamicStopLossEnabled ? {
+                            dynamicStopLossParams: {
+                                isEnabled: params.isDynamicStopLossEnabled,
+                                triggerPercentage: DYNAMIC_STOP_LOSS_TRIGGER_PERCENTAGE
+                            }
+                        } : {}
+                    ),
                 } as StopLossParams;
             }
 
