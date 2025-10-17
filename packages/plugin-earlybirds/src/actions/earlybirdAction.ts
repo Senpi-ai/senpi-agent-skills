@@ -30,7 +30,7 @@ export const earlybirdAction: Action = {
                 template: earlyBirdsTemplate,
             });
 
-            const earlybirdsResponse = await await generateObjectDeprecated({
+            const earlybirdsResponse = await generateObjectDeprecated({
                 runtime,
                 context: context,
                 modelClass: ModelClass.MEDIUM,
@@ -59,23 +59,25 @@ export const earlybirdAction: Action = {
             const earlybirds = result.result.rows;
             if (earlybirds.length === 0) {
                 await callback({
-                    text: `No earlybirds found for the tokens ${earlybirdsResponse.token1.address}, ${earlybirdsResponse.token2.address}, ${earlybirdsResponse.token3.address}, ${earlybirdsResponse.token4.address}`,
+                    text: `No earlybirds found for the tokens ${
+                        [earlybirdsResponse.token1, earlybirdsResponse.token2, earlybirdsResponse.token3, earlybirdsResponse.token4]
+                            .filter(t => t && t.address && t.address.trim() !== "")
+                            .map(t => `$[${t.symbol || ''}|${t.address}]`)
+                            .join(", ")
+                    }`,
                     action: "EARLYBIRD",
                 });
                 return true;
             }
-            let template = earlybirdWalletAddressesTemplate;
-            template = template.replace("{{buyers}}", JSON.stringify(earlybirds));
             const newContext = composeContext({
                 state: {
                     ...state,
-                    latestMessage: latestMessage,
-                    moxieUserId,
+                    buyers: earlybirds,
                 },
-                template: template,
+                template: earlybirdWalletAddressesTemplate,
             });
             elizaLogger.debug(traceId, `[EarlybirdAction] earlybirds: ${JSON.stringify(earlybirds)}`);
-            const earlybirdWalletAddressesResponse = await await generateObjectDeprecated({
+            const earlybirdWalletAddressesResponse = await generateObjectDeprecated({
                 runtime,
                 context: newContext,
                 modelClass: ModelClass.MEDIUM,

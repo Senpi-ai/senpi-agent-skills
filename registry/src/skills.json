@@ -991,8 +991,8 @@
     },
     {
         "pluginId": "e7cec202-7d63-4f19-aa1e-d7543e87c05c",
-        "name": "plugin-earlybirds",
-        "displayName": "plugin-earlybirds",
+        "name": "@moxie-protocol/plugin-earlybirds",
+        "displayName": "Earlybirds",
         "version": "0.0.1",
         "author": null,
         "description": "Execute earlybird action to get the early buyers of a set of tokens",
@@ -1008,7 +1008,7 @@
         "skillCoinAddress": "",
         "minimumSkillBalance": 0,
         "status": "ACTIVE",
-        "isDefault": false,
+        "isDefault": true,
         "loaders": []
     }
 ]
