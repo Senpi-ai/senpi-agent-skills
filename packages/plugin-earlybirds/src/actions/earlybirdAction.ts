@@ -9,8 +9,21 @@ const client = new DuneClient(process.env.DUNE_API_KEY!);
 
 export const earlybirdAction: Action = {
     name: "EARLYBIRD",
-    similes: ["EARLY_BUYERS", "EARLY_BIRDS"],
-    description: "Identify wallet addresses that were among the earliest buyers (earlybirds) across up to four provided tokens, returning only the addresses that are early purchasers in all selected tokens.",
+    similes: [
+        "EARLY_BUYERS", 
+        "EARLY_BIRDS", 
+        "WHO_ARE_THE_EARLYBIRDS",
+        "EARLY_PURCHASERS",
+        "EARLY_INVESTORS",
+        "FIRST_BUYERS",
+        "EARLY_ADOPTERS",
+        "EARLY_TOKEN_BUYERS",
+        "EARLY_PURCHASERS_OF_TOKENS",
+        "WHO_BOUGHT_EARLY",
+        "EARLY_WALLET_ADDRESSES",
+        "EARLY_BUYER_ADDRESSES"
+    ],
+    description: "Find wallet addresses of users who were among the very first buyers (earlybirds) of specific tokens. This action identifies early purchasers who bought tokens soon after launch, not general token information or sentiment analysis.",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (runtime: IAgentRuntime, message: Memory, state: State, _options: { [key: string]: unknown }, callback: HandlerCallback) => {
@@ -126,7 +139,7 @@ export const earlybirdAction: Action = {
                     callbackPrompt : `Create the ${groupName} group and add all of the above users to it.`
                 }
             })
-
+            return true;
         } catch (error) {
             elizaLogger.error(traceId, `[EarlybirdAction] Error calculating earlybirds: ${error}`);
             await callback({
@@ -141,13 +154,28 @@ export const earlybirdAction: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "What are the earlybirds of the tokens 0x1234567890abcdef1234567890abcdef12345678 and 0xabcdefabcdefabcdefabcdefabcdefabcdefabcd?",
+                    text: "Who are the earlybirds of $[TOKEN1|0x1234567890abcdef1234567890abcdef12345678] and $[TOKEN2|0xabcdefabcdefabcdefabcdefabcdefabcdefabcd]?",
                 },
             },
             {
                 user: "{{user2}}",
                 content: {
-                    text: "The earlybirds of the tokens 0x1234567890abcdef1234567890abcdef1234568 and 0xabcdefabcdefabcdefabcdefabcdefabcdefabcd are 0x1234567890abcdef1234567890abcdef1234568 and 0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+                    text: "Here are the earlybird wallet addresses: [0x1234567890abcdef1234567890abcdef1234568, 0xabcdefabcdefabcdefabcdefabcdefabcdefabcd]",
+                    action: "EARLYBIRD",
+                },
+            },
+        ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Find the early buyers of $[MOXIE|0x1234567890abcdef1234567890abcdef12345678]",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Here are the earlybird wallet addresses: [0x1111111111111111111111111111111111111111, 0x2222222222222222222222222222222222222222]",
                     action: "EARLYBIRD",
                 },
             },
