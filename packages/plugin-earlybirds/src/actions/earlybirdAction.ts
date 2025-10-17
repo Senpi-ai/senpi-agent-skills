@@ -10,7 +10,7 @@ const client = new DuneClient(process.env.DUNE_API_KEY!);
 export const earlybirdAction: Action = {
     name: "EARLYBIRD",
     similes: ["EARLY_BUYERS", "EARLY_BIRDS"],
-    description: "Get the earlybirds of a set of tokens",
+    description: "Identify wallet addresses that were among the earliest buyers (earlybirds) across up to four provided tokens, returning only the addresses that are early purchasers in all selected tokens.",
     suppressInitialMessage: true,
     validate: async () => true,
     handler: async (runtime: IAgentRuntime, message: Memory, state: State, _options: { [key: string]: unknown }, callback: HandlerCallback) => {
@@ -48,10 +48,10 @@ export const earlybirdAction: Action = {
                 queryId,
                 query_parameters: [
                     QueryParameter.number("n_buyers", 200),
-                    QueryParameter.text("token1", earlybirdsResponse.token1.address),
-                    QueryParameter.text("token2", earlybirdsResponse.token2.address),
-                    QueryParameter.text("token3", earlybirdsResponse.token3.address),
-                    QueryParameter.text("token4", earlybirdsResponse.token4.address),
+                    QueryParameter.text("token1", earlybirdsResponse?.token1?.address || "0x0000000000000000000000000000000000000000"),
+                    QueryParameter.text("token2", earlybirdsResponse?.token2?.address || "0x0000000000000000000000000000000000000000"),
+                    QueryParameter.text("token3", earlybirdsResponse?.token3?.address || "0x0000000000000000000000000000000000000000"),
+                    QueryParameter.text("token4", earlybirdsResponse?.token4?.address || "0x0000000000000000000000000000000000000000"),
                 ]
             }
             const result = await client.runQuery(opts);
@@ -69,14 +69,16 @@ export const earlybirdAction: Action = {
                 });
                 return true;
             }
+            // Extract the list of buyer addresses from the result rows
+            const buyers = earlybirds.map((row: { buyer: string }) => row.buyer);
             const newContext = composeContext({
                 state: {
                     ...state,
-                    buyers: earlybirds,
+                    buyers: buyers,
                 },
                 template: earlybirdWalletAddressesTemplate,
             });
-            elizaLogger.debug(traceId, `[EarlybirdAction] earlybirds: ${JSON.stringify(earlybirds)}`);
+            elizaLogger.debug(traceId, `[EarlybirdAction] earlybirds: ${JSON.stringify(buyers)}`);
             const earlybirdWalletAddressesResponse = await generateObjectDeprecated({
                 runtime,
                 context: newContext,
@@ -89,8 +91,20 @@ export const earlybirdAction: Action = {
                 }
             });
             elizaLogger.debug(traceId, `[EarlybirdAction] earlybirdWalletAddressesResponse: ${JSON.stringify(earlybirdWalletAddressesResponse)}`);
-            for await (const textPart of earlybirdWalletAddressesResponse) {
-                callback({ text: textPart, action: "EARLYBIRD" });
+            
+            // Format the wallet addresses for display
+            const walletAddresses = earlybirdWalletAddressesResponse?.buyers || [];
+            if (walletAddresses.length > 0) {
+                await callback({ 
+                    text: `Here are the earlybird wallet addresses: [${walletAddresses.join(", ")}]`, 
+                    action: "EARLYBIRD" 
+                });
+            } else {
+                await callback({ 
+                    text: "No earlybird wallet addresses found.", 
+                    action: "EARLYBIRD" 
+                });
+                return true;
             }
 
             let groupBaseName: string;
