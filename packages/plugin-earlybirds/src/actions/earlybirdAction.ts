@@ -132,7 +132,7 @@ export const earlybirdAction: Action = {
             const groupName = await generateUniqueGroupName(state.authorizationHeader as string, groupBaseName);
             
             await callback({
-                text: "Let’s create a group using these early buyers. I’ll watch their trades to trigger your strategies.",
+                text: "\nLet’s create a group using these early buyers. I’ll watch their trades to trigger your strategies.",
                 action: "EARLYBIRD",
                 cta: "CREATE_GROUP_AND_ADD_GROUP_MEMBER",
                 metadata: {

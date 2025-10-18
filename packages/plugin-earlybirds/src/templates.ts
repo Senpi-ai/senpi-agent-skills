@@ -1,5 +1,5 @@
 export const earlyBirdsTemplate = `
-Please provide between 2 and 4 Ethereum token addresses, each in the following format: $[tokenSymbol|0x...], for example: $[WETH|0x4200000000000000000000000000000000000006]
+Please provide between 1 and 4 Ethereum token addresses, each in the following format: $[tokenSymbol|0x...], for example: $[WETH|0x4200000000000000000000000000000000000006]
 
 - The format is: $[tokenSymbol|tokenAddress]
   - \`tokenSymbol\` is the symbol of the token (e.g., WETH, USDC, DAI)
@@ -29,13 +29,13 @@ Enter your tokens in the following JSON format:
 \`\`\`
 
 - If you leave any token empty, both \`symbol\` and \`address\` will default to: \`"symbol": "", "address": "0x0000000000000000000000000000000000000000"\`
-- You **must** provide at least 2 and at most 4 tokens.
-- If you provide fewer than 2 or more than 4 tokens, throw an error:  
-  \`"Error: You must provide between 2 and 4 token addresses in the format $[tokenSymbol|tokenAddress]."\`
+- You **must** provide at least 1 and at most 4 tokens.
+- If you provide fewer than 1 or more than 4 tokens, throw an error:  
+  \`"Error: You must provide between 1 and 4 token addresses in the format $[tokenSymbol|tokenAddress]."\`
 
 **Examples:**
 
-**Example 1 (2 tokens):**
+**Example 1 (1 token):**
 \`\`\`json
 {
   "token1": {
