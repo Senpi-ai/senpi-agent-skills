@@ -109,7 +109,7 @@ export const earlybirdAction: Action = {
             const walletAddresses = earlybirdWalletAddressesResponse?.buyers || [];
             if (walletAddresses.length > 0) {
                 await callback({ 
-                    text: `Here are the earlybird wallet addresses: [${walletAddresses.join(", ")}]`, 
+                    text: `Here are the earlybird wallet addresses: [${walletAddresses.join(", ")}]\n`, 
                     action: "EARLYBIRD" 
                 });
             } else {
