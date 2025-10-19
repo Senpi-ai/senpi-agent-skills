@@ -108,8 +108,9 @@ export const earlybirdAction: Action = {
             // Format the wallet addresses for display
             const walletAddresses = earlybirdWalletAddressesResponse?.buyers || [];
             if (walletAddresses.length > 0) {
+                const formattedAddresses = walletAddresses.map(addr => `- ${addr}`).join('\n');
                 await callback({ 
-                    text: `Here are the earlybird wallet addresses: [${walletAddresses.join(", ")}]\n`, 
+                    text: `Here are the earlybird wallet addresses:\n${formattedAddresses}\n`, 
                     action: "EARLYBIRD" 
                 });
             } else {
