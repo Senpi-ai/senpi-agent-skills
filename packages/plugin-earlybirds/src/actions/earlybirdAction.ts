@@ -70,13 +70,44 @@ export const earlybirdAction: Action = {
             }
             const result = await client.runQuery(opts);
             elizaLogger.debug(traceId, `[EarlybirdAction] result: ${JSON.stringify(result)}`);
+            let symbolsToFetch: string[] = [];
+            if ((earlybirdsResponse?.token1?.symbol || "").trim() === "" && earlybirdsResponse?.token1?.address && earlybirdsResponse?.token1?.address.trim() !== "0x0000000000000000000000000000000000000000") {
+                symbolsToFetch.push(earlybirdsResponse?.token1?.address.toLowerCase());
+            }
+            if ((earlybirdsResponse?.token2?.symbol || "").trim() === "" && earlybirdsResponse?.token2?.address && earlybirdsResponse?.token2?.address.trim() !== "0x0000000000000000000000000000000000000000") {
+                symbolsToFetch.push(earlybirdsResponse?.token2?.address.toLowerCase());
+            }
+            if ((earlybirdsResponse?.token3?.symbol || "").trim() === "" && earlybirdsResponse?.token3?.address && earlybirdsResponse?.token3?.address.trim() !== "0x0000000000000000000000000000000000000000") {
+                symbolsToFetch.push(earlybirdsResponse?.token3?.address.toLowerCase());
+            }
+            if ((earlybirdsResponse?.token4?.symbol || "").trim() === "" && earlybirdsResponse?.token4?.address && earlybirdsResponse?.token4?.address.trim() !== "0x0000000000000000000000000000000000000000") {
+                symbolsToFetch.push(earlybirdsResponse?.token4?.address.toLowerCase());
+            }
+            let tokenDetails: TokenDetails[] = [];
+            if (symbolsToFetch.length > 0) {
+                tokenDetails = await getTokenDetails(symbolsToFetch);
+            }
+
+            let symbols = [
+                earlybirdsResponse?.token1?.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === earlybirdsResponse?.token1?.address.toLowerCase())?.tokenSymbol || "",
+                earlybirdsResponse?.token2?.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === earlybirdsResponse?.token2?.address.toLowerCase())?.tokenSymbol || "",
+                earlybirdsResponse?.token3?.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === earlybirdsResponse?.token3?.address.toLowerCase())?.tokenSymbol || "",
+                earlybirdsResponse?.token4?.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === earlybirdsResponse?.token4?.address.toLowerCase())?.tokenSymbol || ""
+            ].filter(s => s && s.trim() !== "");
+
             const earlybirds = result.result.rows;
+            // Filter out null-address tokens so we don't return them in the response
+            // Get tokens with address present and not 0x000...0
+            const nonZeroTokens = [earlybirdsResponse.token1, earlybirdsResponse.token2, earlybirdsResponse.token3, earlybirdsResponse.token4]
+                .filter(t => t && t.address && t.address.trim().toLowerCase() !== "0x0000000000000000000000000000000000000000");
             if (earlybirds.length === 0) {
                 await callback({
                     text: `No earlybirds found for the tokens ${
-                        [earlybirdsResponse.token1, earlybirdsResponse.token2, earlybirdsResponse.token3, earlybirdsResponse.token4]
-                            .filter(t => t && t.address && t.address.trim() !== "")
-                            .map(t => `$[${t.symbol || ''}|${t.address}]`)
+                        nonZeroTokens
+                            .map(
+                                t =>
+                                    `$[${t.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === t.address.toLowerCase())?.tokenSymbol || ''}|${t.address}]`
+                            )
                             .join(", ")
                     }`,
                     action: "EARLYBIRD",
@@ -123,31 +154,7 @@ export const earlybirdAction: Action = {
             }
 
             let groupBaseName: string;
-            // Not all symbols may be present (token3 and token4 are optional), so only include non-empty symbols
-            let symbolsToFetch: string[] = [];
-            if ((earlybirdsResponse?.token1?.symbol || "").trim() === "" && earlybirdsResponse?.token1?.address && earlybirdsResponse?.token1?.address.trim() !== "0x0000000000000000000000000000000000000000") {
-                symbolsToFetch.push(earlybirdsResponse?.token1?.address.toLowerCase());
-            }
-            if ((earlybirdsResponse?.token2?.symbol || "").trim() === "" && earlybirdsResponse?.token2?.address && earlybirdsResponse?.token2?.address.trim() !== "0x0000000000000000000000000000000000000000") {
-                symbolsToFetch.push(earlybirdsResponse?.token2?.address.toLowerCase());
-            }
-            if ((earlybirdsResponse?.token3?.symbol || "").trim() === "" && earlybirdsResponse?.token3?.address && earlybirdsResponse?.token3?.address.trim() !== "0x0000000000000000000000000000000000000000") {
-                symbolsToFetch.push(earlybirdsResponse?.token3?.address.toLowerCase());
-            }
-            if ((earlybirdsResponse?.token4?.symbol || "").trim() === "" && earlybirdsResponse?.token4?.address && earlybirdsResponse?.token4?.address.trim() !== "0x0000000000000000000000000000000000000000") {
-                symbolsToFetch.push(earlybirdsResponse?.token4?.address.toLowerCase());
-            }
-            let tokenDetails: TokenDetails[] = [];
-            if (symbolsToFetch.length > 0) {
-                tokenDetails = await getTokenDetails(symbolsToFetch);
-            }
-
-            let symbols = [
-                earlybirdsResponse?.token1?.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === earlybirdsResponse?.token1?.address.toLowerCase())?.tokenSymbol || "",
-                earlybirdsResponse?.token2?.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === earlybirdsResponse?.token2?.address.toLowerCase())?.tokenSymbol || "",
-                earlybirdsResponse?.token3?.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === earlybirdsResponse?.token3?.address.toLowerCase())?.tokenSymbol || "",
-                earlybirdsResponse?.token4?.symbol || tokenDetails.find(detail => detail.tokenAddress.toLowerCase() === earlybirdsResponse?.token4?.address.toLowerCase())?.tokenSymbol || ""
-            ].filter(s => s && s.trim() !== "");
+            // Not all symbols may be present (token3 and token4 are optional), so only include non-empty symbol
 
             groupBaseName = symbols.join("_") + "_earlybirds";
             const groupName = await generateUniqueGroupName(state.authorizationHeader as string, groupBaseName);
