@@ -995,20 +995,19 @@
         "displayName": "Earlybirds",
         "version": "0.0.1",
         "author": null,
-        "description": "Execute earlybird action to get the early buyers of a set of tokens",
+        "description": "Discover the earliest traders of tokens and add them to groups",
         "githubUrl": "https://github.com/moxie-protocol/moxie-agent-skills/tree/main/packages/plugin-earlybirds",
         "logoUrl": "https://raw.githubusercontent.com/moxie-protocol/moxie-agent-skills/refs/heads/main/packages/plugin-earlybirds/images/logo.png",
         "settings": {},
         "capabilities": [
-            "Identify the earliest buyers (earlybirds) of a given token",
-            "Get a list of wallet addresses that purchased a token right after launch",
-            "Spot early adopters and investors for any ERC-20 token",
-            "Analyze which wallets were first to buy a new token"
+            "Identify the earliest buyers (\"earlybirds\") of specific tokens",
+            "Identify the earlybirds in common across multiple tokens (up to 4)",
+            "Add the earlybirds to a group"
         ],
         "starterQuestions": [
             {
-                "label": "Who are the early buyers of $KTA and $BRACKY?",
-                "value": "Who are the early buyers of $[BRACKY|0x06f71fb90f84b35302d132322a3c90e4477333b0] and $[KTA|0xc0634090f2fe6c6d75e61be2b949464abb498973]?"
+                "label": "Who are the earlybirds in common for $BRACKY and $WARP",
+                "value": "Who are the early buyers of $[BRACKY|0x06f71fb90f84b35302d132322a3c90e4477333b0] and $[WARP|0xd9159ad2d5fe625cd1f54f4d328fb19cb5262b07]?"
             }
         ],
         "mediaUrls": [],
