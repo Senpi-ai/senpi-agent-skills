@@ -144,6 +144,9 @@ importers:
       '@moxie-protocol/plugin-degenfans-alfafrens':
         specifier: workspace:*
         version: link:../packages/plugin-degenfans-alfafrens
+      '@moxie-protocol/plugin-earlybirds':
+        specifier: workspace:*
+        version: link:../packages/plugin-earlybirds
       '@moxie-protocol/plugin-moxie-autonomous-trading':
         specifier: workspace:*
         version: link:../packages/plugin-moxie-autonomous-trading
@@ -678,6 +681,34 @@ importers:
       '@moxie-protocol/moxie-agent-lib':
         specifier: workspace:*
         version: link:../moxie-agent-lib
+      ethers:
+        specifier: ^6.0.0
+        version: 6.15.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+      graphql-request:
+        specifier: ^7.1.2
+        version: 7.2.0(graphql@16.11.0)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.5
+        version: 22.18.1
+      tsup:
+        specifier: 8.3.5
+        version: 8.3.5(@swc/core@1.13.5(@swc/helpers@0.5.17))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.6.3)(yaml@2.8.1)
+
+  packages/plugin-earlybirds:
+    dependencies:
+      '@duneanalytics/client-sdk':
+        specifier: ^0.2.5
+        version: 0.2.5
+      '@moxie-protocol/core':
+        specifier: workspace:*
+        version: link:../core
+      '@moxie-protocol/moxie-agent-lib':
+        specifier: workspace:*
+        version: link:../moxie-agent-lib
+      '@moxie-protocol/plugin-moxie-groups':
+        specifier: workspace:*
+        version: link:../plugin-moxie-groups
       ethers:
         specifier: ^6.0.0
         version: 6.15.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
