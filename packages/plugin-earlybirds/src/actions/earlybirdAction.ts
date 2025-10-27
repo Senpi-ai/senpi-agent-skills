@@ -2,7 +2,7 @@ import { Action, IAgentRuntime, Memory, State, HandlerCallback, ActionExample, e
 import { MoxieUser } from "@moxie-protocol/moxie-agent-lib/src/services/types";
 import { earlyBirdsTemplate, earlybirdWalletAddressesTemplate } from "../templates";
 import { ModelProviderName } from "@moxie-protocol/core";
-import { DuneClient, QueryParameter, RunQueryArgs } from "@duneanalytics/client-sdk";
+import { DuneClient, QueryEngine, QueryParameter, RunQueryArgs } from "@duneanalytics/client-sdk";
 import { generateUniqueGroupName } from "@moxie-protocol/plugin-moxie-groups/src/utils";
 import { getTokenDetails, TokenDetails } from "@moxie-protocol/moxie-agent-lib";
 
@@ -66,7 +66,8 @@ export const earlybirdAction: Action = {
                     QueryParameter.text("token2", earlybirdsResponse?.token2?.address || "0x0000000000000000000000000000000000000000"),
                     QueryParameter.text("token3", earlybirdsResponse?.token3?.address || "0x0000000000000000000000000000000000000000"),
                     QueryParameter.text("token4", earlybirdsResponse?.token4?.address || "0x0000000000000000000000000000000000000000"),
-                ]
+                ],
+                performance: QueryEngine.Large
             }
             const result = await client.runQuery(opts);
             elizaLogger.debug(traceId, `[EarlybirdAction] result: ${JSON.stringify(result)}`);
